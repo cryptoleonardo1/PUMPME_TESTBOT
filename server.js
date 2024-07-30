@@ -2,19 +2,10 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-const BOT_TOKEN = process.env.BOT_TOKEN; // Make sure to set this in Vercel environment variables
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Set CSP headers
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' https://telegram.org 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.telegram.org;"
-  );
-  next();
-});
 
 app.use(express.json());
 
@@ -35,7 +26,7 @@ app.get('/api/leaderboard', (req, res) => {
   res.json(leaderboard);
 });
 
-// Serve index.html for all routes
+// Serve index.html for all other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
