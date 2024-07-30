@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
+const BOT_TOKEN = process.env.BOT_TOKEN; // Make sure to set this in Vercel environment variables
+
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
