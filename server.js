@@ -3,30 +3,28 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
-app.use(express.static('public'));
+app.use((req, res, next) => {
+  console.log(`Request for ${req.url}`);
+  next();
+});
+
+app.use(express.static('public', {
+  setHeaders: (res, path, stat) => {
+    if (path.endsWith('.css')) {
+      res.set('Content-Type', 'text/css');
+    }
+    if (path.endsWith('.js')) {
+      res.set('Content-Type', 'application/javascript');
+    }
+  }
+}));
 
 app.use(express.json());
 
-// In-memory storage for user scores
-const userScores = {};
+// Rest of your server code...
 
-app.post('/api/score', (req, res) => {
-  const { userId, score } = req.body;
-  userScores[userId] = (userScores[userId] || 0) + score;
-  res.json({ success: true, totalScore: userScores[userId] });
-});
-
-app.get('/api/leaderboard', (req, res) => {
-  const leaderboard = Object.entries(userScores)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10)
-    .map(([userId, score]) => ({ userId, score }));
-  res.json(leaderboard);
-});
-
-// Serve index.html for all other routes
 app.get('*', (req, res) => {
+  console.log('Serving index.html');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
