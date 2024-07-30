@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // Replace with your actual bot token
+const BOT_TOKEN = process.env.BOT_TOKEN; // Replace with your actual bot token
 
 app.use(express.static('public', {
   setHeaders: (res, path, stat) => {
