@@ -4,17 +4,9 @@
       {
         "src": "server.js",
         "use": "@vercel/node"
-      },
-      {
-        "src": "bot.js",
-        "use": "@vercel/node"
       }
     ],
     "routes": [
-      {
-        "src": "/bot",
-        "dest": "bot.js"
-      },
       {
         "src": "/(.*)",
         "dest": "server.js"

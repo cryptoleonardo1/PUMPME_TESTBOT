@@ -3,11 +3,6 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
-});
-
 app.use(express.static('public'));
 app.use(express.json());
 
@@ -15,10 +10,8 @@ app.use(express.json());
 const userScores = {};
 
 app.post('/api/score', (req, res) => {
-  console.log('Received score update:', req.body);
   const { userId, score } = req.body;
   userScores[userId] = (userScores[userId] || 0) + score;
-  console.log('Updated scores:', userScores);
   res.json({ success: true, totalScore: userScores[userId] });
 });
 
@@ -27,12 +20,10 @@ app.get('/api/leaderboard', (req, res) => {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
     .map(([userId, score]) => ({ userId, score }));
-  console.log('Sending leaderboard:', leaderboard);
   res.json(leaderboard);
 });
 
 app.get('*', (req, res) => {
-  console.log('Serving index.html');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
