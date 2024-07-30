@@ -1,53 +1,34 @@
 const express = require('express');
-const crypto = require('crypto');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const BOT_TOKEN = process.env.BOT_TOKEN; // Replace with your actual bot token
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
 
-app.use(express.static('public', {
-  setHeaders: (res, path, stat) => {
-    if (path.endsWith('.css')) {
-      res.set('Content-Type', 'text/css');
-    }
-  }
-}));
 app.use(express.json());
 
-// Telegram authentication middleware
-function telegramAuth(req, res, next) {
-  const { hash, ...data } = req.body;
-  
-  const secret = crypto.createHash('sha256')
-    .update(BOT_TOKEN)
-    .digest();
+// In-memory storage for user scores
+const userScores = {};
 
-  const checkString = Object.keys(data)
-    .sort()
-    .map(k => `${k}=${data[k]}`)
-    .join('\n');
-
-  const hmac = crypto.createHmac('sha256', secret)
-    .update(checkString)
-    .digest('hex');
-
-  if (hmac === hash) {
-    next();
-  } else {
-    res.status(403).send('Authentication failed');
-  }
-}
-
-// Use telegramAuth middleware for score updates
-app.post('/api/score', telegramAuth, (req, res) => {
-  const { user, score } = req.body;
-  const userId = user.id.toString();
+app.post('/api/score', (req, res) => {
+  const { userId, score } = req.body;
   userScores[userId] = (userScores[userId] || 0) + score;
   res.json({ success: true, totalScore: userScores[userId] });
 });
 
-// ... rest of your server code ...
+app.get('/api/leaderboard', (req, res) => {
+  const leaderboard = Object.entries(userScores)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 10)
+    .map(([userId, score]) => ({ userId, score }));
+  res.json(leaderboard);
+});
+
+// Serve index.html for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
