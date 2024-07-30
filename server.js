@@ -9,12 +9,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
-// In-memory storage for user scores
+// In-memory storage for user scores and usernames
 const userScores = {};
+const usernames = {};
 
 app.post('/api/score', (req, res) => {
-  const { userId, score } = req.body;
+  const { userId, score, username } = req.body;
   userScores[userId] = (userScores[userId] || 0) + score;
+  if (username) {
+    usernames[userId] = username;
+  }
   res.json({ success: true, totalScore: userScores[userId] });
 });
 
@@ -22,7 +26,10 @@ app.get('/api/leaderboard', (req, res) => {
   const leaderboard = Object.entries(userScores)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
-    .map(([userId, score]) => ({ userId, score }));
+    .map(([userId, score]) => ({ 
+      userId: usernames[userId] || userId, 
+      score 
+    }));
   res.json(leaderboard);
 });
 

@@ -13,10 +13,22 @@
             <div id="circle"></div>
             <div id="score">Score: 0</div>
         </div>
-        <div id="leaderboard">
-            <h2>Leaderboard</h2>
-            <ul id="leaderboard-list"></ul>
-        </div>
+        <button id="leaderboard-button">View Leaderboard</button>
+    </div>
+    <div id="leaderboard-page" style="display: none;">
+        <h2>Leaderboard</h2>
+        <table id="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Points</th>
+                    <th>Rewards</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body"></tbody>
+        </table>
+        <button id="back-button">Back to Game</button>
     </div>
     <script src="/app.js"></script>
 </body>
