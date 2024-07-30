@@ -1,19 +1,12 @@
 {
-  "name": "coding",
+  "name": "pumpme-testbot",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "bot": "node bot.js"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "express": "^4.19.2",
-    "node-telegram-bot-api": "^0.61.0",
-    "telegram-web-app": "^0.0.0"
+    "express": "^4.17.1"
   },
   "engines": {
     "node": ">=14.0.0"
