@@ -1,6 +1,7 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed');
     const circle = document.getElementById('circle');
     const scoreDisplay = document.getElementById('score');
     const leaderboardButton = document.getElementById('leaderboard-button');
@@ -11,12 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let score = 0;
 
+    console.log('Initializing Telegram Web App');
     tg.ready();
-
 
     circle.addEventListener('click', () => {
         score++;
         scoreDisplay.textContent = `Score: ${score}`;
+        console.log('Circle clicked, new score:', score);
         
         const userData = {
             userId: tg.initDataUnsafe?.user?.id || 'anonymous',
@@ -40,28 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error updating score:', error));
     });
 
-
-function updateLeaderboard() {
-    fetch('/api/leaderboard')
-    .then(response => response.json())
-    .then(leaderboard => {
-        console.log('Received leaderboard data:', leaderboard);
-        leaderboardBody.innerHTML = '';
-        leaderboard.forEach((entry, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${entry.userId}</td>
-                <td>${entry.score}</td>
-                <td>${calculateRewards(entry.score)}</td>
-            `;
-            leaderboardBody.appendChild(row);
-        });
-        console.log('Leaderboard updated in DOM');
-    })
-    .catch(error => console.error('Error fetching leaderboard:', error));
-}
-
+    function updateLeaderboard() {
+        console.log('Updating leaderboard');
+        fetch('/api/leaderboard')
+        .then(response => response.json())
+        .then(leaderboard => {
+            console.log('Received leaderboard data:', leaderboard);
+            leaderboardBody.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.userId}</td>
+                    <td>${entry.score}</td>
+                    <td>${calculateRewards(entry.score)}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+            console.log('Leaderboard updated in DOM');
+        })
+        .catch(error => console.error('Error fetching leaderboard:', error));
+    }
 
     function calculateRewards(score) {
         // This is a placeholder function. Implement your reward logic here.
@@ -69,12 +70,14 @@ function updateLeaderboard() {
     }
 
     leaderboardButton.addEventListener('click', () => {
+        console.log('Leaderboard button clicked');
         app.style.display = 'none';
         leaderboardPage.style.display = 'block';
         updateLeaderboard();
     });
 
     backButton.addEventListener('click', () => {
+        console.log('Back button clicked');
         leaderboardPage.style.display = 'none';
         app.style.display = 'flex';
     });
@@ -86,6 +89,6 @@ function updateLeaderboard() {
         }
     }, 30000);
 
-    // Expand the Telegram Web App to full height
+    console.log('Expanding Telegram Web App');
     tg.expand();
 });
