@@ -4,12 +4,12 @@ const Redis = require('ioredis');
 const app = express();
 
 const REDIS_URL = process.env.REDIS_URL;
-console.log('Redis URL:', REDIS_URL); // Log Redis URL (make sure to redact this in production)
+console.log('Attempting to connect to Redis with URL:', REDIS_URL);
 
 const redis = new Redis(REDIS_URL);
 
 redis.on('connect', () => {
-  console.log('Connected to Redis');
+  console.log('Successfully connected to Redis');
 });
 
 redis.on('error', (error) => {
@@ -24,12 +24,19 @@ app.post('/api/score', async (req, res) => {
   console.log('Received score update:', { userId, score, username });
   
   try {
-    await redis.hincrby(`user:${userId}`, 'score', score);
+    console.log('Attempting to update score in Redis');
+    const incrResult = await redis.hincrby(`user:${userId}`, 'score', score);
+    console.log('Increment result:', incrResult);
+    
     if (username) {
-      await redis.hset(`user:${userId}`, 'username', username);
+      console.log('Attempting to set username in Redis');
+      const hsetResult = await redis.hset(`user:${userId}`, 'username', username);
+      console.log('Hset result:', hsetResult);
     }
+    
     const totalScore = await redis.hget(`user:${userId}`, 'score');
-    console.log('Updated score:', { userId, totalScore });
+    console.log('Retrieved total score from Redis:', totalScore);
+    
     res.json({ success: true, totalScore: parseInt(totalScore) });
   } catch (error) {
     console.error('Redis operation error:', error);

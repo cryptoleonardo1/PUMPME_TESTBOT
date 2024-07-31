@@ -14,28 +14,31 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
 
 
-circle.addEventListener('click', () => {
-    score++;
-    scoreDisplay.textContent = `Score: ${score}`;
-    
-    // Send score to server
-    fetch('/api/score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-            userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
+    circle.addEventListener('click', () => {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        
+        const userData = {
+            userId: tg.initDataUnsafe?.user?.id || 'anonymous',
             score: 1,
             username: tg.initDataUnsafe?.user?.username || null
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Score updated:', data.totalScore);
-    })
-    .catch(error => console.error('Error:', error));
-});
+        };
+        console.log('Sending score update:', userData);
+        
+        // Send score to server
+        fetch('/api/score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Score update response:', data);
+        })
+        .catch(error => console.error('Error updating score:', error));
+    });
 
 
 function updateLeaderboard() {
