@@ -1,9 +1,17 @@
 const express = require('express');
 const path = require('path');
-const redis = require('./redis-client'); // Import the Redis client
+const redis = require('./redis-client');
 const app = express();
 
 console.log('Starting server...');
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -13,11 +21,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
 app.post('/api/score', async (req, res) => {
-  console.log('Received score update request:', req.body);
-  const { userId, score, username } = req.body;
-  
   try {
+    console.log('Received score update request:', req.body);
+    const { userId, score, username } = req.body;
+    
     console.log('Attempting to update score in Redis');
     const incrResult = await redis.hincrby(`user:${userId}`, 'score', score);
     console.log('Increment result:', incrResult);
@@ -39,8 +51,8 @@ app.post('/api/score', async (req, res) => {
 });
 
 app.get('/api/leaderboard', async (req, res) => {
-  console.log('Received leaderboard request');
   try {
+    console.log('Received leaderboard request');
     const users = await redis.keys('user:*');
     console.log('Found users:', users);
     const leaderboard = await Promise.all(users.map(async (userKey) => {
@@ -61,11 +73,16 @@ app.get('/api/leaderboard', async (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  console.error('Express error:', err);
+  res.status(500).json({ success: false, error: 'Internal server error', details: err.message });
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+} else {
+  console.log('Exporting app as a module');
+  module.exports = app;
+}
