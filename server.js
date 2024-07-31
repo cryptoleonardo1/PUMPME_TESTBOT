@@ -46,7 +46,19 @@ app.get('/api/leaderboard', (req, res) => {
   const leaderboard = Object.entries(userScores)
     .map(([userId, score]) => ({ userId, score }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .slice(0, 10)
+    .map((entry, index) => {
+      let pumping;
+      switch (index) {
+        case 0: pumping = "Chest"; break;
+        case 1: pumping = "Biceps"; break;
+        case 2: pumping = "Triceps"; break;
+        case 3: pumping = "Ass"; break;
+        case 4: pumping = "Abs"; break;
+        default: pumping = "Belly fat";
+      }
+      return { ...entry, pumping };
+    });
 
   console.log('Sending leaderboard:', leaderboard);
   res.json(leaderboard);
