@@ -1,39 +1,63 @@
 const express = require('express');
 const path = require('path');
+const Redis = require('ioredis');
 const app = express();
 
-const BOT_TOKEN = process.env.BOT_TOKEN;
+const REDIS_URL = process.env.REDIS_URL;
+console.log('Redis URL:', REDIS_URL); // Log Redis URL (make sure to redact this in production)
 
-// Serve static files from the 'public' directory
+const redis = new Redis(REDIS_URL);
+
+redis.on('connect', () => {
+  console.log('Connected to Redis');
+});
+
+redis.on('error', (error) => {
+  console.error('Redis connection error:', error);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(express.json());
 
-// In-memory storage for user scores and usernames
-const userScores = {};
-const usernames = {};
-
-app.post('/api/score', (req, res) => {
+app.post('/api/score', async (req, res) => {
   const { userId, score, username } = req.body;
-  userScores[userId] = (userScores[userId] || 0) + score;
-  if (username) {
-    usernames[userId] = username;
+  console.log('Received score update:', { userId, score, username });
+  
+  try {
+    await redis.hincrby(`user:${userId}`, 'score', score);
+    if (username) {
+      await redis.hset(`user:${userId}`, 'username', username);
+    }
+    const totalScore = await redis.hget(`user:${userId}`, 'score');
+    console.log('Updated score:', { userId, totalScore });
+    res.json({ success: true, totalScore: parseInt(totalScore) });
+  } catch (error) {
+    console.error('Redis operation error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
-  res.json({ success: true, totalScore: userScores[userId] });
 });
 
-app.get('/api/leaderboard', (req, res) => {
-  const leaderboard = Object.entries(userScores)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10)
-    .map(([userId, score]) => ({ 
-      userId: usernames[userId] || userId, 
-      score 
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    const users = await redis.keys('user:*');
+    console.log('Found users:', users);
+    const leaderboard = await Promise.all(users.map(async (userKey) => {
+      const userData = await redis.hgetall(userKey);
+      return {
+        userId: userData.username || userKey.split(':')[1],
+        score: parseInt(userData.score) || 0
+      };
     }));
-  res.json(leaderboard);
+
+    leaderboard.sort((a, b) => b.score - a.score);
+    console.log('Leaderboard:', leaderboard);
+    res.json(leaderboard.slice(0, 10));
+  } catch (error) {
+    console.error('Redis error:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
 });
 
-// Serve index.html for all other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
