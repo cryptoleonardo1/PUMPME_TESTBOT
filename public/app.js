@@ -1,7 +1,7 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const circle = document.getElementById('circle');
+    const pumpImage = document.getElementById('pump-image');
     const scoreDisplay = document.getElementById('score');
     const leaderboardButton = document.getElementById('leaderboard-button');
     const leaderboardPage = document.getElementById('leaderboard-page');
@@ -12,6 +12,25 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
 
     tg.ready();
+
+    pumpImage.addEventListener('click', () => {
+        score++;
+        scoreDisplay.textContent = `Reps: ${score}`;
+        
+        // Send score to server
+        fetch('/api/score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous' }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Score updated:', data.totalScore);
+        })
+        .catch(error => console.error('Error:', error));
+    });
 
     circle.addEventListener('click', () => {
         score++;

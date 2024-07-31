@@ -22,17 +22,19 @@ body {
   justify-content: center;
 }
 
-#circle {
-  width: 200px;  /* Increased from 100px */
-  height: 200px; /* Increased from 100px */
-  background-color: var(--tg-theme-button-color, #3390ec);
-  border-radius: 50%;
+#pump-image {
+  width: 200px;
+  height: 200px;
+  background-image: url('/pump-bull.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   margin: 20px auto;
   cursor: pointer;
   transition: transform 0.1s;
 }
 
-#circle:active {
+#pump-image:active {
   transform: scale(0.95);
 }
 
