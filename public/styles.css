@@ -26,6 +26,9 @@ body {
   width: 200px;
   height: 200px;
   background-image: url('/pump-bull.png');
+  /* If the above doesn't work, try these alternatives: */
+  /* background-image: url('pump-bull.png'); */
+  /* background-image: url('./pump-bull.png'); */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
