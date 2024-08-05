@@ -1,8 +1,8 @@
 const tg = window.Telegram.WebApp;
 
-   document.addEventListener('DOMContentLoaded', () => {
-       const pumpImage = document.getElementById('pump-image');
-       const scoreDisplay = document.getElementById('score');
+document.addEventListener('DOMContentLoaded', () => {
+    const pumpImage = document.getElementById('pump-image');
+    const scoreDisplay = document.getElementById('score-display');
        const leaderboardButton = document.getElementById('leaderboard-button');
        const leaderboardPage = document.getElementById('leaderboard-page');
        const leaderboardBody = document.getElementById('leaderboard-body');
@@ -14,8 +14,8 @@ const tg = window.Telegram.WebApp;
        tg.ready();
 
        pumpImage.addEventListener('click', () => {
-           reps++;
-           scoreDisplay.textContent = `Reps: ${reps}`;
+        reps++;
+        scoreDisplay.textContent = `Reps: ${reps}`;
            
            // Send score to server
            fetch('/api/score', {
