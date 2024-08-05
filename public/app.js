@@ -32,23 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error:', error));
     });
 
-    circle.addEventListener('click', () => {
-        score++;
-        scoreDisplay.textContent = `Reps: ${score}`;
-        
-        // Send score to server
-        fetch('/api/score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous' }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Score updated:', data.totalScore);
-        })
-        .catch(error => console.error('Error:', error));
+    leaderboardButton.addEventListener('click', () => {
+        app.style.display = 'none';
+        leaderboardPage.style.display = 'block';
+        updateLeaderboard();
+    });
+
+    backButton.addEventListener('click', () => {
+        leaderboardPage.style.display = 'none';
+        app.style.display = 'flex';
     });
 
     function updateLeaderboard() {
@@ -69,17 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error:', error));
     }
-
-    leaderboardButton.addEventListener('click', () => {
-        app.style.display = 'none';
-        leaderboardPage.style.display = 'block';
-        updateLeaderboard();
-    });
-
-    backButton.addEventListener('click', () => {
-        leaderboardPage.style.display = 'none';
-        app.style.display = 'flex';
-    });
 
     // Update leaderboard every 30 seconds
     setInterval(updateLeaderboard, 30000);

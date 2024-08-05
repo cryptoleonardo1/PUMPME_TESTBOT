@@ -26,15 +26,13 @@ body {
   width: 200px;
   height: 200px;
   background-image: url('/pump-bull.png');
-  /* If the above doesn't work, try these alternatives: */
-  /* background-image: url('pump-bull.png'); */
-  /* background-image: url('./pump-bull.png'); */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   margin: 20px auto;
   cursor: pointer;
   transition: transform 0.1s;
+  border-radius: 0; /* Remove circular shape */
 }
 
 #pump-image:active {
@@ -55,6 +53,8 @@ body {
   cursor: pointer;
   border-radius: 5px;
   margin-top: 20px;
+  z-index: 10;
+  position: relative;
 }
 
 #leaderboard-page {
