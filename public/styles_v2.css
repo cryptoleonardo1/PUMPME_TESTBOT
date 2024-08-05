@@ -25,14 +25,14 @@ body {
 #pump-image {
   width: 200px;
   height: 200px;
-  background-image: url('/pump-bull.png');
+  background-image: url('../pump-bull.png'), url('/pump-bull.png'), url('pump-bull.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   margin: 20px auto;
   cursor: pointer;
   transition: transform 0.1s;
-  border-radius: 0;
+  border: 1px solid red; /* Temporary, to see the div boundaries */
 }
 
 #pump-image:active {
