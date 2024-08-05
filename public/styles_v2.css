@@ -10,7 +10,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   min-height: 100vh;
 }
 
@@ -20,11 +20,12 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
 }
 
 #pump-image {
-  width: 200px;
-  height: 200px;
+  width: 300px;  /* Increased by 50% from 200px */
+  height: 300px; /* Increased by 50% from 200px */
   background-image: url('../pump-bull.png'), url('/pump-bull.png'), url('pump-bull.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -32,7 +33,6 @@ body {
   margin: 20px auto;
   cursor: pointer;
   transition: transform 0.1s;
-  border: 1px solid red; /* Temporary, to see the div boundaries */
 }
 
 #pump-image:active {
@@ -52,7 +52,7 @@ body {
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
-  margin-top: 20px;
+  margin-bottom: 20px;
   z-index: 10;
   position: relative;
 }
