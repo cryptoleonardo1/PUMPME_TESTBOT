@@ -13,6 +13,7 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: transparent; /* Ensure app background is transparent */
 }
 
 #background {
@@ -21,7 +22,8 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('cartoon-gym-background.jpg'); /* You'll need to create and upload this image */
+  background-image: url('/images/cartoon-gym-bg.jpg');
+  background-color: #2a0e61; /* Fallback color if image doesn't load */
   background-size: cover;
   background-position: center;
   filter: brightness(0.7);
