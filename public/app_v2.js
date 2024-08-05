@@ -1,3 +1,5 @@
+Updated app.js
+
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,13 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const backButton = document.getElementById('back-button');
     const app = document.getElementById('app');
 
-    let score = 0;
+    let reps = 0;
 
     tg.ready();
 
     pumpImage.addEventListener('click', () => {
-        score++;
-        scoreDisplay.textContent = `Reps: ${score}`;
+        reps++;
+        scoreDisplay.textContent = `Reps: ${reps}`;
         
         // Send score to server
         fetch('/api/score', {
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Score updated:', data.totalScore);
+            console.log('Reps updated:', data.totalScore);
         })
         .catch(error => console.error('Error:', error));
     });
