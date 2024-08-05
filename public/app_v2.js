@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pumpImage.addEventListener('click', () => {
         reps++;
-        scoreDisplay.textContent = `Reps: ${reps}`;
+        scoreDisplay.textContent = `Godly Reps: ${reps}`;
         
         // Send score to server
         fetch('/api/score', {
@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous' }),
+            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' }),
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Reps updated:', data.totalScore);
+            console.log('Godly Reps updated:', data.totalScore);
         })
         .catch(error => console.error('Error:', error));
     });
