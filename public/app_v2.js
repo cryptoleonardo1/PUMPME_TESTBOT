@@ -10,12 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = document.getElementById('app');
 
     let reps = 0;
+    let currentSize = 390;
+    const maxSize = 500; // Maximum size of the bull image
+    const growthRate = 5; // Pixels to grow per tap
 
     tg.ready();
 
     pumpImage.addEventListener('click', () => {
         reps++;
         scoreDisplay.textContent = `Godly Reps: ${reps}`;
+        
+        // Grow the image
+        currentSize = Math.min(currentSize + growthRate, maxSize);
+        pumpImage.style.width = `${currentSize}px`;
+        pumpImage.style.height = `${currentSize}px`;
+
+        // Animate the growth
+        pumpImage.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            pumpImage.style.transform = 'scale(1)';
+        }, 100);
         
         // Send score to server
         fetch('/api/score', {
