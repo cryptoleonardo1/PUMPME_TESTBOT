@@ -1,5 +1,3 @@
-Updated app.js
-
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
