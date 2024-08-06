@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const characterClickableArea = document.getElementById('character-clickable-area');
     const character = document.getElementById('character');
     const scoreDisplay = document.getElementById('score-display');
-    const leaderboardButton = document.getElementById('leaderboard-button');
     const leaderboardPage = document.getElementById('leaderboard-page');
     const leaderboardBody = document.getElementById('leaderboard-body');
     const backButton = document.getElementById('back-button');
+    const topPumpersBtn = document.getElementById('top-pumpers-btn');
     
     const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
     const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    leaderboardButton.addEventListener('click', () => {
+    topPumpersBtn.addEventListener('click', () => {
         leaderboardPage.style.display = 'block';
         updateLeaderboard();
     });

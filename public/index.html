@@ -40,26 +40,57 @@
                 </div>
             </div>
             
+            <div id="score-display">Clean Reps: 0</div>
+            
             <div class="energy-bar">
                 <div class="energy-fill"></div>
             </div>
             
-            <div id="score-display">Clean Reps: 0</div>
-            
-            <button id="leaderboard-button">TOP PUMPERS</button>
+            <div class="character-stats">
+                <div class="stat-bar">
+                    <img src="images/muscle-icon.png" alt="Muscle" class="stat-icon">
+                    <div class="stat-progress">
+                        <div class="stat-fill" style="width: 60%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <img src="images/agility-icon.png" alt="Agility" class="stat-icon">
+                    <div class="stat-progress">
+                        <div class="stat-fill" style="width: 40%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <img src="images/regeneration-icon.png" alt="Regeneration" class="stat-icon">
+                    <div class="stat-progress">
+                        <div class="stat-fill" style="width: 30%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <img src="images/cardio-icon.png" alt="Cardio" class="stat-icon">
+                    <div class="stat-progress">
+                        <div class="stat-fill" style="width: 50%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <img src="images/social-icon.png" alt="Social" class="stat-icon">
+                    <div class="stat-progress">
+                        <div class="stat-fill" style="width: 70%;"></div>
+                    </div>
+                </div>
+            </div>
         </main>
         
         <nav>
             <button class="nav-btn active">🏋️ Gym</button>
             <button class="nav-btn">👥 Social</button>
-            <button class="nav-btn">🛒 Shop</button>
-            <button class="nav-btn">🏆 Challenges</button>
+            <button class="nav-btn">🚀 Boosts</button>
+            <button class="nav-btn" id="top-pumpers-btn">🏆 Top Pumpers</button>
             <button class="nav-btn">🎁 Rewards</button>
         </nav>
     </div>
     
     <div id="leaderboard-page" style="display: none;">
-        <h2>Leaderboard</h2>
+        <h2>Top Pumpers</h2>
         <table id="leaderboard-table">
             <thead>
                 <tr>
