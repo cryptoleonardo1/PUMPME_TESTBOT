@@ -7,39 +7,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderboardPage = document.getElementById('leaderboard-page');
     const leaderboardBody = document.getElementById('leaderboard-body');
     const backButton = document.getElementById('back-button');
-    const app = document.getElementById('app');
     
     const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
     const pumpMeter = document.querySelector('.pump .meter-fill');
     const energyBar = document.querySelector('.energy-fill');
 
     let reps = 0;
-    let currentSize = 300;
-    const maxSize = 400;
-    const growthRate = 5;
+    let muscleMass = 15240;
 
     tg.ready();
 
     character.addEventListener('click', () => {
         reps++;
+        muscleMass += 10;
         scoreDisplay.textContent = `Clean Reps: ${reps}`;
         
-        // Grow the image
-        currentSize = Math.min(currentSize + growthRate, maxSize);
-        character.style.width = `${currentSize}px`;
-        character.style.height = `${currentSize}px`;
-
-        // Animate the growth
+        // Animate the character
         character.style.transform = 'scale(1.1)';
         setTimeout(() => {
             character.style.transform = 'scale(1)';
         }, 100);
-        
-        // Change image on tap
-        character.src = '/images/bull_lifting.png';
-        setTimeout(() => {
-            character.src = '/images/bull_default.png';
-        }, 200);
 
         updateMeters();
         
@@ -95,13 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
         pumpMeter.style.height = `${pumpValue}%`;
         pumpMeter.nextElementSibling.textContent = `${pumpValue}/100`;
         
-        const muscleMassValue = 15240 + reps * 10;
-        muscleMassMeter.style.height = `${Math.min(100, (muscleMassValue - 15240) / 100)}%`;
-        muscleMassMeter.nextElementSibling.textContent = muscleMassValue;
+        const muscleMassPercentage = Math.min(100, (muscleMass - 15240) / 100);
+        muscleMassMeter.style.height = `${muscleMassPercentage}%`;
+        muscleMassMeter.nextElementSibling.textContent = muscleMass;
         
-        const energyValue = Math.max(0, 65 - reps / 2);
+        const energyValue = Math.max(0, 100 - reps);
         energyBar.style.width = `${energyValue}%`;
-        energyBar.nextElementSibling.textContent = `${Math.round(energyValue)}%`;
     }
 
     // Update leaderboard every 30 seconds
