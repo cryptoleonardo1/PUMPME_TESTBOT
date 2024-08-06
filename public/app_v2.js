@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let reps = 0;
     let muscleMass = 15240;
     let pump = 0;
-    let energy = 100;
+    let energy = 1000;
+    const maxEnergy = 1000;
 
     tg.ready();
 
@@ -31,8 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
         pumpMeter.style.height = `${(pump / 1000) * 100}%`;
         pumpValue.textContent = `${pump}/1000`;
         
-        energyBar.style.width = `${energy}%`;
+        energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
     }
+
+    function regenerateEnergy() {
+        if (energy < maxEnergy) {
+            energy = Math.min(maxEnergy, energy + 1);
+            updateUI();
+        }
+    }
+
+    // Set up energy regeneration
+    setInterval(regenerateEnergy, 1000);
 
     characterClickableArea.addEventListener('click', () => {
         if (energy > 0) {
