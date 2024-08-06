@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pumpImage.addEventListener('click', () => {
         reps++;
-        scoreDisplay.textContent = `Godly Reps: ${reps}`;
+        scoreDisplay.textContent = `Awesome Reps: ${reps}`;
         
         // Grow the image
         currentSize = Math.min(currentSize + growthRate, maxSize);
@@ -37,15 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' }),
+            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous Pumper' }),
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Godly Reps updated:', data.totalScore);
+            console.log('Awesome Reps updated:', data.totalScore);
         })
         .catch(error => console.error('Error:', error));
     });
-
+    
     leaderboardButton.addEventListener('click', () => {
         leaderboardPage.style.display = 'block';
         updateLeaderboard();
