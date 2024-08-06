@@ -1,6 +1,7 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
+    const characterClickableArea = document.getElementById('character-clickable-area');
     const character = document.getElementById('character');
     const scoreDisplay = document.getElementById('score-display');
     const leaderboardButton = document.getElementById('leaderboard-button');
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         energyBar.style.width = `${energy}%`;
     }
 
-    character.addEventListener('click', () => {
+    characterClickableArea.addEventListener('click', () => {
         if (energy > 0) {
             reps++;
             pump = Math.min(100, pump + 1);
