@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
         muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
         muscleMassValue.textContent = muscleMass;
         
-        pumpMeter.style.height = `${pump}%`;
-        pumpValue.textContent = `${pump}/100`;
+        pumpMeter.style.height = `${(pump / 1000) * 100}%`;
+        pumpValue.textContent = `${pump}/1000`;
         
         energyBar.style.width = `${energy}%`;
     }
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     characterClickableArea.addEventListener('click', () => {
         if (energy > 0) {
             reps++;
-            pump = Math.min(100, pump + 1);
+            pump = Math.min(1000, pump + 1);
             muscleMass += 10;
             energy = Math.max(0, energy - 1);
 
