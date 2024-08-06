@@ -4,39 +4,163 @@ body, html {
   padding: 0;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   color: #ffd700;
+  background: linear-gradient(to bottom, #1E1E3F, #000000);
 }
 
 #app {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-#background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
   height: 100%;
-  background-image: url('/images/cartoon-gym-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  filter: brightness(0.7);
-  z-index: -1;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-#content {
+header {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.logo {
+  height: 30px;
+}
+
+.header-icons {
+  font-size: 24px;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
   padding: 20px;
-  box-sizing: border-box;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
+}
+
+.meter {
+  width: 30px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.meter-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  transition: height 0.3s;
+}
+
+.muscle-mass .meter-fill {
+  background-color: #4CAF50;
+  height: 50%;
+}
+
+.pump .meter-fill {
+  background-color: #FF5252;
+  height: 78%;
+}
+
+.meter-value {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.character-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rank {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.character {
+  background-image: url('/images/bull_default.png');
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.progress-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 5px solid rgba(33, 150, 243, 0.3);
+  border-top: 5px solid #2196F3;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.energy-bar {
+  width: 80%;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.energy-fill {
+  width: 65%;
   height: 100%;
+  background-color: #FFC107;
+  transition: width 0.3s;
+}
+
+.energy-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#score-display {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 #leaderboard-button {
@@ -47,7 +171,6 @@ body, html {
   font-size: 18px;
   border-radius: 25px;
   cursor: pointer;
-  margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 2px;
   box-shadow: 0 0 10px #ffd700;
@@ -59,41 +182,24 @@ body, html {
   box-shadow: 0 0 20px #ffd700;
 }
 
-#score-display {
-  background: linear-gradient(45deg, #b8860b, #daa520);
-  color: #000;
-  border: 3px solid #ffd700;
-  padding: 15px 30px;
-  font-size: 24px;
-  border-radius: 15px;
-  margin-top: auto;
-  font-weight: bold;
-  box-shadow: 0 0 15px #ffd700;
-}
-
-#game-container {
+nav {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-#pump-image {
-  width: 390px;
-  height: 390px;
-  background-image: url('../pump-bull.png'), url('/pump-bull.png'), url('pump-bull.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+.nav-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
   cursor: pointer;
-  transition: transform 0.1s, filter 0.3s;
-  -webkit-tap-highlight-color: transparent;
+  transition: color 0.3s;
 }
 
-#pump-image:active {
-  transform: scale(0.95);
-  filter: brightness(1.2);
+.nav-btn.active {
+  color: #2196F3;
 }
 
 #leaderboard-page {
@@ -127,14 +233,6 @@ body, html {
   background: rgba(75, 0, 130, 0.8);
   color: #ffd700;
   text-transform: uppercase;
-}
-
-#leaderboard-table tr {
-  transition: all 0.3s ease;
-}
-
-#leaderboard-table tr:hover {
-  background: rgba(218, 165, 32, 0.3);
 }
 
 #back-button {

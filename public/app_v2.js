@@ -1,35 +1,47 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const pumpImage = document.getElementById('pump-image');
+    const character = document.getElementById('character');
     const scoreDisplay = document.getElementById('score-display');
     const leaderboardButton = document.getElementById('leaderboard-button');
     const leaderboardPage = document.getElementById('leaderboard-page');
     const leaderboardBody = document.getElementById('leaderboard-body');
     const backButton = document.getElementById('back-button');
     const app = document.getElementById('app');
+    
+    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
+    const pumpMeter = document.querySelector('.pump .meter-fill');
+    const energyBar = document.querySelector('.energy-fill');
 
     let reps = 0;
-    let currentSize = 390;
-    const maxSize = 500; // Maximum size of the bull image
-    const growthRate = 5; // Pixels to grow per tap
+    let currentSize = 300;
+    const maxSize = 400;
+    const growthRate = 5;
 
     tg.ready();
 
-    pumpImage.addEventListener('click', () => {
+    character.addEventListener('click', () => {
         reps++;
         scoreDisplay.textContent = `Clean Reps: ${reps}`;
         
         // Grow the image
         currentSize = Math.min(currentSize + growthRate, maxSize);
-        pumpImage.style.width = `${currentSize}px`;
-        pumpImage.style.height = `${currentSize}px`;
+        character.style.width = `${currentSize}px`;
+        character.style.height = `${currentSize}px`;
 
         // Animate the growth
-        pumpImage.style.transform = 'scale(1.1)';
+        character.style.transform = 'scale(1.1)';
         setTimeout(() => {
-            pumpImage.style.transform = 'scale(1)';
+            character.style.transform = 'scale(1)';
         }, 100);
+        
+        // Change image on tap
+        character.src = '/images/bull_lifting.png';
+        setTimeout(() => {
+            character.src = '/images/bull_default.png';
+        }, 200);
+
+        updateMeters();
         
         // Send score to server
         fetch('/api/score', {
@@ -37,7 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id || 'anonymous', score: 1, username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' }),
+            body: JSON.stringify({ 
+                userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
+                score: 1, 
+                username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
+            }),
         })
         .then(response => response.json())
         .then(data => {
@@ -72,6 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         })
         .catch(error => console.error('Error:', error));
+    }
+
+    function updateMeters() {
+        const pumpValue = Math.min(100, reps);
+        pumpMeter.style.height = `${pumpValue}%`;
+        pumpMeter.nextElementSibling.textContent = `${pumpValue}/100`;
+        
+        const muscleMassValue = 15240 + reps * 10;
+        muscleMassMeter.style.height = `${Math.min(100, (muscleMassValue - 15240) / 100)}%`;
+        muscleMassMeter.nextElementSibling.textContent = muscleMassValue;
+        
+        const energyValue = Math.max(0, 65 - reps / 2);
+        energyBar.style.width = `${energyValue}%`;
+        energyBar.nextElementSibling.textContent = `${Math.round(energyValue)}%`;
     }
 
     // Update leaderboard every 30 seconds

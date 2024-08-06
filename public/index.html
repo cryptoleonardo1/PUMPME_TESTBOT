@@ -3,21 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pump Me Test Bot</title>
+    <title>PUMPME.APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="/styles_v2.css?v=9">
+    <link rel="stylesheet" href="/styles_v2.css?v=10">
 </head>
 <body>
     <div id="app">
-        <div id="background"></div>
-        <div id="content">
-            <button id="leaderboard-button">TOP PUMPERS</button>
-            <div id="game-container">
-                <div id="pump-image"></div>
+        <header>
+            <img src="/images/avatar.png" alt="Avatar" class="avatar">
+            <img src="/images/logo.png" alt="PUMPME.APP" class="logo">
+            <div class="header-icons">
+                <span class="icon">⚙️</span>
+                <span class="icon">🌐</span>
             </div>
+        </header>
+        
+        <main>
+            <div class="stats">
+                <div class="meter muscle-mass">
+                    <div class="meter-fill"></div>
+                    <span class="meter-value">15,240</span>
+                </div>
+            </div>
+            
+            <div class="character-container">
+                <div class="rank">Rank 3: Buff Beginner 🏋️‍♂️</div>
+                <img src="/images/bull_default.png" alt="Bull Character" id="character" class="character">
+                <div class="progress-ring"></div>
+            </div>
+            
+            <div class="stats">
+                <div class="meter pump">
+                    <div class="meter-fill"></div>
+                    <span class="meter-value">78/100</span>
+                </div>
+            </div>
+            
+            <div class="energy-bar">
+                <div class="energy-fill"></div>
+                <span class="energy-value">65%</span>
+            </div>
+            
             <div id="score-display">Clean Reps: 0</div>
-        </div>
+            
+            <div class="action-buttons">
+                <button id="leaderboard-button">TOP PUMPERS</button>
+            </div>
+        </main>
+        
+        <nav>
+            <button class="nav-btn active">🏋️ Gym</button>
+            <button class="nav-btn">👥 Social</button>
+            <button class="nav-btn">🛒 Shop</button>
+            <button class="nav-btn">🏆 Challenges</button>
+            <button class="nav-btn">🎁 Rewards</button>
+        </nav>
     </div>
+    
     <div id="leaderboard-page" style="display: none;">
         <h2>Leaderboard</h2>
         <table id="leaderboard-table">
@@ -33,6 +75,7 @@
         </table>
         <button id="back-button">Return to Training</button>
     </div>
-    <script src="/app_v2.js?v=9"></script>
+    
+    <script src="/app_v2.js?v=11"></script>
 </body>
 </html>
