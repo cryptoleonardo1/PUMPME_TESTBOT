@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PUMPME.APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="/styles_v2.css?v=12">
+    <link rel="stylesheet" href="styles_v2.css">
 </head>
 <body>
     <div id="app">
         <header>
-            <img src="/images/avatar.png" alt="Avatar" class="avatar">
-            <img src="/images/logo.png" alt="PUMPME.APP" class="logo">
+            <img src="images/avatar.png" alt="Avatar" class="avatar">
+            <img src="images/logo.png" alt="PUMPME.APP" class="logo">
             <div class="header-icons">
                 <span class="icon">⚙️</span>
                 <span class="icon">🌐</span>
@@ -19,7 +19,7 @@
         </header>
         
         <main>
-            <div class="stats">
+            <div class="stats left">
                 <div class="meter muscle-mass">
                     <div class="meter-fill"></div>
                     <span class="meter-value">15,240</span>
@@ -28,14 +28,14 @@
             
             <div class="character-container">
                 <div class="rank">Rank 3: Buff Beginner 🏋️‍♂️</div>
-                <img src="/images/bull_default.png" alt="Bull Character" id="character" class="character">
+                <img src="images/bull_default.png" alt="Bull Character" id="character" class="character">
                 <div class="progress-ring"></div>
             </div>
             
-            <div class="stats">
+            <div class="stats right">
                 <div class="meter pump">
                     <div class="meter-fill"></div>
-                    <span class="meter-value">8/100</span>
+                    <span class="meter-value">0/100</span>
                 </div>
             </div>
             
@@ -73,6 +73,6 @@
         <button id="back-button">Return to Training</button>
     </div>
     
-    <script src="/app_v2.js?v=12"></script>
+    <script src="app_v2.js"></script>
 </body>
 </html>

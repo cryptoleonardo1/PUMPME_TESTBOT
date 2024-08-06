@@ -21,6 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tg.ready();
 
+    function updateUI() {
+        scoreDisplay.textContent = `Clean Reps: ${reps}`;
+        
+        muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
+        muscleMassValue.textContent = muscleMass;
+        
+        pumpMeter.style.height = `${pump}%`;
+        pumpValue.textContent = `${pump}/100`;
+        
+        energyBar.style.width = `${energy}%`;
+    }
+
     character.addEventListener('click', () => {
         if (energy > 0) {
             reps++;
@@ -65,18 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         leaderboardPage.style.display = 'none';
     });
 
-    function updateUI() {
-        scoreDisplay.textContent = `Clean Reps: ${reps}`;
-        
-        muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
-        muscleMassValue.textContent = muscleMass;
-        
-        pumpMeter.style.height = `${pump}%`;
-        pumpValue.textContent = `${pump}/100`;
-        
-        energyBar.style.width = `${energy}%`;
-    }
-
     function updateLeaderboard() {
         fetch('/api/leaderboard')
         .then(response => response.json())
@@ -101,4 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Expand the Telegram Web App to full height
     tg.expand();
+
+    // Initial UI update
+    updateUI();
 });
