@@ -38,12 +38,13 @@ app.post('/api/score', (req, res) => {
 });
 
 app.get('/api/leaderboard', (req, res) => {
-  // Return dummy leaderboard data
-  res.json([
-    { userId: '123456789', score: 100, pumping: 'Chest' },
-    { userId: '987654321', score: 90, pumping: 'Biceps' },
-    // Add more dummy entries as needed
-  ]);
+  // This is a placeholder. Replace with actual data fetching logic.
+  const dummyData = [
+    { rank: 1, userId: '123456789', score: 100, reward: 'Gold Medal' },
+    { rank: 2, userId: '987654321', score: 90, reward: 'Silver Medal' },
+    // Add more dummy data as needed
+  ];
+  res.json(dummyData);
 });
 
 app.get('/api/leaderboard', (req, res) => {

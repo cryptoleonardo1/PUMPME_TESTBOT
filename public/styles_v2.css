@@ -39,12 +39,15 @@ main {
   justify-content: space-between;
   padding: 10px;
   position: relative;
+  padding-top: 20px; /* Increase this value to move content higher */
 }
 
 #version-display {
   position: fixed;
-  bottom: 5px;
-  left: 5px;
+  bottom: 60px; /* Adjust this value to position above the bottom features */
+  left: 0;
+  right: 0;
+  text-align: center;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.5);
   z-index: 1000;
@@ -106,6 +109,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 20px; /* Add some space below the character */
 }
 
 .rank {
@@ -178,12 +182,12 @@ main {
 }
 
 .character-stats {
-  width: 90%;
-  margin-top: 20px;
+  width: 80%;
+  margin: 20px auto;
 }
 
 .stat-bar {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .stat-progress {
@@ -198,6 +202,7 @@ main {
   height: 100%;
   background-color: #4CAF50;
   transition: width 0.3s;
+  max-width: 80%; /* This will prevent the bars from touching the edges */
 }
 
 .stat-text {
