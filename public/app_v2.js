@@ -1,7 +1,19 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ... (other variable declarations)
+    const characterClickableArea = document.getElementById('character-clickable-area');
+    const character = document.getElementById('character');
+    const scoreDisplay = document.getElementById('score-display');
+    const leaderboardPage = document.getElementById('leaderboard-page');
+    const leaderboardBody = document.getElementById('leaderboard-body');
+    const backButton = document.getElementById('back-button');
+    const topPumpersBtn = document.getElementById('top-pumpers-btn');
+    
+    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
+    const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
+    const pumpMeter = document.querySelector('.pump .meter-fill');
+    const pumpValue = document.querySelector('.pump .meter-value');
+    const energyBar = document.querySelector('.energy-fill');
 
     let reps = parseInt(localStorage.getItem('reps')) || 0;
     let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
@@ -74,7 +86,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ... (rest of the code)
+    topPumpersBtn.addEventListener('click', () => {
+        leaderboardPage.style.display = 'block';
+        updateLeaderboard();
+    });
+
+    backButton.addEventListener('click', () => {
+        leaderboardPage.style.display = 'none';
+    });
+
+    function updateLeaderboard() {
+        fetch('/api/leaderboard')
+        .then(response => response.json())
+        .then(leaderboard => {
+            leaderboardBody.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.userId}</td>
+                    <td>${entry.score}</td>
+                    <td>${entry.pumping}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Update leaderboard every 30 seconds
+    setInterval(updateLeaderboard, 30000);
+
+    // Expand the Telegram Web App to full height
+    tg.expand();
 
     // Initial UI update
     updateUI();
