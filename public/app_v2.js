@@ -1,6 +1,18 @@
 const tg = window.Telegram.WebApp;
+const APP_VERSION = '1.0.0'; // Increment this when you make changes
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check and update version
+    const storedVersion = localStorage.getItem('appVersion');
+    if (storedVersion !== APP_VERSION) {
+        // Clear all localStorage data
+        localStorage.clear();
+        // Set the new version
+        localStorage.setItem('appVersion', APP_VERSION);
+        // Reload the page to ensure clean state
+        window.location.reload(true);
+    }
+
     const characterClickableArea = document.getElementById('character-clickable-area');
     const character = document.getElementById('character');
     const scoreDisplay = document.getElementById('score-display');
