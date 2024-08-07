@@ -6,14 +6,26 @@
     <title>PUMPME.APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="styles_v2.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <!-- Your existing HTML content here -->
+    <div id="app">
+        <h1>Loading PUMPME.APP...</h1>
+    </div>
     
     <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('Caught error:', message, 'at', source, 'line:', lineno);
+            document.body.innerHTML += '<p style="color: red;">Error: ' + message + '</p>';
+        }
+
         // Load the script dynamically
         var script = document.createElement('script');
         script.src = 'app_v2.js?v=' + new Date().getTime();
+        script.onerror = function() {
+            console.error('Failed to load app_v2.js');
+            document.body.innerHTML += '<p style="color: red;">Failed to load app script</p>';
+        };
         document.body.appendChild(script);
     </script>
 </body>
