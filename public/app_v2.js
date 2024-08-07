@@ -1,24 +1,12 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const characterClickableArea = document.getElementById('character-clickable-area');
-    const character = document.getElementById('character');
-    const scoreDisplay = document.getElementById('score-display');
-    const leaderboardPage = document.getElementById('leaderboard-page');
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    const backButton = document.getElementById('back-button');
-    const topPumpersBtn = document.getElementById('top-pumpers-btn');
-    
-    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
-    const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-    const pumpMeter = document.querySelector('.pump .meter-fill');
-    const pumpValue = document.querySelector('.pump .meter-value');
-    const energyBar = document.querySelector('.energy-fill');
+    // ... (other variable declarations)
 
-    let reps = 0;
-    let muscleMass = 15240;
-    let pump = 0;
-    let energy = 1000;
+    let reps = parseInt(localStorage.getItem('reps')) || 0;
+    let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
+    let pump = parseInt(localStorage.getItem('pump')) || 0;
+    let energy = parseInt(localStorage.getItem('energy')) || 1000;
     const maxEnergy = 1000;
 
     tg.ready();
@@ -33,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
         pumpValue.textContent = `${pump}/1000`;
         
         energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
+
+        // Save values to localStorage
+        localStorage.setItem('reps', reps);
+        localStorage.setItem('muscleMass', muscleMass);
+        localStorage.setItem('pump', pump);
+        localStorage.setItem('energy', energy);
     }
 
     function regenerateEnergy() {

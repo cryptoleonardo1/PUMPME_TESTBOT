@@ -83,7 +83,7 @@ main {
 
 .meter-value {
   position: absolute;
-  bottom: 15px;
+  bottom: 25px; /* Increased from 15px */
   left: 50%;
   transform: translateX(-50%) rotate(-90deg);
   font-size: 12px;
