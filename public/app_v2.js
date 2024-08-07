@@ -74,39 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    topPumpersBtn.addEventListener('click', () => {
-        leaderboardPage.style.display = 'block';
-        updateLeaderboard();
-    });
-
-    backButton.addEventListener('click', () => {
-        leaderboardPage.style.display = 'none';
-    });
-
-    function updateLeaderboard() {
-        fetch('/api/leaderboard')
-        .then(response => response.json())
-        .then(leaderboard => {
-            leaderboardBody.innerHTML = '';
-            leaderboard.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${entry.userId}</td>
-                    <td>${entry.score}</td>
-                    <td>${entry.pumping}</td>
-                `;
-                leaderboardBody.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    // Update leaderboard every 30 seconds
-    setInterval(updateLeaderboard, 30000);
-
-    // Expand the Telegram Web App to full height
-    tg.expand();
+    // ... (rest of the code)
 
     // Initial UI update
     updateUI();
