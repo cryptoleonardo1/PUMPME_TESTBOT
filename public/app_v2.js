@@ -116,22 +116,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateLeaderboard() {
             fetch('/api/leaderboard')
-            .then(response => response.json())
-            .then(leaderboard => {
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.json();
+              })
+              .then(leaderboard => {
                 leaderboardBody.innerHTML = '';
                 leaderboard.forEach((entry, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${entry.userId}</td>
-                        <td>${entry.score}</td>
-                        <td>${entry.pumping}</td>
-                    `;
-                    leaderboardBody.appendChild(row);
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.userId || 'Anonymous'}</td>
+                    <td>${entry.score || 0}</td>
+                    <td>${entry.pumping || 'N/A'}</td>
+                  `;
+                  leaderboardBody.appendChild(row);
                 });
-            })
-            .catch(error => console.error('Error updating leaderboard:', error));
-        }
+              })
+              .catch(error => {
+                console.error('Error updating leaderboard:', error);
+                leaderboardBody.innerHTML = '<tr><td colspan="4">Failed to load leaderboard. Please try again later.</td></tr>';
+              });
+          }
 
         // Update leaderboard every 30 seconds
         setInterval(updateLeaderboard, 30000);

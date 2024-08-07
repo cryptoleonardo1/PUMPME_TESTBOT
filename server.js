@@ -32,13 +32,18 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/score', (req, res) => {
-  console.log('Received score update request:', req.body);
-  const { userId, score, username } = req.body;
-  
-  userScores[userId] = (userScores[userId] || 0) + score;
-  console.log(`Updated score for user ${userId}: ${userScores[userId]}`);
-  
-  res.json({ success: true, totalScore: userScores[userId] });
+  // Handle score update
+  // For now, just send a dummy response
+  res.json({ success: true, totalScore: 100 });
+});
+
+app.get('/api/leaderboard', (req, res) => {
+  // Return dummy leaderboard data
+  res.json([
+    { userId: '123456789', score: 100, pumping: 'Chest' },
+    { userId: '987654321', score: 90, pumping: 'Biceps' },
+    // Add more dummy entries as needed
+  ]);
 });
 
 app.get('/api/leaderboard', (req, res) => {
