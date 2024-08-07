@@ -8,104 +8,13 @@
     <link rel="stylesheet" href="styles_v2.css">
 </head>
 <body>
-    <div id="app">
-        <header>
-            <img src="images/avatar.png" alt="Avatar" class="avatar">
-            <div class="header-icons">
-                <span class="icon">⚙️</span>
-                <span class="icon">🌐</span>
-            </div>
-        </header>
-        
-        <main>
-            <div id="version-display"></div>
-            <div class="stats left">
-                <div class="meter muscle-mass">
-                    <div class="meter-fill"></div>
-                    <span class="meter-value">15,240</span>
-                </div>
-            </div>
-            
-            <div class="character-container">
-                <div class="rank">Rank 3: Buff Beginner 🏋️‍♂️</div>
-                <div id="character-clickable-area">
-                    <img src="images/bull_default.png" alt="Bull Character" id="character" class="character">
-                    <div class="progress-ring"></div>
-                </div>
-            </div>
-            
-            <div class="stats right">
-                <div class="meter pump">
-                    <div class="meter-fill"></div>
-                    <span class="meter-value">0/1000</span>
-                </div>
-            </div>
-            
-            <div id="score-display">Clean Reps: 0</div>
-            
-            <div class="energy-bar">
-                <div class="energy-fill"></div>
-            </div>
-            
-            <div class="character-stats">
-                <div class="stat-bar">
-                    <div class="stat-progress">
-                        <div class="stat-fill" style="width: 60%;"></div>
-                        <span class="stat-text">Muscle Growth</span>
-                    </div>
-                </div>
-                <div class="stat-bar">
-                    <div class="stat-progress">
-                        <div class="stat-fill" style="width: 40%;"></div>
-                        <span class="stat-text">Agility</span>
-                    </div>
-                </div>
-                <div class="stat-bar">
-                    <div class="stat-progress">
-                        <div class="stat-fill" style="width: 30%;"></div>
-                        <span class="stat-text">Regeneration</span>
-                    </div>
-                </div>
-                <div class="stat-bar">
-                    <div class="stat-progress">
-                        <div class="stat-fill" style="width: 50%;"></div>
-                        <span class="stat-text">Cardio</span>
-                    </div>
-                </div>
-                <div class="stat-bar">
-                    <div class="stat-progress">
-                        <div class="stat-fill" style="width: 70%;"></div>
-                        <span class="stat-text">Social</span>
-                    </div>
-                </div>
-            </div>
-        </main>
-        
-        <nav>
-            <button class="nav-btn active">🏋️ Gym</button>
-            <button class="nav-btn">👥 Social</button>
-            <button class="nav-btn">🚀 Boosts</button>
-            <button class="nav-btn" id="top-pumpers-btn">🏆 Top Pumpers</button>
-            <button class="nav-btn">🎁 Rewards</button>
-        </nav>
-    </div>
+    <!-- Your existing HTML content here -->
     
-    <div id="leaderboard-page" style="display: none;">
-        <h2>Top Pumpers</h2>
-        <table id="leaderboard-table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Hero</th>
-                    <th>CLEAN REPS</th>
-                    <th>Divine Reward</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body"></tbody>
-        </table>
-        <button id="back-button">Return to Training</button>
-    </div>
-    
-    <script src="app_v2.js?v=1.0.1"></script>
+    <script>
+        // Load the script dynamically
+        var script = document.createElement('script');
+        script.src = 'app_v2.js?v=' + new Date().getTime();
+        document.body.appendChild(script);
+    </script>
 </body>
 </html>
