@@ -1,5 +1,5 @@
 const tg = window.Telegram.WebApp;
-const APP_VERSION = '1.0.0'; // Increment this when you make changes
+const APP_VERSION = '1.0.1'; // Increment this when you make changes
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check and update version
@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reload the page to ensure clean state
         window.location.reload(true);
     }
+
+    // Display version
+    const versionDisplay = document.getElementById('version-display');
+    versionDisplay.textContent = `v${APP_VERSION}`;
 
     const characterClickableArea = document.getElementById('character-clickable-area');
     const character = document.getElementById('character');
@@ -73,65 +77,4 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUI();
             
             // Animate the character
-            character.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                character.style.transform = 'scale(1)';
-            }, 100);
-
-            // Send score to server
-            fetch('/api/score', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
-                    score: 1, 
-                    username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Clean Reps updated:', data.totalScore);
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    });
-
-    topPumpersBtn.addEventListener('click', () => {
-        leaderboardPage.style.display = 'block';
-        updateLeaderboard();
-    });
-
-    backButton.addEventListener('click', () => {
-        leaderboardPage.style.display = 'none';
-    });
-
-    function updateLeaderboard() {
-        fetch('/api/leaderboard')
-        .then(response => response.json())
-        .then(leaderboard => {
-            leaderboardBody.innerHTML = '';
-            leaderboard.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${entry.userId}</td>
-                    <td>${entry.score}</td>
-                    <td>${entry.pumping}</td>
-                `;
-                leaderboardBody.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    // Update leaderboard every 30 seconds
-    setInterval(updateLeaderboard, 30000);
-
-    // Expand the Telegram Web App to full height
-    tg.expand();
-
-    // Initial UI update
-    updateUI();
-});
+            character
