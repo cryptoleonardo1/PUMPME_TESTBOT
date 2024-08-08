@@ -118,12 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch('/api/leaderboard')
               .then(response => {
                 if (!response.ok) {
-                  throw new Error('Network response was not ok');
+                  throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
               })
               .then(leaderboard => {
+                console.log('Received leaderboard data:', leaderboard);
                 leaderboardBody.innerHTML = '';
+                if (leaderboard.length === 0) {
+                  leaderboardBody.innerHTML = '<tr><td colspan="4">No data available</td></tr>';
+                  return;
+                }
                 leaderboard.forEach((entry, index) => {
                   const row = document.createElement('tr');
                   row.innerHTML = `
@@ -137,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
               })
               .catch(error => {
                 console.error('Error updating leaderboard:', error);
-                leaderboardBody.innerHTML = '<tr><td colspan="4">Failed to load leaderboard. Please try again later.</td></tr>';
+                leaderboardBody.innerHTML = `<tr><td colspan="4">Failed to load leaderboard. Error: ${error.message}</td></tr>`;
               });
           }
 

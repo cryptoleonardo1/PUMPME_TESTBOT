@@ -53,6 +53,7 @@ app.get('/api/leaderboard', async (req, res) => {
   try {
     console.log('Received leaderboard request');
     const leaderboardData = await redis.zrevrange('leaderboard', 0, 9, 'WITHSCORES');
+    console.log('Raw leaderboard data:', leaderboardData);
     const leaderboard = [];
     for (let i = 0; i < leaderboardData.length; i += 2) {
       const userId = leaderboardData[i];
@@ -72,7 +73,18 @@ app.get('/api/leaderboard', async (req, res) => {
     res.json(leaderboard);
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    res.status(500).json({ success: false, error: 'Internal server error', details: error.message });
+  }
+});
+
+app.get('/api/test-redis', async (req, res) => {
+  try {
+    await redis.set('test-key', 'test-value');
+    const value = await redis.get('test-key');
+    res.json({ success: true, value });
+  } catch (error) {
+    console.error('Redis test error:', error);
+    res.status(500).json({ success: false, error: 'Redis connection failed', details: error.message });
   }
 });
 
