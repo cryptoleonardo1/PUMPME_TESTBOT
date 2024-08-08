@@ -6,7 +6,7 @@ const app = express();
 const redis = new Redis({
   host: 'master-marlin-55875.upstash.io',
   port: 6379,
-  password: 'Your_Redis_Password_Here', // Replace with your actual password
+  password: 'AdpDAAIjcDEwNDMxMWY2NTQwYjQ0MWE2YmE5YzE2NmRkZTIzZmJlMXAxMA', // Replace with your actual password
   tls: {}
 });
 
