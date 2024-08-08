@@ -123,7 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
               })
               .then(leaderboard => {
-                // ... existing code to populate leaderboard ...
+                leaderboardBody.innerHTML = '';
+                leaderboard.forEach((entry, index) => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.userId}</td>
+                    <td>${entry.score}</td>
+                    <td>${entry.pumping}</td>
+                  `;
+                  leaderboardBody.appendChild(row);
+                });
               })
               .catch(error => {
                 console.error('Error updating leaderboard:', error);
