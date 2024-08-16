@@ -1,169 +1,134 @@
-console.log('Starting app initialization...');
-
 const tg = window.Telegram.WebApp;
-const APP_VERSION = '1.0.3'; // Increment this when you make changes
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded and parsed');
-    try {
-        // Display version
-        const versionDisplay = document.getElementById('version-display');
-        if (versionDisplay) {
-            versionDisplay.textContent = `v${APP_VERSION}`;
-        } else {
-            console.warn('Version display element not found');
-        }
+    const characterClickableArea = document.getElementById('character-clickable-area');
+    const character = document.getElementById('character');
+    const scoreDisplay = document.getElementById('score-display');
+    const leaderboardPage = document.getElementById('leaderboard-page');
+    const leaderboardBody = document.getElementById('leaderboard-body');
+    const backButton = document.getElementById('back-button');
+    const topPumpersBtn = document.getElementById('top-pumpers-btn');
+    const boostsBtn = document.getElementById('boosts-btn');
+    
+    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
+    const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
+    const pumpMeter = document.querySelector('.pump .meter-fill');
+    const pumpValue = document.querySelector('.pump .meter-value');
+    const energyBar = document.querySelector('.energy-fill');
 
-        const characterClickableArea = document.getElementById('character-clickable-area');
-        const character = document.getElementById('character');
-        const scoreDisplay = document.getElementById('score-display');
-        const leaderboardPage = document.getElementById('leaderboard-page');
-        const leaderboardBody = document.getElementById('leaderboard-body');
-        const backButton = document.getElementById('back-button');
-        const topPumpersBtn = document.getElementById('top-pumpers-btn');
+    let reps = parseInt(localStorage.getItem('reps')) || 0;
+    let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
+    let pump = parseInt(localStorage.getItem('pump')) || 0;
+    let energy = parseInt(localStorage.getItem('energy')) || 1000;
+    const maxEnergy = 1000;
+
+    tg.ready();
+
+    function updateUI() {
+        scoreDisplay.textContent = `Clean Reps: ${reps}`;
         
-        const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
-        const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-        const pumpMeter = document.querySelector('.pump .meter-fill');
-        const pumpValue = document.querySelector('.pump .meter-value');
-        const energyBar = document.querySelector('.energy-fill');
+        muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
+        muscleMassValue.textContent = muscleMass;
+        
+        pumpMeter.style.height = `${(pump / 1000) * 100}%`;
+        pumpValue.textContent = `${pump}/1000`;
+        
+        energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
 
-        if (!characterClickableArea || !character || !scoreDisplay || !leaderboardPage || 
-            !leaderboardBody || !backButton || !topPumpersBtn || !muscleMassMeter || 
-            !muscleMassValue || !pumpMeter || !pumpValue || !energyBar) {
-            throw new Error('One or more required elements not found');
+        localStorage.setItem('reps', reps);
+        localStorage.setItem('muscleMass', muscleMass);
+        localStorage.setItem('pump', pump);
+        localStorage.setItem('energy', energy);
+    }
+
+    function regenerateEnergy() {
+        if (energy < maxEnergy) {
+            energy = Math.min(maxEnergy, energy + 1);
+            updateUI();
         }
+    }
 
-        let reps = parseInt(localStorage.getItem('reps')) || 0;
-        let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
-        let pump = parseInt(localStorage.getItem('pump')) || 0;
-        let energy = parseInt(localStorage.getItem('energy')) || 1000;
-        const maxEnergy = 1000;
+    setInterval(regenerateEnergy, 1000);
 
-        tg.ready();
+    characterClickableArea.addEventListener('click', (event) => {
+        if (energy > 0) {
+            reps++;
+            pump = Math.min(1000, pump + 1);
+            muscleMass += 10;
+            energy = Math.max(0, energy - 1);
 
-        function updateUI() {
-            scoreDisplay.textContent = `Clean Reps: ${reps}`;
+            updateUI();
             
-            muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
-            muscleMassValue.textContent = muscleMass;
-            
-            pumpMeter.style.height = `${(pump / 1000) * 100}%`;
-            pumpValue.textContent = `${pump}/1000`;
-            
-            energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
+            character.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                character.style.transform = 'scale(1)';
+            }, 100);
 
-            // Save values to localStorage
-            localStorage.setItem('reps', reps);
-            localStorage.setItem('muscleMass', muscleMass);
-            localStorage.setItem('pump', pump);
-            localStorage.setItem('energy', energy);
+            const feedbackEl = document.createElement('div');
+            feedbackEl.className = 'tap-plus-one';
+            feedbackEl.textContent = '+1';
+            feedbackEl.style.left = (event.clientX - 15) + 'px';
+            feedbackEl.style.top = (event.clientY - 15) + 'px';
+            document.getElementById('tap-feedback').appendChild(feedbackEl);
+            
+            setTimeout(() => {
+                feedbackEl.remove();
+            }, 1000);
+
+            fetch('/api/score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
+                    score: 1, 
+                    username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Clean Reps updated:', data.totalScore);
+            })
+            .catch(error => console.error('Error:', error));
         }
+    });
 
-        function regenerateEnergy() {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + 1);
-                updateUI();
-            }
-        }
+    topPumpersBtn.addEventListener('click', () => {
+        leaderboardPage.style.display = 'block';
+        updateLeaderboard();
+    });
 
-        // Set up energy regeneration
-        setInterval(regenerateEnergy, 1000);
+    backButton.addEventListener('click', () => {
+        leaderboardPage.style.display = 'none';
+    });
 
-        characterClickableArea.addEventListener('click', () => {
-            if (energy > 0) {
-                reps++;
-                pump = Math.min(1000, pump + 1);
-                muscleMass += 10;
-                energy = Math.max(0, energy - 1);
-
-                updateUI();
-                
-                // Animate the character
-                character.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    character.style.transform = 'scale(1)';
-                }, 100);
-
-                // Send score to server
-                fetch('/api/score', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
-                        score: 1, 
-                        username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Clean Reps updated:', data.totalScore);
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        });
-
-        topPumpersBtn.addEventListener('click', () => {
-            leaderboardPage.style.display = 'block';
-            updateLeaderboard();
-        });
-
-        backButton.addEventListener('click', () => {
-            leaderboardPage.style.display = 'none';
-        });
-
-        function updateLeaderboard() {
-            fetch('/api/leaderboard')
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-              })
-              .then(leaderboard => {
-                console.log('Received leaderboard data:', leaderboard);
-                leaderboardBody.innerHTML = '';
-                if (leaderboard.length === 0) {
-                  leaderboardBody.innerHTML = '<tr><td colspan="4">No data available</td></tr>';
-                  return;
-                }
-                leaderboard.forEach((entry, index) => {
-                  const row = document.createElement('tr');
-                  row.innerHTML = `
+    function updateLeaderboard() {
+        fetch('/api/leaderboard')
+        .then(response => response.json())
+        .then(leaderboard => {
+            leaderboardBody.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${entry.userId}</td>
                     <td>${entry.score}</td>
                     <td>${entry.pumping}</td>
-                  `;
-                  leaderboardBody.appendChild(row);
-                });
-              })
-              .catch(error => {
-                console.error('Error updating leaderboard:', error);
-                leaderboardBody.innerHTML = `<tr><td colspan="4">Failed to load leaderboard. Error: ${error.message}</td></tr>`;
-              });
-          }
-
-        // Update leaderboard every 30 seconds
-        setInterval(updateLeaderboard, 30000);
-
-        // Expand the Telegram Web App to full height
-        tg.expand();
-
-        // Initial UI update
-        updateUI();
-
-        console.log('App initialization complete');
-    } catch (error) {
-        console.error('Error during app initialization:', error);
-        document.body.innerHTML += '<p style="color: red;">Error initializing app: ' + error.message + '</p>';
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
     }
-});
 
-window.addEventListener('load', () => {
-    console.log('All resources finished loading!');
-});
+    setInterval(updateLeaderboard, 30000);
 
-console.log('Script loaded successfully!');
+    boostsBtn.addEventListener('click', () => {
+        window.location.href = 'boosts.html';
+    });
+
+    tg.expand();
+
+    updateUI();
+});

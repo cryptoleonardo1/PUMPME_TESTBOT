@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PUMPME.APP - Boosts</title>
+    <link rel="stylesheet" href="/styles_v2.css">
+    <link rel="stylesheet" href="/boosts.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="header-logo" id="back-to-main">← PUMP ME</div>
+        </header>
+        
+        <main id="boosts-page">
+            <h1>Boosts</h1>
+            <div class="boost-categories">
+                <button class="category-btn active" data-category="nutrition">Nutrition</button>
+                <button class="category-btn" data-category="equipment">Equipment</button>
+                <button class="category-btn" data-category="activities">Activities</button>
+                <button class="category-btn" data-category="training">Training</button>
+            </div>
+            
+            <div class="boost-items" id="boost-items">
+                <!-- Items will be dynamically added here -->
+            </div>
+        </main>
+        
+        <div id="version-display">PUMPME.APP v1.0.3</div>
+    </div>
+    
+    <script src="/boosts.js"></script>
+</body>
+</html>

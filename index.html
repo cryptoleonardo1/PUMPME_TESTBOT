@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>PUMPME.APP</title>
-        <script src="https://telegram.org/js/telegram-web-app.js"></script>
-        <link rel="stylesheet" href="/styles_v2.css">
-        <link rel="icon" href="/images/x-icon.png" type="image/png">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PUMPME.APP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/styles_v2.css">
+    <link rel="icon" href="/images/x-icon.png" type="image/png">
+</head>
 <body>
     <div id="app">
         <header>
-            <img src="images/avatar.png" alt="Avatar" class="avatar">
+            <div class="header-logo">RANK</div>
             <div class="header-logo">PUMP ME</div>
-          </header>
+        </header>
         
         <main>
+            <div class="rank">Rank 3: Buff Beginner 🏋️‍♂️</div>
             <div class="stats left">
                 <div class="meter muscle-mass">
                     <div class="meter-fill"></div>
@@ -24,11 +25,11 @@
             </div>
             
             <div class="character-container">
-                <div class="rank">Rank 3: Buff Beginner 🏋️‍♂️</div>
                 <div id="character-clickable-area">
                     <img src="/images/bull_default.png" alt="Bull Character" id="character" class="character">
                     <div class="progress-ring"></div>
                 </div>
+                <div id="tap-feedback"></div>
             </div>
             
             <div class="stats right">
@@ -102,7 +103,7 @@
         <button id="back-button">Return to Training</button>
     </div>
     
-    <div id="version-display">v1.0.3</div>
+    <div id="version-display">PUMPME.APP v1.0.3</div>
     
     <script src="/app_v2.js"></script>
 </body>
