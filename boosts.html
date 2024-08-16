@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PUMPME.APP - Boosts</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="/styles_v2.css">
     <link rel="stylesheet" href="/boosts.css">
 </head>
@@ -27,9 +28,17 @@
             </div>
         </main>
         
+        <nav>
+            <button class="nav-btn" id="gym-btn">🏋️ Gym</button>
+            <button class="nav-btn active" id="boosts-btn">🚀 Boosts</button>
+            <button class="nav-btn" id="challenges-btn">🏆 Challenges</button>
+            <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
+        </nav>
+        
         <div id="version-display">PUMPME.APP v1.0.3</div>
     </div>
     
+    <script src="/app_v2.js"></script>
     <script src="/boosts.js"></script>
 </body>
 </html>

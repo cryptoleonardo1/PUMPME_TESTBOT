@@ -33,6 +33,10 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working' });
 });
 
+app.get('/boosts.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'boosts.html'));
+});
+
 app.post('/api/score', async (req, res) => {
   console.log('Score update request received:', req.body);
   try {

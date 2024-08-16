@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackEl.textContent = '+1';
             feedbackEl.style.left = (event.clientX - 15) + 'px';
             feedbackEl.style.top = (event.clientY - 15) + 'px';
-            document.getElementById('tap-feedback').appendChild(feedbackEl);
+            document.body.appendChild(feedbackEl);
             
             setTimeout(() => {
                 feedbackEl.remove();
@@ -126,8 +126,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     boostsBtn.addEventListener('click', () => {
         console.log('Boosts button clicked');
-        window.location.href = '/boosts.html';
+        // Instead of changing window.location, let's fetch the content
+        fetch('/boosts.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+                // Re-attach event listeners for the new content
+                attachEventListeners();
+            })
+            .catch(error => console.error('Error loading boosts page:', error));
     });
+
+    function attachEventListeners() {
+        // Re-attach all necessary event listeners here
+        document.getElementById('back-to-main')?.addEventListener('click', () => {
+            window.location.reload();
+        });
+        // Add other event listeners as needed
+    }
 
     tg.expand();
 
