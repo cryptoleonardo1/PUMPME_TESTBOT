@@ -13,8 +13,8 @@ const redis = new Redis({
   tls: {}
 });
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)));
 app.use(express.json());
 
 // Logging middleware
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/api/test', (req, res) => {
@@ -73,11 +73,6 @@ app.get('/api/leaderboard', async (req, res) => {
     console.error('Error fetching leaderboard:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
-});
-
-// Catch-all route to serve index.html for any unmatched routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Error handling middleware
