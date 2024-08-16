@@ -39,6 +39,7 @@ main {
   justify-content: space-between;
   padding: 10px;
   position: relative;
+  padding-bottom: 60px; /* Adjust based on nav bar height */
 }
 
 .stats {
@@ -97,10 +98,16 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .rank {
-  margin-bottom: 15px;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
   font-size: 16px;
   font-weight: bold;
   color: #ffd700;
@@ -206,6 +213,10 @@ nav {
   justify-content: space-around;
   padding: 10px;
   background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .nav-btn {
@@ -215,6 +226,7 @@ nav {
   font-size: 12px;
   cursor: pointer;
   transition: color 0.3s;
+  padding: 5px 10px;
 }
 
 .nav-btn.active {
@@ -227,16 +239,16 @@ nav {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: black;  
-  z-index: 10000;
+  background-color: black;
+  z-index: 1000;
   overflow-y: auto;
   padding: 20px;
   box-sizing: border-box;
-  display: none;  /* Hidden by default */
+  display: none;
 }
 
 #leaderboard-page h2 {
-  color: #ffd700;  /* Gold color for the title */
+  color: #ffd700;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -279,4 +291,15 @@ nav {
 #back-button:hover {
   background: linear-gradient(45deg, #b8860b, #daa520);
   box-shadow: 0 0 15px #ffd700;
+}
+
+#version-display {
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #ffd700;
+  z-index: 1000;
 }
