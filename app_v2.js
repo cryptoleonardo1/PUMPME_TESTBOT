@@ -7,14 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderboardPage = document.getElementById('leaderboard-page');
     const leaderboardBody = document.getElementById('leaderboard-body');
     const backButton = document.getElementById('back-button');
-    const topPumpersBtn = document.getElementById('top-pumpers-btn');
-    const boostsBtn = document.getElementById('boosts-btn');
     
     const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
     const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
     const pumpMeter = document.querySelector('.pump .meter-fill');
     const pumpValue = document.querySelector('.pump .meter-value');
     const energyBar = document.querySelector('.energy-fill');
+
+    const gymBtn = document.getElementById('gym-btn');
+    const boostsBtn = document.getElementById('boosts-btn');
+    const challengesBtn = document.getElementById('challenges-btn');
+    const topPumpersBtn = document.getElementById('top-pumpers-btn');
 
     let reps = parseInt(localStorage.getItem('reps')) || 0;
     let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
@@ -50,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(regenerateEnergy, 1000);
 
-    characterClickableArea.addEventListener('click', (event) => {
+    function handleCharacterClick(event) {
         if (energy > 0) {
             reps++;
             pump = Math.min(1000, pump + 1);
@@ -92,15 +95,40 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => console.error('Error:', error));
         }
-    });
+    }
 
-    topPumpersBtn.addEventListener('click', () => {
+    function loadPage(pageName) {
+        fetch(`/${pageName}.html`)
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+                attachEventListeners();
+            })
+            .catch(error => console.error('Error loading page:', error));
+    }
+
+    function attachEventListeners() {
+        document.getElementById('gym-btn')?.addEventListener('click', () => loadPage('index'));
+        document.getElementById('boosts-btn')?.addEventListener('click', () => loadPage('boosts'));
+        document.getElementById('top-pumpers-btn')?.addEventListener('click', () => {
+            document.getElementById('leaderboard-page').style.display = 'block';
+            updateLeaderboard();
+        });
+        document.getElementById('back-button')?.addEventListener('click', () => {
+            document.getElementById('leaderboard-page').style.display = 'none';
+        });
+
+        const characterClickableArea = document.getElementById('character-clickable-area');
+        if (characterClickableArea) {
+            characterClickableArea.addEventListener('click', handleCharacterClick);
+        }
+    }
+
+    gymBtn?.addEventListener('click', () => loadPage('index'));
+    boostsBtn?.addEventListener('click', () => loadPage('boosts'));
+    topPumpersBtn?.addEventListener('click', () => {
         leaderboardPage.style.display = 'block';
         updateLeaderboard();
-    });
-
-    backButton.addEventListener('click', () => {
-        leaderboardPage.style.display = 'none';
     });
 
     function updateLeaderboard() {
@@ -124,20 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(updateLeaderboard, 30000);
 
-    boostsBtn.addEventListener('click', () => {
-        console.log('Boosts button clicked');
-        window.location.href = '/boosts.html';
-    });
-
-    function attachEventListeners() {
-        // Re-attach all necessary event listeners here
-        document.getElementById('back-to-main')?.addEventListener('click', () => {
-            window.location.reload();
-        });
-        // Add other event listeners as needed
-    }
-
     tg.expand();
 
     updateUI();
+    attachEventListeners();
 });

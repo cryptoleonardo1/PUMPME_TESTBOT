@@ -1,5 +1,6 @@
 #boosts-page {
     padding: 20px;
+    padding-bottom: 60px; /* To account for the bottom nav */
 }
 
 h1 {
@@ -30,7 +31,7 @@ h1 {
 
 .boost-items {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 }
 
@@ -44,6 +45,11 @@ h1 {
 
 .boost-item:hover {
     transform: translateY(-5px);
+}
+
+/* If it's the last item and in an odd position, align it to the left */
+.boost-item:last-child:nth-child(odd) {
+    grid-column: 1;
 }
 
 .boost-icon {
