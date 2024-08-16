@@ -28,15 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
 
     function updateUI() {
-        scoreDisplay.textContent = `Clean Reps: ${reps}`;
+        if (scoreDisplay) scoreDisplay.textContent = `Clean Reps: ${reps}`;
         
-        muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
-        muscleMassValue.textContent = muscleMass;
+        if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
+        if (muscleMassValue) muscleMassValue.textContent = muscleMass;
         
-        pumpMeter.style.height = `${(pump / 1000) * 100}%`;
-        pumpValue.textContent = `${pump}/1000`;
+        if (pumpMeter) pumpMeter.style.height = `${(pump / 1000) * 100}%`;
+        if (pumpValue) pumpValue.textContent = `${pump}/1000`;
         
-        energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
+        if (energyBar) energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
 
         localStorage.setItem('reps', reps);
         localStorage.setItem('muscleMass', muscleMass);
@@ -102,7 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.text())
             .then(html => {
                 document.body.innerHTML = html;
+                if (pageName === 'boosts') {
+                    const script = document.createElement('script');
+                    script.src = '/boosts.js';
+                    document.body.appendChild(script);
+                }
                 attachEventListeners();
+                updateUI();
             })
             .catch(error => console.error('Error loading page:', error));
     }
@@ -124,28 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    gymBtn?.addEventListener('click', () => loadPage('index'));
-    boostsBtn?.addEventListener('click', () => loadPage('boosts'));
-    topPumpersBtn?.addEventListener('click', () => {
-        leaderboardPage.style.display = 'block';
-        updateLeaderboard();
-    });
-
     function updateLeaderboard() {
         fetch('/api/leaderboard')
         .then(response => response.json())
         .then(leaderboard => {
-            leaderboardBody.innerHTML = '';
-            leaderboard.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${entry.userId}</td>
-                    <td>${entry.score}</td>
-                    <td>${entry.pumping}</td>
-                `;
-                leaderboardBody.appendChild(row);
-            });
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            if (leaderboardBody) {
+                leaderboardBody.innerHTML = '';
+                leaderboard.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${entry.userId}</td>
+                        <td>${entry.score}</td>
+                        <td>${entry.pumping}</td>
+                    `;
+                    leaderboardBody.appendChild(row);
+                });
+            }
         })
         .catch(error => console.error('Error:', error));
     }

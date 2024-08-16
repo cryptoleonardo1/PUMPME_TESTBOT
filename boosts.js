@@ -56,9 +56,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initially display nutrition boosts
     displayBoosts('nutrition');
-
-    // Back button functionality
-    document.getElementById('back-to-main').addEventListener('click', () => {
-        window.location.href = 'index.html';
-    });
 });
