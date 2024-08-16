@@ -289,11 +289,11 @@ nav {
 
 #version-display {
   position: fixed;
-  bottom: 70px;
+  bottom: 50px; /* Adjust this value to position it correctly */
   left: 0;
   right: 0;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px; /* Reduced font size */
   color: #ffd700;
   z-index: 1000;
 }

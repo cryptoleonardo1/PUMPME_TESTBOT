@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateLeaderboard, 30000);
 
     boostsBtn.addEventListener('click', () => {
-        window.location.href = 'boosts.html';
+        console.log('Boosts button clicked');
+        window.location.href = '/boosts.html';
     });
 
     tg.expand();
