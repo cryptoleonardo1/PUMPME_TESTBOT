@@ -39,18 +39,6 @@ main {
   justify-content: space-between;
   padding: 10px;
   position: relative;
-  padding-top: 20px; /* Increase this value to move content higher */
-}
-
-#version-display {
-  position: fixed;
-  bottom: 60px; /* Adjust this value to position above the bottom features */
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
-  z-index: 1000;
 }
 
 .stats {
@@ -109,7 +97,6 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px; /* Add some space below the character */
 }
 
 .rank {
@@ -129,7 +116,6 @@ main {
   justify-content: center;
   align-items: center;
   -webkit-tap-highlight-color: transparent;
-  tap-highlight-color: transparent;
 }
 
 .character {
@@ -183,11 +169,11 @@ main {
 
 .character-stats {
   width: 80%;
-  margin: 20px auto;
+  margin-top: 20px;
 }
 
 .stat-bar {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .stat-progress {
@@ -202,7 +188,6 @@ main {
   height: 100%;
   background-color: #4CAF50;
   transition: width 0.3s;
-  max-width: 80%; /* This will prevent the bars from touching the edges */
 }
 
 .stat-text {
@@ -279,11 +264,3 @@ nav {
   cursor: pointer;
   margin-top: 20px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-#back-button:hover {
-  background: linear-gradient(45deg, #b8860b, #daa520);
-  box-shadow: 0 0 15px #ffd700;
-}
