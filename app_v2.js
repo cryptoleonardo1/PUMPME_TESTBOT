@@ -126,15 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     boostsBtn.addEventListener('click', () => {
         console.log('Boosts button clicked');
-        // Instead of changing window.location, let's fetch the content
-        fetch('/boosts.html')
-            .then(response => response.text())
-            .then(html => {
-                document.body.innerHTML = html;
-                // Re-attach event listeners for the new content
-                attachEventListeners();
-            })
-            .catch(error => console.error('Error loading boosts page:', error));
+        window.location.href = '/boosts.html';
     });
 
     function attachEventListeners() {

@@ -1,6 +1,6 @@
 const express = require('express');
-const Redis = require('ioredis');
 const path = require('path');
+const Redis = require('ioredis');
 const app = express();
 
 console.log('Starting server...');
@@ -31,10 +31,6 @@ app.get('/', (req, res) => {
 app.get('/api/test', (req, res) => {
   console.log('Test API called');
   res.json({ message: 'API is working' });
-});
-
-app.get('/boosts.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'boosts.html'));
 });
 
 app.post('/api/score', async (req, res) => {
@@ -77,6 +73,11 @@ app.get('/api/leaderboard', async (req, res) => {
     console.error('Error fetching leaderboard:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
+});
+
+// Catch-all route to serve index.html for any unmatched routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Error handling middleware
