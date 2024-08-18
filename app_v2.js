@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/gym.html')
             .then(response => response.text())
             .then(html => {
-                document.body.innerHTML = html;
+                document.getElementById('app').innerHTML = html;
                 attachEventListeners();
                 updateUI();
             })
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/boosts.html')
             .then(response => response.text())
             .then(html => {
-                document.body.innerHTML = html;
+                document.getElementById('app').innerHTML = html;
                 loadBoostsData();
                 attachEventListeners();
                 updateUI();
@@ -130,24 +130,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadChallengesPage() {
         const challengesHtml = `
-            <div id="app">
-                <header>
-                    <div class="header-logo">PUMP ME</div>
-                </header>
-                <main id="challenges-page">
-                    <h1>Challenges</h1>
-                    <p>Challenges coming soon!</p>
-                </main>
-                <nav>
-                    <button class="nav-btn" id="gym-btn">🏋️ Gym</button>
-                    <button class="nav-btn" id="boosts-btn">🚀 Boosts</button>
-                    <button class="nav-btn active" id="challenges-btn">🏆 Challenges</button>
-                    <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
-                </nav>
-                <div id="version-display">PUMPME.APP v1.0.3</div>
-            </div>
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
+            <main id="challenges-page">
+                <h1>Challenges</h1>
+                <p>Challenges coming soon!</p>
+            </main>
+            <nav>
+                <button class="nav-btn" id="gym-btn">🏋️ Gym</button>
+                <button class="nav-btn" id="boosts-btn">🚀 Boosts</button>
+                <button class="nav-btn active" id="challenges-btn">🏆 Challenges</button>
+                <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
+            </nav>
+            <div id="version-display">PUMPME.APP v1.0.3</div>
         `;
-        document.body.innerHTML = challengesHtml;
+        document.getElementById('app').innerHTML = challengesHtml;
         attachEventListeners();
     }
 
@@ -263,5 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tg.expand();
 
+    // Start by loading the gym page
     loadPage('gym');
 });
