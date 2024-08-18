@@ -36,10 +36,9 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 10px;
   position: relative;
-  padding-bottom: 60px;
 }
 
 .stats {
@@ -84,7 +83,7 @@ main {
 
 .meter-value {
   position: absolute;
-  bottom: 25px;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%) rotate(-90deg);
   font-size: 12px;
@@ -94,12 +93,10 @@ main {
 }
 
 .character-container {
-  position: relative;
+  flex-grow: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: calc(100% - 120px);
+  align-items: center;
 }
 
 .rank {
@@ -176,7 +173,7 @@ main {
 
 .character-stats {
   width: 80%;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .stat-bar {
@@ -245,4 +242,47 @@ nav {
   z-index: 1000;
 }
 
-/* Add any additional styles for boosts, challenges, and leaderboard pages here */
+/* Top Pumpers styles */
+.leaderboard-main {
+  background-color: #4B0082;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+#leaderboard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+#leaderboard-table th, #leaderboard-table td {
+  padding: 10px;
+  text-align: left;
+  background-color: rgba(75, 0, 130, 0.6);
+}
+
+#leaderboard-table th {
+  background-color: #4B0082;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+#back-button {
+  background: linear-gradient(45deg, #daa520, #b8860b);
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-weight: bold;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#back-button:hover {
+  background: linear-gradient(45deg, #b8860b, #daa520);
+  box-shadow: 0 0 15px #ffd700;
+}
