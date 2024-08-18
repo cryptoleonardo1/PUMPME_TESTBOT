@@ -1,24 +1,7 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const characterClickableArea = document.getElementById('character-clickable-area');
-    const character = document.getElementById('character');
-    const scoreDisplay = document.getElementById('score-display');
-    const leaderboardPage = document.getElementById('leaderboard-page');
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    const backButton = document.getElementById('back-button');
-    
-    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
-    const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-    const pumpMeter = document.querySelector('.pump .meter-fill');
-    const pumpValue = document.querySelector('.pump .meter-value');
-    const energyBar = document.querySelector('.energy-fill');
-
-    const gymBtn = document.getElementById('gym-btn');
-    const boostsBtn = document.getElementById('boosts-btn');
-    const challengesBtn = document.getElementById('challenges-btn');
-    const topPumpersBtn = document.getElementById('top-pumpers-btn');
-
+    let currentPage = 'gym';
     let reps = parseInt(localStorage.getItem('reps')) || 0;
     let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
     let pump = parseInt(localStorage.getItem('pump')) || 0;
@@ -28,6 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
 
     function updateUI() {
+        const scoreDisplay = document.getElementById('score-display');
+        const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
+        const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
+        const pumpMeter = document.querySelector('.pump .meter-fill');
+        const pumpValue = document.querySelector('.pump .meter-value');
+        const energyBar = document.querySelector('.energy-fill');
+
         if (scoreDisplay) scoreDisplay.textContent = `Clean Reps: ${reps}`;
         
         if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
@@ -62,10 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             updateUI();
             
-            character.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                character.style.transform = 'scale(1)';
-            }, 100);
+            const character = document.getElementById('character');
+            if (character) {
+                character.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    character.style.transform = 'scale(1)';
+                }, 100);
+            }
 
             const feedbackEl = document.createElement('div');
             feedbackEl.className = 'tap-plus-one';
@@ -98,19 +91,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadPage(pageName) {
+        currentPage = pageName;
         fetch(`/${pageName}.html`)
             .then(response => response.text())
             .then(html => {
                 document.body.innerHTML = html;
                 if (pageName === 'boosts') {
-                    const script = document.createElement('script');
-                    script.src = '/boosts.js';
-                    document.body.appendChild(script);
+                    loadBoostsData();
                 }
                 attachEventListeners();
                 updateUI();
             })
             .catch(error => console.error('Error loading page:', error));
+    }
+
+    function loadBoostsData() {
+        const boostItems = document.getElementById('boost-items');
+        if (boostItems) {
+            displayBoosts('nutrition');
+        }
     }
 
     function attachEventListeners() {
@@ -134,6 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (characterClickableArea) {
             characterClickableArea.addEventListener('click', handleCharacterClick);
         }
+
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                displayBoosts(button.dataset.category);
+            });
+        });
     }
 
     function updateLeaderboard() {
@@ -156,6 +164,53 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => console.error('Error:', error));
+    }
+
+    const boosts = {
+        nutrition: [
+            { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 50 },
+            { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 75 },
+            { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 30 },
+            { name: "Steak", icon: "🥩", description: "High protein meal", price: 100 },
+            { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 20 },
+        ],
+        equipment: [
+            { name: "Gym Entry", icon: "🏋️", description: "Access to gym facilities", price: 150 },
+            { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 500 },
+            { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 200 },
+        ],
+        activities: [
+            { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 80 },
+            { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 100 },
+            { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 90 },
+            { name: "Swimming", icon: "🏊", description: "Full body workout", price: 120 },
+            { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 70 },
+        ],
+        training: [
+            { name: "Chest Day", icon: "💪", description: "10x reps for chest", price: 300 },
+            { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 300 },
+            { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 300 },
+            { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 300 },
+            { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 300 },
+        ]
+    };
+
+    function displayBoosts(category) {
+        const boostItems = document.getElementById('boost-items');
+        if (boostItems) {
+            boostItems.innerHTML = '';
+            boosts[category].forEach(boost => {
+                const boostElement = document.createElement('div');
+                boostElement.className = 'boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-icon">${boost.icon}</div>
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-description">${boost.description}</div>
+                    <div class="boost-price">${boost.price} 💰</div>
+                `;
+                boostItems.appendChild(boostElement);
+            });
+        }
     }
 
     setInterval(updateLeaderboard, 30000);
