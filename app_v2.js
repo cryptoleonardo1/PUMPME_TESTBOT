@@ -160,16 +160,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const leaderboardBody = document.getElementById('leaderboard-body');
             if (leaderboardBody) {
                 leaderboardBody.innerHTML = '';
-                leaderboard.forEach((entry, index) => {
+                
+                const rewards = [
+                    "Gym membership", "Dumbbells", "Gym entry",
+                    "Protein Shake", "Protein Shake", "Protein Shake",
+                    "Protein Shake", "Protein Shake", "Protein Shake",
+                    "Protein Shake"
+                ];
+    
+                for (let i = 0; i < 10; i++) {
+                    const entry = leaderboard[i] || { userId: '---', score: '---' };
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${index + 1}</td>
+                        <td>${i + 1}</td>
                         <td>${entry.userId}</td>
                         <td>${entry.score}</td>
-                        <td>${entry.pumping}</td>
+                        <td>${rewards[i]}</td>
                     `;
                     leaderboardBody.appendChild(row);
-                });
+                }
             }
         })
         .catch(error => console.error('Error:', error));

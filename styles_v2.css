@@ -247,6 +247,8 @@ nav {
   background-color: #4B0082;
   padding: 20px;
   border-radius: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 #leaderboard-table {
@@ -265,6 +267,17 @@ nav {
   background-color: #4B0082;
   color: #ffd700;
   font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+#leaderboard-table tr:nth-child(even) {
+  background-color: rgba(75, 0, 130, 0.4);
+}
+
+#leaderboard-table tr:hover {
+  background-color: rgba(75, 0, 130, 0.8);
 }
 
 #back-button {
