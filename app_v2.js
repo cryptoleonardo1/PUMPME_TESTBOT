@@ -90,9 +90,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const challenges = [
+        { id: 'daily-checkin', title: 'Daily Check-in', description: 'Log in to the app daily', progress: 0, goal: 1, reward: '50 coins', type: 'daily' },
+        { id: 'invite-friends', title: 'Invite Friends', description: 'Invite 5 friends to join', progress: 0, goal: 5, reward: '200 coins', type: 'ongoing' },
+        { id: 'join-twitter', title: 'Join Twitter', description: 'Follow us on Twitter', progress: 0, goal: 1, reward: '100 coins', type: 'one-time' },
+        { id: 'join-telegram', title: 'Join Telegram', description: 'Join our Telegram group', progress: 0, goal: 1, reward: '100 coins', type: 'one-time' },
+        { id: 'join-instagram', title: 'Join Instagram', description: 'Follow us on Instagram', progress: 0, goal: 1, reward: '100 coins', type: 'one-time' },
+        { id: 'daily-workout', title: 'Daily Workout', description: 'Complete 100 reps daily', progress: 0, goal: 100, reward: '100 coins', type: 'daily' },
+    ];
+    
+    function loadChallenges() {
+        const challengesContainer = document.getElementById('challenges-container');
+        challengesContainer.innerHTML = '';
+    
+        challenges.forEach(challenge => {
+            const challengeElement = document.createElement('div');
+            challengeElement.className = 'challenge-item';
+            challengeElement.innerHTML = `
+                <div class="challenge-info">
+                    <div class="challenge-title">${challenge.title}</div>
+                    <div class="challenge-description">${challenge.description}</div>
+                    <div class="challenge-progress">Progress: ${challenge.progress}/${challenge.goal}</div>
+                </div>
+                <div class="challenge-reward">${challenge.reward}</div>
+                <button class="challenge-button" onclick="handleChallenge('${challenge.id}')" ${challenge.progress >= challenge.goal ? 'disabled' : ''}>
+                    ${challenge.progress >= challenge.goal ? 'Completed' : 'Do it!'}
+                </button>
+            `;
+            challengesContainer.appendChild(challengeElement);
+        });
+    }
+    
+    function handleChallenge(challengeId) {
+        const challenge = challenges.find(c => c.id === challengeId);
+        if (challenge) {
+            switch (challenge.type) {
+                case 'daily':
+                    challenge.progress = Math.min(challenge.goal, challenge.progress + 1);
+                    break;
+                case 'one-time':
+                    challenge.progress = challenge.goal;
+                    break;
+                case 'ongoing':
+                    challenge.progress = Math.min(challenge.goal, challenge.progress + 1);
+                    break;
+            }
+            loadChallenges();
+            // Here you would typically update the server with the new progress
+            console.log(`Challenge "${challenge.title}" progress updated to ${challenge.progress}`);
+        }
+    }
+    
     function loadPage(pageName) {
         if (pageName === currentPage) return;
         currentPage = pageName;
+        if (pageName === 'challenges') {
+            loadChallenges();
+        }
 
         // Hide all pages
         document.getElementById('gym-page').style.display = 'none';
