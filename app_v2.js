@@ -17,6 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const pumpMeter = document.querySelector('.pump .meter-fill');
         const pumpValue = document.querySelector('.pump .meter-value');
         const energyBar = document.querySelector('.energy-fill');
+        const fitnessLevelDisplay = document.querySelector('.fitness-level');
+        if (fitnessLevelDisplay) {
+            let level = 1;
+            let title = "Novice Lifter";
+            
+            if (reps >= 1000) {
+                level = 5;
+                title = "Legendary Pumper";
+            } else if (reps >= 500) {
+                level = 4;
+                title = "Elite Muscle";
+            } else if (reps >= 100) {
+                level = 3;
+                title = "Buff Beginner";
+            } else if (reps >= 50) {
+                level = 2;
+                title = "Gym Enthusiast";
+            }
+            
+            fitnessLevelDisplay.textContent = `Fitness Level ${level}: ${title} 🏋️‍♂️`;
+        }
 
         if (scoreDisplay) scoreDisplay.textContent = `Clean Reps: ${reps}`;
         
