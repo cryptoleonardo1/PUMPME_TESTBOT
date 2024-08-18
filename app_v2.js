@@ -94,59 +94,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageName === currentPage) return;
         currentPage = pageName;
 
-        if (pageName === 'gym') {
-            loadGymPage();
-        } else if (pageName === 'boosts') {
-            loadBoostsPage();
-        } else if (pageName === 'challenges') {
-            loadChallengesPage();
-        } else {
-            console.error('Unknown page:', pageName);
+        // Hide all pages
+        document.getElementById('gym-page').style.display = 'none';
+        document.getElementById('boosts-page').style.display = 'none';
+        document.getElementById('challenges-page').style.display = 'none';
+        document.getElementById('leaderboard-page').style.display = 'none';
+
+        // Show the selected page
+        document.getElementById(`${pageName}-page`).style.display = 'block';
+
+        // Update active nav button
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`${pageName}-btn`).classList.add('active');
+
+        if (pageName === 'boosts') {
+            loadBoostsData();
         }
-    }
 
-    function loadGymPage() {
-        fetch('/gym.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('app').innerHTML = html;
-                attachEventListeners();
-                updateUI();
-            })
-            .catch(error => console.error('Error loading gym page:', error));
-    }
-
-    function loadBoostsPage() {
-        fetch('/boosts.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('app').innerHTML = html;
-                loadBoostsData();
-                attachEventListeners();
-                updateUI();
-            })
-            .catch(error => console.error('Error loading boosts page:', error));
-    }
-
-    function loadChallengesPage() {
-        const challengesHtml = `
-            <header>
-                <div class="header-logo">PUMP ME</div>
-            </header>
-            <main id="challenges-page">
-                <h1>Challenges</h1>
-                <p>Challenges coming soon!</p>
-            </main>
-            <nav>
-                <button class="nav-btn" id="gym-btn">🏋️ Gym</button>
-                <button class="nav-btn" id="boosts-btn">🚀 Boosts</button>
-                <button class="nav-btn active" id="challenges-btn">🏆 Challenges</button>
-                <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
-            </nav>
-            <div id="version-display">PUMPME.APP v1.0.3</div>
-        `;
-        document.getElementById('app').innerHTML = challengesHtml;
-        attachEventListeners();
+        updateUI();
     }
 
     function loadBoostsData() {
@@ -161,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', function() {
                 const page = this.id.split('-')[0];
                 if (page === 'top') {
-                    document.getElementById('leaderboard-page').style.display = 'block';
+                    loadPage('leaderboard');
                     updateLeaderboard();
                 } else {
                     loadPage(page);
@@ -170,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.getElementById('back-button')?.addEventListener('click', () => {
-            document.getElementById('leaderboard-page').style.display = 'none';
+            loadPage('gym');
         });
 
         const characterClickableArea = document.getElementById('character-clickable-area');
@@ -261,6 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tg.expand();
 
-    // Start by loading the gym page
+    // Initial setup
+    attachEventListeners();
     loadPage('gym');
 });
