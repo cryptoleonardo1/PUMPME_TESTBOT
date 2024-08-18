@@ -114,12 +114,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function attachEventListeners() {
-        document.getElementById('gym-btn')?.addEventListener('click', () => loadPage('index'));
-        document.getElementById('boosts-btn')?.addEventListener('click', () => loadPage('boosts'));
-        document.getElementById('top-pumpers-btn')?.addEventListener('click', () => {
-            document.getElementById('leaderboard-page').style.display = 'block';
-            updateLeaderboard();
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const page = this.id.split('-')[0];
+                if (page === 'top') {
+                    document.getElementById('leaderboard-page').style.display = 'block';
+                    updateLeaderboard();
+                } else {
+                    loadPage(page);
+                }
+            });
         });
+
         document.getElementById('back-button')?.addEventListener('click', () => {
             document.getElementById('leaderboard-page').style.display = 'none';
         });
