@@ -11,6 +11,7 @@
 </head>
 <body>
     <div id="app">
+        <div id="version-display-top">PUMPME.APP V1.0.3</div>
         <div id="gym-page">
             <header>
                 <div class="header-logo">LEVEL</div>
@@ -39,11 +40,15 @@
                         <span class="meter-value">64/1000</span>
                     </div>
                 </div>
-                
-                <div id="score-display">Clean Reps: 16</div>
             </main>
             
             <div class="bottom-stats">
+                <div id="pump-points-container">
+                    <div id="pump-points-display">Pump Points: 16</div>
+                    <div class="pump-points-bar">
+                        <div class="pump-points-fill"></div>
+                    </div>
+                </div>
                 <div class="character-stats">
                     <div class="stat-bar">
                         <div class="stat-progress">
@@ -81,7 +86,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div id="boosts-page" style="display: none;">
             <header>
                 <div class="header-logo">PUMP ME</div>
@@ -141,8 +146,6 @@
             <button class="nav-btn" id="challenges-btn">🏆 Challenges</button>
             <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
         </nav>
-        
-        <div id="version-display">PUMPME.APP v1.0.3</div>
     </div>
     
     <script src="/app_v2.js"></script>
