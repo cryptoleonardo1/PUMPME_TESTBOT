@@ -10,85 +10,107 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tg.ready();
 
-    function updateUI() {
-        const scoreDisplay = document.getElementById('score-display');
-        const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
-        const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-        const pumpMeter = document.querySelector('.pump .meter-fill');
-        const pumpValue = document.querySelector('.pump .meter-value');
-        const energyBar = document.querySelector('.energy-fill');
+// ... (keep existing code) ...
 
-        if (scoreDisplay) scoreDisplay.textContent = `Clean Reps: ${reps}`;
-        
-        if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
-        if (muscleMassValue) muscleMassValue.textContent = muscleMass;
-        
-        if (pumpMeter) pumpMeter.style.height = `${(pump / 1000) * 100}%`;
-        if (pumpValue) pumpValue.textContent = `${pump}/1000`;
-        
-        if (energyBar) energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
+function updateUI() {
+    const pumpPointsDisplay = document.getElementById('pump-points-display');
+    const pumpPointsFill = document.querySelector('.pump-points-fill');
+    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
+    const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
+    const pumpMeter = document.querySelector('.pump .meter-fill');
+    const pumpValue = document.querySelector('.pump .meter-value');
+    const energyBar = document.querySelector('.energy-fill');
 
-        localStorage.setItem('reps', reps);
-        localStorage.setItem('muscleMass', muscleMass);
-        localStorage.setItem('pump', pump);
-        localStorage.setItem('energy', energy);
+    if (pumpPointsDisplay) pumpPointsDisplay.textContent = `Pump Points: ${reps}`;
+    if (pumpPointsFill) {
+        const maxWidth = 100; // You can adjust this value based on your desired max Pump Points
+        const fillWidth = Math.min((reps / maxWidth) * 100, 100);
+        pumpPointsFill.style.width = `${fillWidth}%`;
     }
+    
+    if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
+    if (muscleMassValue) muscleMassValue.textContent = muscleMass;
+    
+    if (pumpMeter) pumpMeter.style.height = `${(pump / 1000) * 100}%`;
+    if (pumpValue) pumpValue.textContent = `${pump}/1000`;
+    
+    if (energyBar) energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
 
-    function regenerateEnergy() {
-        if (energy < maxEnergy) {
-            energy = Math.min(maxEnergy, energy + 1);
-            updateUI();
+    // Update Fitness Level display
+    const fitnessLevelDisplay = document.querySelector('.fitness-level');
+    if (fitnessLevelDisplay) {
+        let level = 1;
+        let title = "Novice Lifter";
+        
+        if (reps >= 1000) {
+            level = 5;
+            title = "Legendary Pumper";
+        } else if (reps >= 500) {
+            level = 4;
+            title = "Elite Muscle";
+        } else if (reps >= 100) {
+            level = 3;
+            title = "Buff Beginner";
+        } else if (reps >= 50) {
+            level = 2;
+            title = "Gym Enthusiast";
         }
+        
+        fitnessLevelDisplay.textContent = `Fitness Level ${level}: ${title} 🏋️‍♂️`;
     }
 
-    setInterval(regenerateEnergy, 1000);
+    localStorage.setItem('reps', reps);
+    localStorage.setItem('muscleMass', muscleMass);
+    localStorage.setItem('pump', pump);
+    localStorage.setItem('energy', energy);
+}
 
-    function handleCharacterClick(event) {
-        if (energy > 0) {
-            reps++;
-            pump = Math.min(1000, pump + 1);
-            muscleMass += 10;
-            energy = Math.max(0, energy - 1);
+function handleCharacterClick(event) {
+    if (energy > 0) {
+        reps++;
+        pump = Math.min(1000, pump + 1);
+        muscleMass += 10;
+        energy = Math.max(0, energy - 1);
 
-            updateUI();
-            
-            const character = document.getElementById('character');
-            if (character) {
-                character.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    character.style.transform = 'scale(1)';
-                }, 100);
-            }
-
-            const feedbackEl = document.createElement('div');
-            feedbackEl.className = 'tap-plus-one';
-            feedbackEl.textContent = '+1';
-            feedbackEl.style.left = (event.clientX - 15) + 'px';
-            feedbackEl.style.top = (event.clientY - 15) + 'px';
-            document.body.appendChild(feedbackEl);
-            
+        updateUI();
+        
+        const character = document.getElementById('character');
+        if (character) {
+            character.style.transform = 'scale(1.1)';
             setTimeout(() => {
-                feedbackEl.remove();
-            }, 1000);
-
-            fetch('/api/score', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
-                    score: 1, 
-                    username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Clean Reps updated:', data.totalScore);
-            })
-            .catch(error => console.error('Error:', error));
+                character.style.transform = 'scale(1)';
+            }, 100);
         }
+
+        const feedbackEl = document.createElement('div');
+        feedbackEl.className = 'tap-plus-one';
+        feedbackEl.textContent = '+1';
+        feedbackEl.style.left = (event.clientX - 15) + 'px';
+        feedbackEl.style.top = (event.clientY - 15) + 'px';
+        document.body.appendChild(feedbackEl);
+        
+        setTimeout(() => {
+            feedbackEl.remove();
+        }, 1000);
+
+        fetch('/api/score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
+                score: 1, 
+                username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Pump Points updated:', data.totalScore);
+        })
+        .catch(error => console.error('Error:', error));
     }
+}
 
     function loadPage(pageName) {
         if (pageName === currentPage) return;
@@ -109,6 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (pageName === 'boosts') {
             loadBoostsData();
+        } else if (pageName === 'challenges') {
+            loadChallenges();
+        } else if (pageName === 'leaderboard') {
+            updateLeaderboard();
         }
 
         updateUI();
