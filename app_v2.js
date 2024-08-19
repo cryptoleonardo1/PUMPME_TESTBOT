@@ -1,5 +1,3 @@
-const tg = window.Telegram.WebApp;
-
 document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 'gym';
     let reps = parseInt(localStorage.getItem('reps')) || 0;
@@ -8,31 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let energy = parseInt(localStorage.getItem('energy')) || 1000;
     const maxEnergy = 1000;
 
+    const tg = window.Telegram.WebApp;
     tg.ready();
 
     function updateUI() {
-        const pumpPointsDisplay = document.getElementById('pump-points-display');
-        const pumpPointsFill = document.querySelector('.pump-points-fill');
+        const cleanRepsDisplay = document.getElementById('clean-reps-display');
+        const cleanRepsFill = document.querySelector('.clean-reps-fill');
         const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
         const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-        const pumpMeter = document.querySelector('.pump .meter-fill');
-        const pumpValue = document.querySelector('.pump .meter-value');
-        const energyBar = document.querySelector('.energy-fill');
+        const energyMeter = document.querySelector('.energy .meter-fill');
+        const energyValue = document.querySelector('.energy .meter-value');
     
-        if (pumpPointsDisplay) pumpPointsDisplay.textContent = `Pump Points: ${reps}`;
-        if (pumpPointsFill) {
-            const maxWidth = 100; // You can adjust this value based on your desired max Pump Points
+        if (cleanRepsDisplay) cleanRepsDisplay.textContent = `Clean Reps: ${reps}`;
+        if (cleanRepsFill) {
+            const maxWidth = 100; // You can adjust this value based on your desired max Clean Reps
             const fillWidth = Math.min((reps / maxWidth) * 100, 100);
-            pumpPointsFill.style.width = `${fillWidth}%`;
+            cleanRepsFill.style.width = `${fillWidth}%`;
         }
         
         if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
         if (muscleMassValue) muscleMassValue.textContent = muscleMass;
         
-        if (pumpMeter) pumpMeter.style.height = `${(pump / 1000) * 100}%`;
-        if (pumpValue) pumpValue.textContent = `${pump}/1000`;
-        
-        if (energyBar) energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
+        if (energyMeter) energyMeter.style.height = `${(energy / maxEnergy) * 100}%`;
+        if (energyValue) energyValue.textContent = `${energy}/${maxEnergy}`;
     
         // Update Fitness Level display
         const fitnessLevelDisplay = document.querySelector('.fitness-level');
@@ -54,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 title = "Gym Enthusiast";
             }
             
-            fitnessLevelDisplay.textContent = `Fitness Level ${level}: ${title} 🏋️‍♂️`;
+            fitnessLevelDisplay.textContent = `Rank ${level}: ${title} 🐂`;
         }
     
         localStorage.setItem('reps', reps);
@@ -110,63 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const challenges = [
-        { id: 'daily-checkin', title: 'Daily Check-in', description: 'Log in to the app daily', progress: 0, goal: 1, reward: '50 coins', type: 'daily' },
-        { id: 'invite-friends', title: 'Invite Friends', description: 'Invite 5 friends to join', progress: 0, goal: 5, reward: '200 coins', type: 'ongoing' },
-        { id: 'join-twitter', title: 'Join Twitter', description: 'Follow us on Twitter', progress: 0, goal: 1, reward: '100 coins', type: 'one-time' },
-        { id: 'join-telegram', title: 'Join Telegram', description: 'Join our Telegram group', progress: 0, goal: 1, reward: '100 coins', type: 'one-time' },
-        { id: 'join-instagram', title: 'Join Instagram', description: 'Follow us on Instagram', progress: 0, goal: 1, reward: '100 coins', type: 'one-time' },
-        { id: 'daily-workout', title: 'Daily Workout', description: 'Complete 100 reps daily', progress: 0, goal: 100, reward: '100 coins', type: 'daily' },
-    ];
-    
-    function loadChallenges() {
-        const challengesContainer = document.getElementById('challenges-container');
-        challengesContainer.innerHTML = '';
-    
-        challenges.forEach(challenge => {
-            const challengeElement = document.createElement('div');
-            challengeElement.className = 'challenge-item';
-            challengeElement.innerHTML = `
-                <div class="challenge-info">
-                    <div class="challenge-title">${challenge.title}</div>
-                    <div class="challenge-description">${challenge.description}</div>
-                    <div class="challenge-progress">Progress: ${challenge.progress}/${challenge.goal}</div>
-                </div>
-                <div class="challenge-reward">${challenge.reward}</div>
-                <button class="challenge-button" onclick="handleChallenge('${challenge.id}')" ${challenge.progress >= challenge.goal ? 'disabled' : ''}>
-                    ${challenge.progress >= challenge.goal ? 'Completed' : 'Do it!'}
-                </button>
-            `;
-            challengesContainer.appendChild(challengeElement);
-        });
-    }
-    
-    function handleChallenge(challengeId) {
-        const challenge = challenges.find(c => c.id === challengeId);
-        if (challenge) {
-            switch (challenge.type) {
-                case 'daily':
-                    challenge.progress = Math.min(challenge.goal, challenge.progress + 1);
-                    break;
-                case 'one-time':
-                    challenge.progress = challenge.goal;
-                    break;
-                case 'ongoing':
-                    challenge.progress = Math.min(challenge.goal, challenge.progress + 1);
-                    break;
-            }
-            loadChallenges();
-            // Here you would typically update the server with the new progress
-            console.log(`Challenge "${challenge.title}" progress updated to ${challenge.progress}`);
-        }
-    }
-    
     function loadPage(pageName) {
         if (pageName === currentPage) return;
         currentPage = pageName;
-        if (pageName === 'challenges') {
-            loadChallenges();
-        }
 
         // Hide all pages
         document.getElementById('gym-page').style.display = 'none';
@@ -175,56 +117,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('leaderboard-page').style.display = 'none';
 
         // Show the selected page
-        document.getElementById(`${pageName}-page`).style.display = 'block';
+        const selectedPage = document.getElementById(`${pageName}-page`);
+        if (selectedPage) {
+            selectedPage.style.display = 'block';
+        }
 
         // Update active nav button
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`${pageName}-btn`).classList.add('active');
+        const activeBtn = document.getElementById(`${pageName}-btn`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
 
         if (pageName === 'boosts') {
             loadBoostsData();
+        } else if (pageName === 'challenges') {
+            loadChallenges();
+        } else if (pageName === 'leaderboard') {
+            updateLeaderboard();
         }
 
         updateUI();
     }
 
     function loadBoostsData() {
-        const boostItems = document.getElementById('boost-items');
-        if (boostItems) {
-            displayBoosts('nutrition');
-        }
+        // Implement boost loading logic here
     }
 
-    function attachEventListeners() {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const page = this.id.split('-')[0];
-                if (page === 'top') {
-                    loadPage('leaderboard');
-                    updateLeaderboard();
-                } else {
-                    loadPage(page);
-                }
-            });
-        });
-
-        document.getElementById('back-button')?.addEventListener('click', () => {
-            loadPage('gym');
-        });
-
-        const characterClickableArea = document.getElementById('character-clickable-area');
-        if (characterClickableArea) {
-            characterClickableArea.addEventListener('click', handleCharacterClick);
-        }
-
-        const categoryButtons = document.querySelectorAll('.category-btn');
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                displayBoosts(button.dataset.category);
-            });
-        });
+    function loadChallenges() {
+        // Implement challenge loading logic here
     }
 
     function updateLeaderboard() {
@@ -258,58 +179,20 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error:', error));
     }
 
-    const boosts = {
-        nutrition: [
-            { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 50 },
-            { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 75 },
-            { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 30 },
-            { name: "Steak", icon: "🥩", description: "High protein meal", price: 100 },
-            { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 20 },
-        ],
-        equipment: [
-            { name: "Gym Entry", icon: "🏋️", description: "Access to gym facilities", price: 150 },
-            { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 500 },
-            { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 200 },
-        ],
-        activities: [
-            { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 80 },
-            { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 100 },
-            { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 90 },
-            { name: "Swimming", icon: "🏊", description: "Full body workout", price: 120 },
-            { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 70 },
-        ],
-        training: [
-            { name: "Chest Day", icon: "💪", description: "10x reps for chest", price: 300 },
-            { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 300 },
-            { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 300 },
-            { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 300 },
-            { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 300 },
-        ]
-    };
+    // Attach event listeners
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const page = this.id.split('-')[0];
+            loadPage(page === 'top-pumpers' ? 'leaderboard' : page);
+        });
+    });
 
-    function displayBoosts(category) {
-        const boostItems = document.getElementById('boost-items');
-        if (boostItems) {
-            boostItems.innerHTML = '';
-            boosts[category].forEach(boost => {
-                const boostElement = document.createElement('div');
-                boostElement.className = 'boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-description">${boost.description}</div>
-                    <div class="boost-price">${boost.price} 💰</div>
-                `;
-                boostItems.appendChild(boostElement);
-            });
-        }
+    const characterClickableArea = document.getElementById('character-clickable-area');
+    if (characterClickableArea) {
+        characterClickableArea.addEventListener('click', handleCharacterClick);
     }
 
-    setInterval(updateLeaderboard, 30000);
-
-    tg.expand();
-
     // Initial setup
-    attachEventListeners();
     loadPage('gym');
+    tg.expand();
 });
