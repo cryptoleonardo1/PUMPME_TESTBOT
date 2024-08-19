@@ -5,6 +5,9 @@ const bot = new TelegramBot(token, {polling: true});
 // Store user states
 const userStates = {};
 
+// Replace this URL with the actual URL of your PUMP ME image
+const welcomeImageUrl = 'https://drive.google.com/file/d/1mN_L_utUNkfF5FvMKG7-56Epcf3kg8m9/view';
+
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   sendWelcomeMessage(chatId);
@@ -22,7 +25,8 @@ bot.on('message', (msg) => {
 function sendWelcomeMessage(chatId) {
   userStates[chatId] = true; // Mark that we've sent the welcome message
 
-  bot.sendMessage(chatId, "Welcome to the Pump Me Test Bot! Tap the button below to start the game.", {
+  bot.sendPhoto(chatId, welcomeImageUrl, {
+    caption: 'PUMP ME is live!',
     reply_markup: {
       inline_keyboard: [[
         {
@@ -30,8 +34,7 @@ function sendWelcomeMessage(chatId) {
           web_app: {url: 'https://pumpme-testbot.vercel.app'}
         }
       ]]
-    },
-    parse_mode: 'HTML'
+    }
   });
 }
 
