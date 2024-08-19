@@ -85,15 +85,58 @@
         </div>
 
         <div id="boosts-page" style="display: none;">
-            <!-- Boosts page content -->
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
+            
+            <main id="boosts-main">
+                <h1>Boosts</h1>
+                <div class="boost-categories">
+                    <button class="category-btn active" data-category="nutrition">Nutrition</button>
+                    <button class="category-btn" data-category="equipment">Equipment</button>
+                    <button class="category-btn" data-category="activities">Activities</button>
+                    <button class="category-btn" data-category="training">Training</button>
+                </div>
+                
+                <div class="boost-items" id="boost-items">
+                    <!-- Items will be dynamically added here -->
+                </div>
+            </main>
         </div>
 
         <div id="challenges-page" style="display: none;">
-            <!-- Challenges page content -->
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
+            <main class="challenges-main">
+                <h2>Challenges</h2>
+                <div id="challenges-container">
+                    <!-- Challenges will be dynamically added here -->
+                </div>
+            </main>
         </div>
 
         <div id="leaderboard-page" style="display: none;">
-            <!-- Leaderboard page content -->
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
+            <main class="leaderboard-main">
+                <h2>Top Pumpers</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>HERO</th>
+                            <th>CLEAN REPS</th>
+                            <th>DIVINE REWARD</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+                <button id="back-button">RETURN TO TRAINING</button>
+            </main>
         </div>
 
         <nav>
