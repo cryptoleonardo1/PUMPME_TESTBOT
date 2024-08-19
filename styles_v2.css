@@ -39,7 +39,6 @@ main {
   justify-content: space-between;
   padding: 10px;
   position: relative;
-  padding-bottom: 220px; /* Adjust this value as needed */
 }
 
 .stats {
@@ -148,70 +147,37 @@ main {
   to { transform: rotate(360deg); }
 }
 
-#pump-points-display {
+#score-display {
   font-size: 18px;
   font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px;
   color: #ffd700;
-  text-align: center;
-  margin-bottom: 5px;
 }
 
-.pump-points-bar {
+.energy-bar {
   width: 80%;
   height: 15px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 7px;
   overflow: hidden;
-  margin: 0 auto 10px;
+  margin-bottom: 20px;
 }
 
-.pump-points-fill {
+.energy-fill {
+  width: 100%;
   height: 100%;
-  background-color: #ffd700;
-  width: 0%;
+  background-color: #FFC107;
   transition: width 0.3s;
 }
 
-.fitness-level {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #ffd700;
-}
-
-.bottom-stats {
-  position: fixed;
-  bottom: 60px;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-#pump-points-container {
-  margin-bottom: 10px;
-}
-
 .character-stats {
-  width: 100%;
-  margin-bottom: 10px;
+  width: 80%;
+  margin-bottom: 20px;
 }
 
 .stat-bar {
-  margin-bottom: 5px;
-}
-
-.energy-bar {
-  width: 100%;
-  height: 15px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 7px;
-  overflow: hidden;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .stat-progress {
@@ -276,13 +242,11 @@ nav {
   z-index: 1000;
 }
 
-/* Leaderboard styles */
+/* Top Pumpers styles */
 .leaderboard-main {
   background-color: #4B0082;
   padding: 20px;
   border-radius: 10px;
-  max-height: 80vh;
-  overflow-y: auto;
 }
 
 #leaderboard-table {
@@ -301,17 +265,6 @@ nav {
   background-color: #4B0082;
   color: #ffd700;
   font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-#leaderboard-table tr:nth-child(even) {
-  background-color: rgba(75, 0, 130, 0.4);
-}
-
-#leaderboard-table tr:hover {
-  background-color: rgba(75, 0, 130, 0.8);
 }
 
 #back-button {
@@ -332,73 +285,4 @@ nav {
 #back-button:hover {
   background: linear-gradient(45deg, #b8860b, #daa520);
   box-shadow: 0 0 15px #ffd700;
-}
-
-/* Challenges styles */
-.challenges-main {
-  padding: 20px;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-}
-
-.challenge-item {
-  background-color: rgba(75, 0, 130, 0.6);
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.challenge-info {
-  flex-grow: 1;
-}
-
-.challenge-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.challenge-description {
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 10px;
-}
-
-.challenge-progress {
-  font-size: 14px;
-  color: #ffd700;
-}
-
-.challenge-reward {
-  background-color: #ffd700;
-  color: #000;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-weight: bold;
-  font-size: 14px;
-  min-width: 80px;
-  text-align: center;
-}
-
-.challenge-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.challenge-button:hover {
-  background-color: #45a049;
-}
-
-.challenge-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
 }

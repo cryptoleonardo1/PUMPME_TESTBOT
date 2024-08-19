@@ -14,16 +14,15 @@
         <div id="gym-page">
             <header>
                 <div class="header-logo">RANK</div>
-                <div id="version-display">PUMPME.APP v1.0.3</div>
                 <div class="header-logo">PUMP ME</div>
             </header>
             
             <main>
-                <div class="fitness-level">Rank 3: Buff Beginner 🐂</div>
+                <div class="rank">Rank 3: Buff Beginner 🏋️‍♂️</div>
                 <div class="stats left">
                     <div class="meter muscle-mass">
                         <div class="meter-fill"></div>
-                        <span class="meter-value">15280</span>
+                        <span class="meter-value">15,240</span>
                     </div>
                 </div>
                 
@@ -32,45 +31,44 @@
                         <img src="/images/bull_default.png" alt="Bull Character" id="character" class="character">
                         <div class="progress-ring"></div>
                     </div>
+                    <div id="tap-feedback"></div>
                 </div>
                 
                 <div class="stats right">
-                    <div class="meter energy">
+                    <div class="meter pump">
                         <div class="meter-fill"></div>
-                        <span class="meter-value">81/100</span>
+                        <span class="meter-value">0/1000</span>
                     </div>
                 </div>
-            </main>
-            
-            <div class="bottom-stats">
-                <div id="clean-reps-container">
-                    <div id="clean-reps-display">Clean Reps: 8</div>
-                    <div class="clean-reps-bar">
-                        <div class="clean-reps-fill"></div>
-                    </div>
+                
+                <div id="score-display">Clean Reps: 0</div>
+                
+                <div class="energy-bar">
+                    <div class="energy-fill"></div>
                 </div>
+                
                 <div class="character-stats">
                     <div class="stat-bar">
                         <div class="stat-progress">
-                            <div class="stat-fill" style="width: 40%;"></div>
+                            <div class="stat-fill" style="width: 60%;"></div>
                             <span class="stat-text">Muscle Growth</span>
                         </div>
                     </div>
                     <div class="stat-bar">
                         <div class="stat-progress">
-                            <div class="stat-fill" style="width: 25%;"></div>
+                            <div class="stat-fill" style="width: 40%;"></div>
                             <span class="stat-text">Agility</span>
                         </div>
                     </div>
                     <div class="stat-bar">
                         <div class="stat-progress">
-                            <div class="stat-fill" style="width: 15%;"></div>
+                            <div class="stat-fill" style="width: 30%;"></div>
                             <span class="stat-text">Regeneration</span>
                         </div>
                     </div>
                     <div class="stat-bar">
                         <div class="stat-progress">
-                            <div class="stat-fill" style="width: 40%;"></div>
+                            <div class="stat-fill" style="width: 50%;"></div>
                             <span class="stat-text">Cardio</span>
                         </div>
                     </div>
@@ -81,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
 
         <div id="boosts-page" style="display: none;">
@@ -108,35 +106,26 @@
             <header>
                 <div class="header-logo">PUMP ME</div>
             </header>
-            <main class="challenges-main">
-                <h2>Challenges</h2>
-                <div id="challenges-container">
-                    <!-- Challenges will be dynamically added here -->
-                </div>
+            <main>
+                <h1>Challenges</h1>
+                <p>Challenges coming soon!</p>
             </main>
         </div>
 
         <div id="leaderboard-page" style="display: none;">
-            <header>
-                <div class="header-logo">PUMP ME</div>
-            </header>
-            <main class="leaderboard-main">
-                <h2>Top Pumpers</h2>
-                <table id="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>RANK</th>
-                            <th>HERO</th>
-                            <th>CLEAN REPS</th>
-                            <th>DIVINE REWARD</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <!-- Rows will be dynamically added here -->
-                    </tbody>
-                </table>
-                <button id="back-button">RETURN TO TRAINING</button>
-            </main>
+            <h2>Top Pumpers</h2>
+            <table id="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Hero</th>
+                        <th>CLEAN REPS</th>
+                        <th>Divine Reward</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body"></tbody>
+            </table>
+            <button id="back-button">Return to Training</button>
         </div>
 
         <nav>
@@ -145,6 +134,8 @@
             <button class="nav-btn" id="challenges-btn">🏆 Challenges</button>
             <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
         </nav>
+        
+        <div id="version-display">PUMPME.APP v1.0.3</div>
     </div>
     
     <script src="/app_v2.js"></script>

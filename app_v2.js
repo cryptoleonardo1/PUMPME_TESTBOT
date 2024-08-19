@@ -1,152 +1,232 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PUMPME.APP</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="/styles_v2.css">
-    <link rel="stylesheet" href="/boosts.css">
-    <link rel="icon" href="/images/x-icon.png" type="image/png">
-</head>
-<body>
-    <div id="app">
-        <div id="gym-page">
-            <header>
-                <div class="header-logo">LEVEL</div>
-                <div class="header-logo">PUMP ME</div>
-            </header>
+const tg = window.Telegram.WebApp;
 
-            <main>
-                <div class="fitness-level">Fitness Level 3: Buff Beginner 🏋️‍♂️</div>
-                <div class="stats left">
-                    <div class="meter muscle-mass">
-                        <div class="meter-fill"></div>
-                        <span class="meter-value">15,400</span>
-                    </div>
-                </div>
+document.addEventListener('DOMContentLoaded', () => {
+    let currentPage = 'gym';
+    let reps = parseInt(localStorage.getItem('reps')) || 0;
+    let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
+    let pump = parseInt(localStorage.getItem('pump')) || 0;
+    let energy = parseInt(localStorage.getItem('energy')) || 1000;
+    const maxEnergy = 1000;
 
-                <div class="character-container">
-                    <div id="character-clickable-area">
-                        <img src="/images/bull_default.png" alt="Bull Character" id="character" class="character">
-                        <div class="progress-ring"></div>
-                    </div>
-                </div>
+    tg.ready();
 
-                <div class="stats right">
-                    <div class="meter pump">
-                        <div class="meter-fill"></div>
-                        <span class="meter-value">64/1000</span>
-                    </div>
-                </div>
+    function updateUI() {
+        const scoreDisplay = document.getElementById('score-display');
+        const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
+        const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
+        const pumpMeter = document.querySelector('.pump .meter-fill');
+        const pumpValue = document.querySelector('.pump .meter-value');
+        const energyBar = document.querySelector('.energy-fill');
 
-                <div id="score-display">Clean Reps: 16</div>
-            </main>
+        if (scoreDisplay) scoreDisplay.textContent = `Clean Reps: ${reps}`;
+        
+        if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
+        if (muscleMassValue) muscleMassValue.textContent = muscleMass;
+        
+        if (pumpMeter) pumpMeter.style.height = `${(pump / 1000) * 100}%`;
+        if (pumpValue) pumpValue.textContent = `${pump}/1000`;
+        
+        if (energyBar) energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
 
-            <div class="bottom-stats">
-                <div class="character-stats">
-                    <div class="stat-bar">
-                        <div class="stat-progress">
-                            <div class="stat-fill" style="width: 60%;"></div>
-                            <span class="stat-text">Muscle Growth</span>
-                        </div>
-                    </div>
-                    <div class="stat-bar">
-                        <div class="stat-progress">
-                            <div class="stat-fill" style="width: 40%;"></div>
-                            <span class="stat-text">Agility</span>
-                        </div>
-                    </div>
-                    <div class="stat-bar">
-                        <div class="stat-progress">
-                            <div class="stat-fill" style="width: 30%;"></div>
-                            <span class="stat-text">Regeneration</span>
-                        </div>
-                    </div>
-                    <div class="stat-bar">
-                        <div class="stat-progress">
-                            <div class="stat-fill" style="width: 50%;"></div>
-                            <span class="stat-text">Cardio</span>
-                        </div>
-                    </div>
-                    <div class="stat-bar">
-                        <div class="stat-progress">
-                            <div class="stat-fill" style="width: 70%;"></div>
-                            <span class="stat-text">Social</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="energy-bar">
-                    <div class="energy-fill"></div>
-                </div>
-            </div>
-        </div>
+        localStorage.setItem('reps', reps);
+        localStorage.setItem('muscleMass', muscleMass);
+        localStorage.setItem('pump', pump);
+        localStorage.setItem('energy', energy);
+    }
 
-        <div id="boosts-page" style="display: none;">
-            <header>
-                <div class="header-logo">PUMP ME</div>
-            </header>
+    function regenerateEnergy() {
+        if (energy < maxEnergy) {
+            energy = Math.min(maxEnergy, energy + 1);
+            updateUI();
+        }
+    }
 
-            <main id="boosts-main">
-                <h1>Boosts</h1>
-                <div class="boost-categories">
-                    <button class="category-btn active" data-category="nutrition">Nutrition</button>
-                    <button class="category-btn" data-category="equipment">Equipment</button>
-                    <button class="category-btn" data-category="activities">Activities</button>
-                    <button class="category-btn" data-category="training">Training</button>
-                </div>
+    setInterval(regenerateEnergy, 1000);
 
-                <div class="boost-items" id="boost-items">
-                    <!-- Items will be dynamically added here -->
-                </div>
-            </main>
-        </div>
+    function handleCharacterClick(event) {
+        if (energy > 0) {
+            reps++;
+            pump = Math.min(1000, pump + 1);
+            muscleMass += 10;
+            energy = Math.max(0, energy - 1);
 
-        <div id="challenges-page" style="display: none;">
-            <header>
-                <div class="header-logo">PUMP ME</div>
-            </header>
-            <main class="challenges-main">
-                <h2>Challenges</h2>
-                <div id="challenges-container">
-                    <!-- Challenges will be dynamically added here -->
-                </div>
-            </main>
-        </div>
+            updateUI();
+            
+            const character = document.getElementById('character');
+            if (character) {
+                character.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    character.style.transform = 'scale(1)';
+                }, 100);
+            }
 
-        <div id="leaderboard-page" style="display: none;">
-            <header>
-                <div class="header-logo">PUMP ME</div>
-            </header>
-            <main class="leaderboard-main">
-                <h2>Top Pumpers</h2>
-                <table id="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>RANK</th>
-                            <th>HERO</th>
-                            <th>CLEAN REPS</th>
-                            <th>DIVINE REWARD</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <!-- Rows will be dynamically added here -->
-                    </tbody>
-                </table>
-                <button id="back-button">RETURN TO TRAINING</button>
-            </main>
-        </div>
+            const feedbackEl = document.createElement('div');
+            feedbackEl.className = 'tap-plus-one';
+            feedbackEl.textContent = '+1';
+            feedbackEl.style.left = (event.clientX - 15) + 'px';
+            feedbackEl.style.top = (event.clientY - 15) + 'px';
+            document.body.appendChild(feedbackEl);
+            
+            setTimeout(() => {
+                feedbackEl.remove();
+            }, 1000);
 
-        <nav>
-            <button class="nav-btn active" id="gym-btn">🏋️ Gym</button>
-            <button class="nav-btn" id="boosts-btn">🚀 Boosts</button>
-            <button class="nav-btn" id="challenges-btn">🏆 Challenges</button>
-            <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
-        </nav>
+            fetch('/api/score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
+                    score: 1, 
+                    username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Clean Reps updated:', data.totalScore);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
 
-        <div id="version-display">PUMPME.APP v1.0.3</div>
-    </div>
+    function loadPage(pageName) {
+        if (pageName === currentPage) return;
+        currentPage = pageName;
 
-    <script src="/app_v2.js"></script>
-</body>
-</html>
+        // Hide all pages
+        document.getElementById('gym-page').style.display = 'none';
+        document.getElementById('boosts-page').style.display = 'none';
+        document.getElementById('challenges-page').style.display = 'none';
+        document.getElementById('leaderboard-page').style.display = 'none';
+
+        // Show the selected page
+        document.getElementById(`${pageName}-page`).style.display = 'block';
+
+        // Update active nav button
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`${pageName}-btn`).classList.add('active');
+
+        if (pageName === 'boosts') {
+            loadBoostsData();
+        }
+
+        updateUI();
+    }
+
+    function loadBoostsData() {
+        const boostItems = document.getElementById('boost-items');
+        if (boostItems) {
+            displayBoosts('nutrition');
+        }
+    }
+
+    function attachEventListeners() {
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const page = this.id.split('-')[0];
+                if (page === 'top') {
+                    loadPage('leaderboard');
+                    updateLeaderboard();
+                } else {
+                    loadPage(page);
+                }
+            });
+        });
+
+        document.getElementById('back-button')?.addEventListener('click', () => {
+            loadPage('gym');
+        });
+
+        const characterClickableArea = document.getElementById('character-clickable-area');
+        if (characterClickableArea) {
+            characterClickableArea.addEventListener('click', handleCharacterClick);
+        }
+
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                displayBoosts(button.dataset.category);
+            });
+        });
+    }
+
+    function updateLeaderboard() {
+        fetch('/api/leaderboard')
+        .then(response => response.json())
+        .then(leaderboard => {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            if (leaderboardBody) {
+                leaderboardBody.innerHTML = '';
+                leaderboard.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${entry.userId}</td>
+                        <td>${entry.score}</td>
+                        <td>${entry.pumping}</td>
+                    `;
+                    leaderboardBody.appendChild(row);
+                });
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    const boosts = {
+        nutrition: [
+            { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 50 },
+            { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 75 },
+            { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 30 },
+            { name: "Steak", icon: "🥩", description: "High protein meal", price: 100 },
+            { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 20 },
+        ],
+        equipment: [
+            { name: "Gym Entry", icon: "🏋️", description: "Access to gym facilities", price: 150 },
+            { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 500 },
+            { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 200 },
+        ],
+        activities: [
+            { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 80 },
+            { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 100 },
+            { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 90 },
+            { name: "Swimming", icon: "🏊", description: "Full body workout", price: 120 },
+            { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 70 },
+        ],
+        training: [
+            { name: "Chest Day", icon: "💪", description: "10x reps for chest", price: 300 },
+            { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 300 },
+            { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 300 },
+            { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 300 },
+            { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 300 },
+        ]
+    };
+
+    function displayBoosts(category) {
+        const boostItems = document.getElementById('boost-items');
+        if (boostItems) {
+            boostItems.innerHTML = '';
+            boosts[category].forEach(boost => {
+                const boostElement = document.createElement('div');
+                boostElement.className = 'boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-icon">${boost.icon}</div>
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-description">${boost.description}</div>
+                    <div class="boost-price">${boost.price} 💰</div>
+                `;
+                boostItems.appendChild(boostElement);
+            });
+        }
+    }
+
+    setInterval(updateLeaderboard, 30000);
+
+    tg.expand();
+
+    // Initial setup
+    attachEventListeners();
+    loadPage('gym');
+});
