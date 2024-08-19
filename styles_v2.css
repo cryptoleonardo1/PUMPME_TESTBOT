@@ -20,7 +20,6 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  position: relative;
 }
 
 .header-logo {
@@ -32,15 +31,6 @@ header {
   border: 2px solid #ffffff;
 }
 
-#version-display {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 12px;
-  color: #ffd700;
-}
-
 main {
   flex-grow: 1;
   display: flex;
@@ -49,7 +39,7 @@ main {
   justify-content: space-between;
   padding: 10px;
   position: relative;
-  padding-bottom: 220px;
+  padding-bottom: 220px; /* Adjust this value as needed */
 }
 
 .stats {
@@ -87,9 +77,9 @@ main {
   height: 50%;
 }
 
-.energy .meter-fill {
+.pump .meter-fill {
   background-color: #FF5252;
-  height: 81%;
+  height: 0%;
 }
 
 .meter-value {
@@ -110,7 +100,7 @@ main {
   align-items: center;
 }
 
-.fitness-level {
+.rank {
   position: absolute;
   top: 10px;
   left: 0;
@@ -154,8 +144,43 @@ main {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+#pump-points-display {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.pump-points-bar {
+  width: 80%;
+  height: 15px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 7px;
+  overflow: hidden;
+  margin: 0 auto 10px;
+}
+
+.pump-points-fill {
+  height: 100%;
+  background-color: #ffd700;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.fitness-level {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffd700;
 }
 
 .bottom-stats {
@@ -167,39 +192,25 @@ main {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-#clean-reps-container {
+#pump-points-container {
   margin-bottom: 10px;
 }
 
-#clean-reps-display {
-  font-size: 18px;
-  font-weight: bold;
-  color: #ffd700;
-  text-align: center;
+.character-stats {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.stat-bar {
   margin-bottom: 5px;
 }
 
-.clean-reps-bar {
+.energy-bar {
   width: 100%;
   height: 15px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 7px;
   overflow: hidden;
-  margin: 0 auto 10px;
-}
-
-.clean-reps-fill {
-  height: 100%;
-  background-color: #ffd700;
-  width: 80%;
-  transition: width 0.3s;
-}
-
-.character-stats {
-  width: 100%;
-}
-
-.stat-bar {
   margin-bottom: 5px;
 }
 
@@ -252,6 +263,17 @@ nav {
 
 .nav-btn.active {
   color: #2196F3;
+}
+
+#version-display {
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  color: #ffd700;
+  z-index: 1000;
 }
 
 /* Leaderboard styles */

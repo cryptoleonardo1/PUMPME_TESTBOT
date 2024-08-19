@@ -1,198 +1,152 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let currentPage = 'gym';
-    let reps = parseInt(localStorage.getItem('reps')) || 0;
-    let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
-    let pump = parseInt(localStorage.getItem('pump')) || 0;
-    let energy = parseInt(localStorage.getItem('energy')) || 1000;
-    const maxEnergy = 1000;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PUMPME.APP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/styles_v2.css">
+    <link rel="stylesheet" href="/boosts.css">
+    <link rel="icon" href="/images/x-icon.png" type="image/png">
+</head>
+<body>
+    <div id="app">
+        <div id="gym-page">
+            <header>
+                <div class="header-logo">LEVEL</div>
+                <div class="header-logo">PUMP ME</div>
+            </header>
 
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+            <main>
+                <div class="fitness-level">Fitness Level 3: Buff Beginner 🏋️‍♂️</div>
+                <div class="stats left">
+                    <div class="meter muscle-mass">
+                        <div class="meter-fill"></div>
+                        <span class="meter-value">15,400</span>
+                    </div>
+                </div>
 
-    function updateUI() {
-        const cleanRepsDisplay = document.getElementById('clean-reps-display');
-        const cleanRepsFill = document.querySelector('.clean-reps-fill');
-        const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
-        const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-        const energyMeter = document.querySelector('.energy .meter-fill');
-        const energyValue = document.querySelector('.energy .meter-value');
-    
-        if (cleanRepsDisplay) cleanRepsDisplay.textContent = `Clean Reps: ${reps}`;
-        if (cleanRepsFill) {
-            const maxWidth = 100; // You can adjust this value based on your desired max Clean Reps
-            const fillWidth = Math.min((reps / maxWidth) * 100, 100);
-            cleanRepsFill.style.width = `${fillWidth}%`;
-        }
-        
-        if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
-        if (muscleMassValue) muscleMassValue.textContent = muscleMass;
-        
-        if (energyMeter) energyMeter.style.height = `${(energy / maxEnergy) * 100}%`;
-        if (energyValue) energyValue.textContent = `${energy}/${maxEnergy}`;
-    
-        // Update Fitness Level display
-        const fitnessLevelDisplay = document.querySelector('.fitness-level');
-        if (fitnessLevelDisplay) {
-            let level = 1;
-            let title = "Novice Lifter";
-            
-            if (reps >= 1000) {
-                level = 5;
-                title = "Legendary Pumper";
-            } else if (reps >= 500) {
-                level = 4;
-                title = "Elite Muscle";
-            } else if (reps >= 100) {
-                level = 3;
-                title = "Buff Beginner";
-            } else if (reps >= 50) {
-                level = 2;
-                title = "Gym Enthusiast";
-            }
-            
-            fitnessLevelDisplay.textContent = `Rank ${level}: ${title} 🐂`;
-        }
-    
-        localStorage.setItem('reps', reps);
-        localStorage.setItem('muscleMass', muscleMass);
-        localStorage.setItem('pump', pump);
-        localStorage.setItem('energy', energy);
-    }
-    
-    function handleCharacterClick(event) {
-        if (energy > 0) {
-            reps++;
-            pump = Math.min(1000, pump + 1);
-            muscleMass += 10;
-            energy = Math.max(0, energy - 1);
-    
-            updateUI();
-            
-            const character = document.getElementById('character');
-            if (character) {
-                character.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    character.style.transform = 'scale(1)';
-                }, 100);
-            }
-    
-            const feedbackEl = document.createElement('div');
-            feedbackEl.className = 'tap-plus-one';
-            feedbackEl.textContent = '+1';
-            feedbackEl.style.left = (event.clientX - 15) + 'px';
-            feedbackEl.style.top = (event.clientY - 15) + 'px';
-            document.body.appendChild(feedbackEl);
-            
-            setTimeout(() => {
-                feedbackEl.remove();
-            }, 1000);
-    
-            fetch('/api/score', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
-                    score: 1, 
-                    username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Pump Points updated:', data.totalScore);
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    }
+                <div class="character-container">
+                    <div id="character-clickable-area">
+                        <img src="/images/bull_default.png" alt="Bull Character" id="character" class="character">
+                        <div class="progress-ring"></div>
+                    </div>
+                </div>
 
-    function loadPage(pageName) {
-        if (pageName === currentPage) return;
-        currentPage = pageName;
+                <div class="stats right">
+                    <div class="meter pump">
+                        <div class="meter-fill"></div>
+                        <span class="meter-value">64/1000</span>
+                    </div>
+                </div>
 
-        // Hide all pages
-        document.getElementById('gym-page').style.display = 'none';
-        document.getElementById('boosts-page').style.display = 'none';
-        document.getElementById('challenges-page').style.display = 'none';
-        document.getElementById('leaderboard-page').style.display = 'none';
+                <div id="score-display">Clean Reps: 16</div>
+            </main>
 
-        // Show the selected page
-        const selectedPage = document.getElementById(`${pageName}-page`);
-        if (selectedPage) {
-            selectedPage.style.display = 'block';
-        }
+            <div class="bottom-stats">
+                <div class="character-stats">
+                    <div class="stat-bar">
+                        <div class="stat-progress">
+                            <div class="stat-fill" style="width: 60%;"></div>
+                            <span class="stat-text">Muscle Growth</span>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-progress">
+                            <div class="stat-fill" style="width: 40%;"></div>
+                            <span class="stat-text">Agility</span>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-progress">
+                            <div class="stat-fill" style="width: 30%;"></div>
+                            <span class="stat-text">Regeneration</span>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-progress">
+                            <div class="stat-fill" style="width: 50%;"></div>
+                            <span class="stat-text">Cardio</span>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-progress">
+                            <div class="stat-fill" style="width: 70%;"></div>
+                            <span class="stat-text">Social</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="energy-bar">
+                    <div class="energy-fill"></div>
+                </div>
+            </div>
+        </div>
 
-        // Update active nav button
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.getElementById(`${pageName}-btn`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
-        }
+        <div id="boosts-page" style="display: none;">
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
 
-        if (pageName === 'boosts') {
-            loadBoostsData();
-        } else if (pageName === 'challenges') {
-            loadChallenges();
-        } else if (pageName === 'leaderboard') {
-            updateLeaderboard();
-        }
+            <main id="boosts-main">
+                <h1>Boosts</h1>
+                <div class="boost-categories">
+                    <button class="category-btn active" data-category="nutrition">Nutrition</button>
+                    <button class="category-btn" data-category="equipment">Equipment</button>
+                    <button class="category-btn" data-category="activities">Activities</button>
+                    <button class="category-btn" data-category="training">Training</button>
+                </div>
 
-        updateUI();
-    }
+                <div class="boost-items" id="boost-items">
+                    <!-- Items will be dynamically added here -->
+                </div>
+            </main>
+        </div>
 
-    function loadBoostsData() {
-        // Implement boost loading logic here
-    }
+        <div id="challenges-page" style="display: none;">
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
+            <main class="challenges-main">
+                <h2>Challenges</h2>
+                <div id="challenges-container">
+                    <!-- Challenges will be dynamically added here -->
+                </div>
+            </main>
+        </div>
 
-    function loadChallenges() {
-        // Implement challenge loading logic here
-    }
+        <div id="leaderboard-page" style="display: none;">
+            <header>
+                <div class="header-logo">PUMP ME</div>
+            </header>
+            <main class="leaderboard-main">
+                <h2>Top Pumpers</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>HERO</th>
+                            <th>CLEAN REPS</th>
+                            <th>DIVINE REWARD</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+                <button id="back-button">RETURN TO TRAINING</button>
+            </main>
+        </div>
 
-    function updateLeaderboard() {
-        fetch('/api/leaderboard')
-        .then(response => response.json())
-        .then(leaderboard => {
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            if (leaderboardBody) {
-                leaderboardBody.innerHTML = '';
-                
-                const rewards = [
-                    "Gym membership", "Dumbbells", "Gym entry",
-                    "Protein Shake", "Protein Shake", "Protein Shake",
-                    "Protein Shake", "Protein Shake", "Protein Shake",
-                    "Protein Shake"
-                ];
-    
-                for (let i = 0; i < 10; i++) {
-                    const entry = leaderboard[i] || { userId: '---', score: '---' };
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${i + 1}</td>
-                        <td>${entry.userId}</td>
-                        <td>${entry.score}</td>
-                        <td>${rewards[i]}</td>
-                    `;
-                    leaderboardBody.appendChild(row);
-                }
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
+        <nav>
+            <button class="nav-btn active" id="gym-btn">🏋️ Gym</button>
+            <button class="nav-btn" id="boosts-btn">🚀 Boosts</button>
+            <button class="nav-btn" id="challenges-btn">🏆 Challenges</button>
+            <button class="nav-btn" id="top-pumpers-btn">👥 Top Pumpers</button>
+        </nav>
 
-    // Attach event listeners
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const page = this.id.split('-')[0];
-            loadPage(page === 'top-pumpers' ? 'leaderboard' : page);
-        });
-    });
+        <div id="version-display">PUMPME.APP v1.0.3</div>
+    </div>
 
-    const characterClickableArea = document.getElementById('character-clickable-area');
-    if (characterClickableArea) {
-        characterClickableArea.addEventListener('click', handleCharacterClick);
-    }
-
-    // Initial setup
-    loadPage('gym');
-    tg.expand();
-});
+    <script src="/app_v2.js"></script>
+</body>
+</html>
