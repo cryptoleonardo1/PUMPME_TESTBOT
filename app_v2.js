@@ -200,6 +200,12 @@ function handleCharacterClick(event) {
         })
         .catch(error => console.error('Error:', error));
     }
+    
+    // Call updateLeaderboard when the page loads
+    document.addEventListener('DOMContentLoaded', updateLeaderboard);
+    
+    // Update leaderboard every 30 seconds
+    setInterval(updateLeaderboard, 30000);
 
     const boosts = {
         nutrition: [

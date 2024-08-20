@@ -6,12 +6,7 @@ const app = express();
 console.log('Starting server...');
 
 // Redis client setup
-const redis = new Redis({
-  host: 'master-marlin-55875.upstash.io',
-  port: 6379,
-  password: 'AdpDAAIjcDEwNDMxMWY2NTQwYjQ0MWE2YmE5YzE2NmRkZTIzZmJlMXAxMA',
-  tls: {}
-});
+const redis = new Redis(process.env.REDIS_URL);
 
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
@@ -56,16 +51,7 @@ app.get('/api/leaderboard', async (req, res) => {
     for (let i = 0; i < leaderboardData.length; i += 2) {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1]);
-      let pumping;
-      switch (i / 2) {
-        case 0: pumping = "Chest"; break;
-        case 1: pumping = "Biceps"; break;
-        case 2: pumping = "Triceps"; break;
-        case 3: pumping = "Ass"; break;
-        case 4: pumping = "Abs"; break;
-        default: pumping = "Belly fat";
-      }
-      leaderboard.push({ userId, score, pumping });
+      leaderboard.push({ userId, score, pumping: "Various" });
     }
     console.log('Processed leaderboard:', leaderboard);
     res.json(leaderboard);
