@@ -2,7 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.BOT_TOKEN;
 
-console.log('BOT_TOKEN:', token); // For debugging
+console.log('BOT_TOKEN:', token ? 'Is set' : 'Is not set'); // For debugging without exposing the token
 
 if (!token) {
   console.error('BOT_TOKEN is not set. Please set the environment variable.');
@@ -11,7 +11,17 @@ if (!token) {
 
 const bot = new TelegramBot(token, {polling: true});
 
-const welcomeImageUrl = 'https://imgur.com/ZDWfcal';
+bot.on('polling_error', (error) => {
+  console.error('Polling error:', error);
+});
+
+bot.getMe().then((botInfo) => {
+  console.log('Bot initialized successfully:', botInfo.username);
+}).catch((error) => {
+  console.error('Error initializing bot:', error);
+});
+
+const welcomeImageUrl = 'https://i.imgur.com/ZDWfcal.png';
 
 function sendWelcomeMessage(chatId) {
   bot.sendPhoto(chatId, welcomeImageUrl, {
@@ -25,27 +35,24 @@ function sendWelcomeMessage(chatId) {
       ]]
     }
   }).then(() => {
-    console.log('Welcome message sent successfully');
+    console.log('Welcome message sent successfully to chat ID:', chatId);
   }).catch((error) => {
-    console.error('Error sending welcome message:', error);
+    console.error('Error sending welcome message to chat ID:', chatId, 'Error:', error);
   });
 }
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
+  console.log('Received /start command from chat ID:', chatId);
   sendWelcomeMessage(chatId);
 });
 
 bot.on('message', (msg) => {
-  console.log('Received message:', msg.text);
+  console.log('Received message:', msg.text, 'from chat ID:', msg.chat.id);
   if (msg.text && !msg.text.startsWith('/')) {
     const chatId = msg.chat.id;
     sendWelcomeMessage(chatId);
   }
-});
-
-bot.on('polling_error', (error) => {
-  console.log('Polling error:', error);
 });
 
 console.log('Bot is running...');
