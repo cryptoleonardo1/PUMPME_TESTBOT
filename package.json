@@ -1,17 +1,16 @@
 {
   "name": "pumpme-testbot",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "bot.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node bot.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.17.1",
-    "ioredis": "^5.4.1",
-    "node-telegram-bot-api": "^0.66.0"
+    "dotenv": "^10.0.0",
+    "node-telegram-bot-api": "^0.54.0",
+    "ioredis": "^5.4.1"
   },
   "engines": {
-    "node": "20.x"
+    "node": "16.x"
   }
 }

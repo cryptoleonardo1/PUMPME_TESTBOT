@@ -1,15 +1,20 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
+const Redis = require('ioredis');
+
 const token = process.env.BOT_TOKEN;
+const redisUrl = process.env.REDIS_URL;
 
-console.log('BOT_TOKEN:', token ? 'Is set' : 'Is not set'); // For debugging without exposing the token
+console.log('BOT_TOKEN:', token ? 'Is set' : 'Is not set');
+console.log('REDIS_URL:', redisUrl ? 'Is set' : 'Is not set');
 
-if (!token) {
-  console.error('BOT_TOKEN is not set. Please set the environment variable.');
+if (!token || !redisUrl) {
+  console.error('BOT_TOKEN or REDIS_URL is not set. Please set the environment variables.');
   process.exit(1);
 }
 
 const bot = new TelegramBot(token, {polling: true});
+const redis = new Redis(redisUrl);
 
 bot.on('polling_error', (error) => {
   console.error('Polling error:', error);
@@ -41,9 +46,14 @@ function sendWelcomeMessage(chatId) {
   });
 }
 
-bot.onText(/\/start/, (msg) => {
+// Example of using Redis
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   console.log('Received /start command from chat ID:', chatId);
+  
+  // Increment user count in Redis
+  await redis.incr('user_count');
+  
   sendWelcomeMessage(chatId);
 });
 
