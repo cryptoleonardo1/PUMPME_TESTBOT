@@ -1,4 +1,3 @@
-require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const Redis = require('ioredis');
 
@@ -15,16 +14,6 @@ if (!token || !redisUrl) {
 
 const bot = new TelegramBot(token, {polling: true});
 const redis = new Redis(redisUrl);
-
-bot.on('polling_error', (error) => {
-  console.error('Polling error:', error);
-});
-
-bot.getMe().then((botInfo) => {
-  console.log('Bot initialized successfully:', botInfo.username);
-}).catch((error) => {
-  console.error('Error initializing bot:', error);
-});
 
 const welcomeImageUrl = 'https://i.imgur.com/ZDWfcal.png';
 
@@ -46,12 +35,10 @@ function sendWelcomeMessage(chatId) {
   });
 }
 
-// Example of using Redis
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   console.log('Received /start command from chat ID:', chatId);
   
-  // Increment user count in Redis
   await redis.incr('user_count');
   
   sendWelcomeMessage(chatId);
@@ -60,8 +47,7 @@ bot.onText(/\/start/, async (msg) => {
 bot.on('message', (msg) => {
   console.log('Received message:', msg.text, 'from chat ID:', msg.chat.id);
   if (msg.text && !msg.text.startsWith('/')) {
-    const chatId = msg.chat.id;
-    sendWelcomeMessage(chatId);
+    sendWelcomeMessage(msg.chat.id);
   }
 });
 
