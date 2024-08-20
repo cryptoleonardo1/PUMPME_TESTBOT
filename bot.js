@@ -11,7 +11,7 @@ if (!token) {
 
 const bot = new TelegramBot(token, {polling: true});
 
-const welcomeImageUrl = 'https://pumpme-testbot.vercel.app/images/bull_default.png';
+const welcomeImageUrl = 'https://imgur.com/ZDWfcal';
 
 function sendWelcomeMessage(chatId) {
   bot.sendPhoto(chatId, welcomeImageUrl, {
