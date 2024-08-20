@@ -5,8 +5,24 @@ const app = express();
 
 console.log('Starting server...');
 
-// Redis client setup
-const redis = new Redis(process.env.REDIS_URL);
+// Redis client setup with retry strategy
+const redis = new Redis(process.env.REDIS_URL, {
+  retryStrategy(times) {
+    const delay = Math.min(times * 50, 2000);
+    console.log(`Retrying Redis connection, attempt ${times}`);
+    return delay;
+  },
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false
+});
+
+redis.on('error', (error) => {
+  console.error('Redis connection error:', error);
+});
+
+redis.on('connect', () => {
+  console.log('Successfully connected to Redis');
+});
 
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));

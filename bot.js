@@ -13,25 +13,22 @@ if (!token || !redisUrl) {
   process.exit(1);
 }
 
-const redisOptions = {
-  retryStrategy: function(times) {
+const redis = new Redis(redisUrl, {
+  retryStrategy(times) {
     const delay = Math.min(times * 50, 2000);
     console.log(`Retrying Redis connection, attempt ${times}`);
     return delay;
   },
   maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-  connectTimeout: 30000
-};
+  enableReadyCheck: false
+});
 
-const redis = new Redis(redisUrl, redisOptions);
+redis.on('error', (error) => {
+  console.error('Redis connection error:', error);
+});
 
 redis.on('connect', () => {
   console.log('Successfully connected to Redis');
-});
-
-redis.on('error', (err) => {
-  console.error('Redis connection error:', err);
 });
 
 const bot = new TelegramBot(token, {polling: true});
