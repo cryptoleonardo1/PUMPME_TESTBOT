@@ -1,3 +1,4 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const Redis = require('ioredis');
 
@@ -12,12 +13,33 @@ if (!token || !redisUrl) {
   process.exit(1);
 }
 
+const redisOptions = {
+  retryStrategy: function(times) {
+    const delay = Math.min(times * 50, 2000);
+    console.log(`Retrying Redis connection, attempt ${times}`);
+    return delay;
+  },
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+  connectTimeout: 30000
+};
+
+const redis = new Redis(redisUrl, redisOptions);
+
+redis.on('connect', () => {
+  console.log('Successfully connected to Redis');
+});
+
+redis.on('error', (err) => {
+  console.error('Redis connection error:', err);
+});
+
 const bot = new TelegramBot(token, {polling: true});
-const redis = new Redis(redisUrl);
 
 const welcomeImageUrl = 'https://i.imgur.com/ZDWfcal.png';
 
 function sendWelcomeMessage(chatId) {
+  console.log('Attempting to send welcome message to chat ID:', chatId);
   bot.sendPhoto(chatId, welcomeImageUrl, {
     caption: 'Welcome to PUMP ME! Tap the button below to start the game.',
     reply_markup: {
@@ -39,7 +61,12 @@ bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   console.log('Received /start command from chat ID:', chatId);
   
-  await redis.incr('user_count');
+  try {
+    await redis.incr('user_count');
+    console.log('Incremented user count');
+  } catch (error) {
+    console.error('Error incrementing user count:', error);
+  }
   
   sendWelcomeMessage(chatId);
 });
@@ -51,4 +78,19 @@ bot.on('message', (msg) => {
   }
 });
 
-console.log('Bot is running...');
+bot.on('polling_error', (error) => {
+  console.error('Polling error:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+console.log('Bot is starting...');
+
+bot.getMe().then((botInfo) => {
+  console.log('Bot information:', botInfo);
+  console.log('Bot is running and ready to receive messages');
+}).catch((error) => {
+  console.error('Error getting bot information:', error);
+});
