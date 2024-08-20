@@ -4,25 +4,42 @@ const Redis = require('ioredis');
 const app = express();
 
 console.log('Starting server...');
+console.log('REDIS_URL:', process.env.REDIS_URL ? 'Is set' : 'Is not set');
 
-// Redis client setup with retry strategy
-const redis = new Redis(process.env.REDIS_URL, {
-  retryStrategy(times) {
-    const delay = Math.min(times * 50, 2000);
-    console.log(`Retrying Redis connection, attempt ${times}`);
-    return delay;
-  },
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false
-});
+let redis;
 
-redis.on('error', (error) => {
-  console.error('Redis connection error:', error);
-});
+function setupRedis() {
+  redis = new Redis(process.env.REDIS_URL, {
+    tls: {
+      rejectUnauthorized: false
+    },
+    retryStrategy(times) {
+      const delay = Math.min(times * 50, 2000);
+      console.log(`Retrying Redis connection, attempt ${times}`);
+      return delay;
+    },
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false,
+    reconnectOnError: function (err) {
+      console.log('Reconnect on error:', err);
+      return true;
+    }
+  });
 
-redis.on('connect', () => {
-  console.log('Successfully connected to Redis');
-});
+  redis.on('error', (error) => {
+    console.error('Redis connection error:', error);
+  });
+
+  redis.on('connect', () => {
+    console.log('Successfully connected to Redis');
+  });
+
+  redis.on('ready', () => {
+    console.log('Redis is ready');
+  });
+}
+
+setupRedis();
 
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
@@ -42,6 +59,17 @@ app.get('/', (req, res) => {
 app.get('/api/test', (req, res) => {
   console.log('Test API called');
   res.json({ message: 'API is working' });
+});
+
+app.get('/api/redis-test', async (req, res) => {
+  try {
+    await redis.set('test-key', 'test-value');
+    const value = await redis.get('test-key');
+    res.json({ success: true, value });
+  } catch (error) {
+    console.error('Redis test error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 app.post('/api/score', async (req, res) => {

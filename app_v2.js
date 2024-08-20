@@ -179,33 +179,50 @@ function handleCharacterClick(event) {
         });
     }
 
-    function updateLeaderboard() {
-        fetch('/api/leaderboard')
-        .then(response => response.json())
-        .then(leaderboard => {
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            if (leaderboardBody) {
-                leaderboardBody.innerHTML = '';
-                leaderboard.forEach((entry, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${entry.userId}</td>
-                        <td>${entry.score}</td>
-                        <td>${entry.pumping}</td>
-                    `;
-                    leaderboardBody.appendChild(row);
-                });
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-    
-    // Call updateLeaderboard when the page loads
-    document.addEventListener('DOMContentLoaded', updateLeaderboard);
-    
-    // Update leaderboard every 30 seconds
-    setInterval(updateLeaderboard, 30000);
+// Add this function at the end of your app_v2.js file
+
+function updateLeaderboard() {
+    console.log('Updating leaderboard...');
+    fetch('/api/leaderboard')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(leaderboard => {
+        console.log('Leaderboard data received:', leaderboard);
+        const leaderboardBody = document.getElementById('leaderboard-body');
+        if (leaderboardBody) {
+            leaderboardBody.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.userId}</td>
+                    <td>${entry.score}</td>
+                    <td>${entry.pumping}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        } else {
+            console.error('Leaderboard body element not found');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating leaderboard:', error);
+        const leaderboardBody = document.getElementById('leaderboard-body');
+        if (leaderboardBody) {
+            leaderboardBody.innerHTML = `<tr><td colspan="4">Error loading leaderboard: ${error.message}</td></tr>`;
+        }
+    });
+}
+
+// Call updateLeaderboard when the page loads
+document.addEventListener('DOMContentLoaded', updateLeaderboard);
+
+// Update leaderboard every 30 seconds
+setInterval(updateLeaderboard, 30000);
 
     const boosts = {
         nutrition: [
