@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const Redis = require('ioredis');
+const util = require('util');
 const app = express();
 
 console.log('Starting server...');
@@ -13,76 +14,49 @@ function setupRedis() {
     tls: {
       rejectUnauthorized: false
     },
+    connectTimeout: 10000, // 10 seconds
+    maxRetriesPerRequest: 3,
     retryStrategy(times) {
-      const delay = Math.min(times * 50, 2000);
-      console.log(`Retrying Redis connection, attempt ${times}`);
-      return delay;
-    },
-    maxRetriesPerRequest: null,
-    enableReadyCheck: false,
-    reconnectOnError: function (err) {
-      console.log('Reconnect on error:', err);
-      return true;
+      if (times > 3) {
+        return null; // stop retrying after 3 attempts
+      }
+      return Math.min(times * 200, 1000); // increase delay between retries
     }
   });
 
   redis.on('error', (error) => {
-    console.error('Redis connection error:', error);
+    console.error('Redis connection error:', util.inspect(error, { depth: null }));
   });
 
   redis.on('connect', () => {
     console.log('Successfully connected to Redis');
   });
-
-  redis.on('ready', () => {
-    console.log('Redis is ready');
-  });
 }
 
 setupRedis();
 
-// Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
 app.use(express.json());
 
-// Logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
-// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/api/test', (req, res) => {
-  console.log('Test API called');
-  res.json({ message: 'API is working' });
-});
-
 app.get('/api/redis-test', async (req, res) => {
   try {
-    await redis.set('test-key', 'test-value');
+    console.log('Redis test started');
+    await redis.set('test-key', 'test-value', 'EX', 60); // Set with 60 second expiry
     const value = await redis.get('test-key');
+    console.log('Redis test completed, value:', value);
     res.json({ success: true, value });
   } catch (error) {
-    console.error('Redis test error:', error);
+    console.error('Redis test error:', util.inspect(error, { depth: null }));
     res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/score', async (req, res) => {
-  console.log('Score update request received:', req.body);
-  try {
-    const { userId, score, username } = req.body;
-    await redis.zincrby('leaderboard', score, userId);
-    const totalScore = await redis.zscore('leaderboard', userId);
-    console.log(`Updated score for user ${userId}: ${totalScore}`);
-    res.json({ success: true, totalScore });
-  } catch (error) {
-    console.error('Error updating score:', error);
-    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 
@@ -93,30 +67,28 @@ app.get('/api/leaderboard', async (req, res) => {
     console.log('Raw leaderboard data:', leaderboardData);
     const leaderboard = [];
     for (let i = 0; i < leaderboardData.length; i += 2) {
-      const userId = leaderboardData[i];
-      const score = parseInt(leaderboardData[i + 1]);
-      leaderboard.push({ userId, score, pumping: "Various" });
+      leaderboard.push({ 
+        userId: leaderboardData[i], 
+        score: parseInt(leaderboardData[i + 1]),
+        pumping: "Various"
+      });
     }
-    console.log('Processed leaderboard:', leaderboard);
     res.json(leaderboard);
   } catch (error) {
-    console.error('Error fetching leaderboard:', error);
+    console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 
-// Catch-all route to serve index.html for any unmatched routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Express error:', err);
-  res.status(500).json({ success: false, error: 'Internal server error', details: err.message });
+  console.error('Express error:', util.inspect(err, { depth: null }));
+  res.status(500).json({ 
+    success: false, 
+    error: 'Internal server error', 
+    details: err.message
+  });
 });
 
-// Start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
