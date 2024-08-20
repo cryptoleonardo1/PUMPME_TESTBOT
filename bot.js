@@ -1,7 +1,8 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.BOT_TOKEN;
 
-console.log('BOT_TOKEN:', token); // Check if token is defined
+console.log('BOT_TOKEN:', token); // For debugging
 
 if (!token) {
   console.error('BOT_TOKEN is not set. Please set the environment variable.');
@@ -10,25 +11,11 @@ if (!token) {
 
 const bot = new TelegramBot(token, {polling: true});
 
-// Replace with your actual Google Drive image URL
-const welcomeImageUrl = 'https://drive.google.com/uc?export=view&id=1mN_L_utUNkfF5FvMKG7-56Epcf3kg8m9';
-
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  sendWelcomeMessage(chatId);
-});
-
-bot.on('message', (msg) => {
-  console.log('Received message:', msg.text);
-  const chatId = msg.chat.id;
-  sendWelcomeMessage(chatId);
-});
+const welcomeImageUrl = 'https://pumpme-testbot.vercel.app/images/bull_default.png';
 
 function sendWelcomeMessage(chatId) {
-  console.log('Sending welcome message to:', chatId);
-  
   bot.sendPhoto(chatId, welcomeImageUrl, {
-    caption: 'PUMP ME is live!',
+    caption: 'Welcome to PUMP ME! Tap the button below to start the game.',
     reply_markup: {
       inline_keyboard: [[
         {
@@ -43,6 +30,19 @@ function sendWelcomeMessage(chatId) {
     console.error('Error sending welcome message:', error);
   });
 }
+
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  sendWelcomeMessage(chatId);
+});
+
+bot.on('message', (msg) => {
+  console.log('Received message:', msg.text);
+  if (msg.text && !msg.text.startsWith('/')) {
+    const chatId = msg.chat.id;
+    sendWelcomeMessage(chatId);
+  }
+});
 
 bot.on('polling_error', (error) => {
   console.log('Polling error:', error);
