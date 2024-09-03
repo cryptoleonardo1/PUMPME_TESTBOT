@@ -17,21 +17,60 @@ bot.on('polling_error', (error) => {
   console.error('Polling error:', error);
 });
 
-// Welcome message
-bot.onText(/\/start/, async (msg) => {
+// Welcome message handler
+bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
-  
+
   try {
-    // Increment user count in Redis
-    await redis.incr('user_count');
-    const userCount = await redis.get('user_count');
-    
-    const message = `Welcome to PUMPME.APP! You are user number ${userCount}. Let's get pumped!`;
-    await bot.sendMessage(chatId, message);
+    // Check if this is the user's first interaction
+    const isNewUser = await redis.get(`user:${userId}:welcomed`) === null;
+
+    if (isNewUser) {
+      // Increment user count in Redis
+      await redis.incr('user_count');
+      const userCount = await redis.get('user_count');
+
+      // Send welcome message with image
+      const welcomeImage = 'https://i.imgur.com/ZDWfcal.jpg'; // Replace with your image URL
+      const welcomeText = `Welcome to PUMPME.APP! You are user number ${userCount}. Let's get pumped!`;
+
+      const keyboard = {
+        inline_keyboard: [
+          [{ text: 'START PUMPING', callback_data: 'start_pumping' }]
+        ]
+      };
+
+      await bot.sendPhoto(chatId, welcomeImage, {
+        caption: welcomeText,
+        reply_markup: JSON.stringify(keyboard)
+      });
+
+      // Mark user as welcomed
+      await redis.set(`user:${userId}:welcomed`, 'true');
+    }
   } catch (error) {
-    console.error('Error in /start command:', error);
+    console.error('Error in welcome message:', error);
     await bot.sendMessage(chatId, "Oops! Something went wrong. Please try again later.");
+  }
+});
+
+// Handle button press
+bot.on('callback_query', async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const userId = callbackQuery.from.id;
+
+  if (callbackQuery.data === 'start_pumping') {
+    try {
+      // Initialize user's pump count if not exists
+      await redis.hsetnx(`user:${userId}`, 'pumpCount', 0);
+
+      await bot.answerCallbackQuery(callbackQuery.id);
+      await bot.sendMessage(chatId, "Let's start pumping! Use the /pump command to pump.");
+    } catch (error) {
+      console.error('Error in start_pumping callback:', error);
+      await bot.sendMessage(chatId, "Oops! Something went wrong. Please try again later.");
+    }
   }
 });
 
