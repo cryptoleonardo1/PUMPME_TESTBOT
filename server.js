@@ -1,39 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const Redis = require('ioredis');
+const redis = require('./redis-client');
 const util = require('util');
 const app = express();
 
 console.log('Starting server...');
 console.log('REDIS_URL:', process.env.REDIS_URL ? 'Is set' : 'Is not set');
-
-let redis;
-
-function setupRedis() {
-  redis = new Redis(process.env.REDIS_URL, {
-    tls: {
-      rejectUnauthorized: false
-    },
-    connectTimeout: 10000, // 10 seconds
-    maxRetriesPerRequest: 3,
-    retryStrategy(times) {
-      if (times > 3) {
-        return null; // stop retrying after 3 attempts
-      }
-      return Math.min(times * 200, 1000); // increase delay between retries
-    }
-  });
-
-  redis.on('error', (error) => {
-    console.error('Redis connection error:', util.inspect(error, { depth: null }));
-  });
-
-  redis.on('connect', () => {
-    console.log('Successfully connected to Redis');
-  });
-}
-
-setupRedis();
 
 app.use(express.static(path.join(__dirname)));
 app.use(express.json());
@@ -50,7 +23,7 @@ app.get('/', (req, res) => {
 app.get('/api/redis-test', async (req, res) => {
   try {
     console.log('Redis test started');
-    await redis.set('test-key', 'test-value', 'EX', 60); // Set with 60 second expiry
+    await redis.set('test-key', 'test-value', 'EX', 60);
     const value = await redis.get('test-key');
     console.log('Redis test completed, value:', value);
     res.json({ success: true, value });
@@ -69,14 +42,14 @@ app.get('/api/leaderboard', async (req, res) => {
     for (let i = 0; i < leaderboardData.length; i += 2) {
       leaderboard.push({ 
         userId: leaderboardData[i], 
-        score: parseInt(leaderboardData[i + 1]),
+        score: parseInt(leaderboardData[i + 1], 10),
         pumping: "Various"
       });
     }
     res.json(leaderboard);
   } catch (error) {
     console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    res.status(500).json({ success: false, error: 'Error fetching leaderboard' });
   }
 });
 
@@ -85,7 +58,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ 
     success: false, 
     error: 'Internal server error', 
-    details: err.message
+    details: err.message,
+    stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack
   });
 });
 

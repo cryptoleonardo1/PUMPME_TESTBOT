@@ -1,6 +1,6 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
-const Redis = require('ioredis');
+const redis = require('./redis-client');
 
 // Bot token from environment variable
 const token = process.env.BOT_TOKEN;
@@ -8,32 +8,6 @@ if (!token) {
   console.error('BOT_TOKEN is not set in environment variables');
   process.exit(1);
 }
-
-// Redis client setup
-const redisUrl = process.env.REDIS_URL;
-if (!redisUrl) {
-  console.error('REDIS_URL is not set in environment variables');
-  process.exit(1);
-}
-
-const redis = new Redis(redisUrl, {
-  maxRetriesPerRequest: null,
-  retryStrategy(times) {
-    const delay = Math.min(times * 50, 2000);
-    console.log(`Retrying Redis connection, attempt ${times}`);
-    return delay;
-  },
-  connectTimeout: 20000,
-  commandTimeout: 10000
-});
-
-redis.on('connect', () => {
-  console.log('Successfully connected to Redis');
-});
-
-redis.on('error', (error) => {
-  console.error('Redis connection error:', error);
-});
 
 // Create a bot instance
 const bot = new TelegramBot(token, {polling: true});
@@ -70,9 +44,6 @@ bot.onText(/\/pump/, async (msg) => {
     // Increment user's pump count
     const pumpCount = await redis.hincrby(`user:${userId}`, 'pumpCount', 1);
     
-    // Update leaderboard
-    await redis.zadd('leaderboard', pumpCount, userId);
-    
     let message = `You've pumped ${pumpCount} times! 💪`;
     
     // Check for milestones
@@ -100,27 +71,6 @@ bot.onText(/\/stats/, async (msg) => {
     await bot.sendMessage(chatId, message);
   } catch (error) {
     console.error('Error in /stats command:', error);
-    await bot.sendMessage(chatId, "Oops! Something went wrong. Please try again later.");
-  }
-});
-
-// Leaderboard
-bot.onText(/\/leaderboard/, async (msg) => {
-  const chatId = msg.chat.id;
-  
-  try {
-    const leaderboard = await redis.zrevrange('leaderboard', 0, 4, 'WITHSCORES');
-    
-    let message = "🏆 Top Pumpers 🏆\n\n";
-    for (let i = 0; i < leaderboard.length; i += 2) {
-      const userId = leaderboard[i];
-      const pumpCount = leaderboard[i + 1];
-      message += `${i/2 + 1}. User ${userId}: ${pumpCount} pumps\n`;
-    }
-    
-    await bot.sendMessage(chatId, message);
-  } catch (error) {
-    console.error('Error in /leaderboard command:', error);
     await bot.sendMessage(chatId, "Oops! Something went wrong. Please try again later.");
   }
 });
