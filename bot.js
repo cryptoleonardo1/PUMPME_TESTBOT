@@ -1,23 +1,33 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
-const redis = require('./redis-client');
+const redis = require('ioredis');
 
+// Bot token from environment variable
 const token = process.env.BOT_TOKEN;
 if (!token) {
   console.error('BOT_TOKEN is not set in environment variables');
   process.exit(1);
 }
 
+// Redis setup
+const redisClient = new redis(process.env.REDIS_URL);
+
+redisClient.on('error', (err) => {
+  console.error('Redis Error:', err);
+});
+
+// Create a bot instance
 const bot = new TelegramBot(token, {polling: true});
 
+// Handle errors
 bot.on('polling_error', (error) => {
   console.error('Polling error:', error);
 });
 
 async function sendWelcomeMessage(chatId, userId) {
   try {
-    await redis.incr('user_count');
-    const userCount = await redis.get('user_count');
+    await redisClient.incr('user_count');
+    const userCount = await redisClient.get('user_count');
 
     const welcomeImage = 'https://i.imgur.com/ZDWfcal.jpg';
     const welcomeText = `Welcome to PUMPME.APP! You are user number ${userCount}. Let's get pumped!`;
@@ -33,13 +43,14 @@ async function sendWelcomeMessage(chatId, userId) {
       reply_markup: JSON.stringify(keyboard)
     });
 
-    await redis.set(`user:${userId}:welcomed`, 'true');
+    await redisClient.set(`user:${userId}:welcomed`, 'true');
   } catch (error) {
     console.error('Error in sendWelcomeMessage:', error);
     await bot.sendMessage(chatId, "Oops! Something went wrong. Please try again later.");
   }
 }
 
+// Handle /start command
 bot.onText(/\/start/, async (msg) => {
   console.log('Received /start command');
   const chatId = msg.chat.id;
@@ -47,13 +58,26 @@ bot.onText(/\/start/, async (msg) => {
   await sendWelcomeMessage(chatId, userId);
 });
 
+// Handle first-time users
+bot.on('message', async (msg) => {
+  if (msg.text !== '/start') {
+    const chatId = msg.chat.id;
+    const userId = msg.from.id;
+    const isWelcomed = await redisClient.get(`user:${userId}:welcomed`);
+    if (!isWelcomed) {
+      await sendWelcomeMessage(chatId, userId);
+    }
+  }
+});
+
+// Handle button press
 bot.on('callback_query', async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const userId = callbackQuery.from.id;
 
   if (callbackQuery.data === 'start_pumping') {
     try {
-      await redis.hsetnx(`user:${userId}`, 'pumpCount', 0);
+      await redisClient.hsetnx(`user:${userId}`, 'pumpCount', 0);
       await bot.answerCallbackQuery(callbackQuery.id);
       
       const keyboard = {
@@ -75,12 +99,13 @@ bot.on('callback_query', async (callbackQuery) => {
   }
 });
 
+// Handle user's pump action
 bot.onText(/\/pump/, async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   
   try {
-    const pumpCount = await redis.hincrby(`user:${userId}`, 'pumpCount', 1);
+    const pumpCount = await redisClient.hincrby(`user:${userId}`, 'pumpCount', 1);
     let message = `You've pumped ${pumpCount} times! 💪`;
     
     if (pumpCount === 10) {
@@ -96,12 +121,13 @@ bot.onText(/\/pump/, async (msg) => {
   }
 });
 
+// Get user stats
 bot.onText(/\/stats/, async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   
   try {
-    const pumpCount = await redis.hget(`user:${userId}`, 'pumpCount') || 0;
+    const pumpCount = await redisClient.hget(`user:${userId}`, 'pumpCount') || 0;
     const message = `Your Stats:\nTotal Pumps: ${pumpCount}`;
     await bot.sendMessage(chatId, message);
   } catch (error) {
