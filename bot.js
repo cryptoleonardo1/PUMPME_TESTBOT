@@ -19,7 +19,7 @@ async function sendWelcomeMessage(chatId, userId) {
     await redis.incr('user_count');
     const userCount = await redis.get('user_count');
 
-    const welcomeImage = 'https://i.imgur.com/ZDWfcal.jpg'; // Replace with your actual image URL
+    const welcomeImage = 'https://i.imgur.com/ZDWfcal.jpg';
     const welcomeText = `Welcome to PUMPME.APP! You are user number ${userCount}. Let's get pumped!`;
 
     const keyboard = {
@@ -46,17 +46,6 @@ bot.onText(/\/start/, async (msg) => {
   await sendWelcomeMessage(chatId, userId);
 });
 
-bot.on('message', async (msg) => {
-  if (msg.text !== '/start') {
-    const chatId = msg.chat.id;
-    const userId = msg.from.id;
-    const isWelcomed = await redis.get(`user:${userId}:welcomed`);
-    if (!isWelcomed) {
-      await sendWelcomeMessage(chatId, userId);
-    }
-  }
-});
-
 bot.on('callback_query', async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const userId = callbackQuery.from.id;
@@ -65,7 +54,19 @@ bot.on('callback_query', async (callbackQuery) => {
     try {
       await redis.hsetnx(`user:${userId}`, 'pumpCount', 0);
       await bot.answerCallbackQuery(callbackQuery.id);
-      await bot.sendMessage(chatId, "Game started! Use the /pump command to pump.");
+      
+      const keyboard = {
+        keyboard: [
+          [{text: '/pump'}],
+          [{text: '/stats'}]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+      };
+      
+      await bot.sendMessage(chatId, "Game started! Tap the /pump button to start pumping!", {
+        reply_markup: JSON.stringify(keyboard)
+      });
     } catch (error) {
       console.error('Error in start_pumping callback:', error);
       await bot.sendMessage(chatId, "Oops! Something went wrong. Please try again later.");
