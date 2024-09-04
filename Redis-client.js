@@ -1,12 +1,8 @@
 const Redis = require('ioredis');
 
-const REDIS_URL = process.env.REDIS_URL;
-console.log('Redis URL exists:', !!REDIS_URL);
-console.log('Redis URL:', REDIS_URL ? REDIS_URL.replace(/\/\/.*@/, '//****@') : 'Not provided');
-
-if (!REDIS_URL) {
-  throw new Error('REDIS_URL environment variable is not set');
-}
+const REDIS_URL = 'redis://default:AdpDAAIjcDEwNDMxMWY2NTQwYjQ0MWE2YmE5YzE2NmRkZTIzZmJlMXAxMA@master-marlin-55875.upstash.io:6379';
+console.log('Redis URL exists:', true);
+console.log('Redis URL:', REDIS_URL.replace(/\/\/.*@/, '//****@'));
 
 const redis = new Redis(REDIS_URL, {
   tls: { rejectUnauthorized: false },
