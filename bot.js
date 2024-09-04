@@ -41,6 +41,7 @@ async function sendWelcomeMessage(chatId, userId) {
 }
 
 bot.onText(/\/start/, async (msg) => {
+  console.log('Received /start command');
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   await sendWelcomeMessage(chatId, userId);
