@@ -1,281 +1,72 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    let currentPage = 'gym';
-    let reps = parseInt(localStorage.getItem('reps')) || 0;
-    let muscleMass = parseInt(localStorage.getItem('muscleMass')) || 15240;
-    let pump = parseInt(localStorage.getItem('pump')) || 0;
-    let energy = parseInt(localStorage.getItem('energy')) || 1000;
-    const maxEnergy = 1000;
+    let gains = 1543999;
+    let energy = 1000;
+    let level = 6;
+    let gainsPerRep = 12;
+    let gainsPerDay = 388;
 
-    tg.ready();
+    const gainsDisplay = document.getElementById('gains-display');
+    const energyBar = document.getElementById('energy-bar');
+    const energyStatus = document.getElementById('energy-status');
+    const levelDisplay = document.getElementById('level-display');
+    const gainsPerRepDisplay = document.querySelector('.status-item:nth-child(1) .status-value');
+    const statusDisplay = document.querySelector('.status-item:nth-child(2) .status-value');
+    const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
+    const pumpMeContainer = document.getElementById('pump-me-container');
+    const character = document.getElementById('character');
 
-// ... (keep existing code) ...
-
-function updateUI() {
-    const pumpPointsDisplay = document.getElementById('pump-points-display');
-    const pumpPointsFill = document.querySelector('.pump-points-fill');
-    const muscleMassMeter = document.querySelector('.muscle-mass .meter-fill');
-    const muscleMassValue = document.querySelector('.muscle-mass .meter-value');
-    const pumpMeter = document.querySelector('.pump .meter-fill');
-    const pumpValue = document.querySelector('.pump .meter-value');
-    const energyBar = document.querySelector('.energy-fill');
-
-    if (pumpPointsDisplay) pumpPointsDisplay.textContent = `Pump Points: ${reps}`;
-    if (pumpPointsFill) {
-        const maxWidth = 100; // You can adjust this value based on your desired max Pump Points
-        const fillWidth = Math.min((reps / maxWidth) * 100, 100);
-        pumpPointsFill.style.width = `${fillWidth}%`;
-    }
-    
-    if (muscleMassMeter) muscleMassMeter.style.height = `${Math.min(100, (muscleMass - 15240) / 100)}%`;
-    if (muscleMassValue) muscleMassValue.textContent = muscleMass;
-    
-    if (pumpMeter) pumpMeter.style.height = `${(pump / 1000) * 100}%`;
-    if (pumpValue) pumpValue.textContent = `${pump}/1000`;
-    
-    if (energyBar) energyBar.style.width = `${(energy / maxEnergy) * 100}%`;
-
-    // Update Fitness Level display
-    const fitnessLevelDisplay = document.querySelector('.fitness-level');
-    if (fitnessLevelDisplay) {
-        let level = 1;
-        let title = "Novice Lifter";
-        
-        if (reps >= 1000) {
-            level = 5;
-            title = "Legendary Pumper";
-        } else if (reps >= 500) {
-            level = 4;
-            title = "Elite Muscle";
-        } else if (reps >= 100) {
-            level = 3;
-            title = "Buff Beginner";
-        } else if (reps >= 50) {
-            level = 2;
-            title = "Gym Enthusiast";
-        }
-        
-        fitnessLevelDisplay.textContent = `Fitness Level ${level}: ${title} 🏋️‍♂️`;
+    function updateUI() {
+        gainsDisplay.textContent = gains.toLocaleString();
+        energyBar.style.width = `${(energy / 1000) * 100}%`;
+        energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
+        levelDisplay.textContent = `Level ${level}/10`;
+        gainsPerRepDisplay.textContent = `💪 +${gainsPerRep}`;
+        gainsPerDayDisplay.textContent = `💪 +${gainsPerDay}`;
     }
 
-    localStorage.setItem('reps', reps);
-    localStorage.setItem('muscleMass', muscleMass);
-    localStorage.setItem('pump', pump);
-    localStorage.setItem('energy', energy);
-}
+    function pump() {
+        if (energy > 0) {
+            gains += gainsPerRep;
+            energy = Math.max(0, energy - 1);
+            updateUI();
 
-function handleCharacterClick(event) {
-    if (energy > 0) {
-        reps++;
-        pump = Math.min(1000, pump + 1);
-        muscleMass += 10;
-        energy = Math.max(0, energy - 1);
-
-        updateUI();
-        
-        const character = document.getElementById('character');
-        if (character) {
+            // Animate character
             character.style.transform = 'scale(1.1)';
             setTimeout(() => {
                 character.style.transform = 'scale(1)';
             }, 100);
         }
-
-        const feedbackEl = document.createElement('div');
-        feedbackEl.className = 'tap-plus-one';
-        feedbackEl.textContent = '+1';
-        feedbackEl.style.left = (event.clientX - 15) + 'px';
-        feedbackEl.style.top = (event.clientY - 15) + 'px';
-        document.body.appendChild(feedbackEl);
-        
-        setTimeout(() => {
-            feedbackEl.remove();
-        }, 1000);
-
-        fetch('/api/score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-                userId: tg.initDataUnsafe?.user?.id || 'anonymous', 
-                score: 1, 
-                username: tg.initDataUnsafe?.user?.username || 'Anonymous Hero' 
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Pump Points updated:', data.totalScore);
-        })
-        .catch(error => console.error('Error:', error));
     }
-}
 
-    function loadPage(pageName) {
-        if (pageName === currentPage) return;
-        currentPage = pageName;
+    pumpMeContainer.addEventListener('click', pump);
+    character.addEventListener('click', pump);
 
-        // Hide all pages
-        document.getElementById('gym-page').style.display = 'none';
-        document.getElementById('boosts-page').style.display = 'none';
-        document.getElementById('challenges-page').style.display = 'none';
-        document.getElementById('leaderboard-page').style.display = 'none';
-
-        // Show the selected page
-        document.getElementById(`${pageName}-page`).style.display = 'block';
-
-        // Update active nav button
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`${pageName}-btn`).classList.add('active');
-
-        if (pageName === 'boosts') {
-            loadBoostsData();
-        } else if (pageName === 'challenges') {
-            loadChallenges();
-        } else if (pageName === 'leaderboard') {
-            updateLeaderboard();
+    // Energy regeneration
+    setInterval(() => {
+        if (energy < 1000) {
+            energy = Math.min(1000, energy + 1);
+            updateUI();
         }
+    }, 1000);
 
-        updateUI();
-    }
+    // Navigation
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('#app > div');
 
-    function loadBoostsData() {
-        const boostItems = document.getElementById('boost-items');
-        if (boostItems) {
-            displayBoosts('nutrition');
-        }
-    }
-
-    function attachEventListeners() {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const page = this.id.split('-')[0];
-                if (page === 'top') {
-                    loadPage('leaderboard');
-                    updateLeaderboard();
-                } else {
-                    loadPage(page);
-                }
-            });
+    navButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            pages.forEach(page => page.style.display = 'none');
+            pages[index].style.display = 'block';
         });
-
-        document.getElementById('back-button')?.addEventListener('click', () => {
-            loadPage('gym');
-        });
-
-        const characterClickableArea = document.getElementById('character-clickable-area');
-        if (characterClickableArea) {
-            characterClickableArea.addEventListener('click', handleCharacterClick);
-        }
-
-        const categoryButtons = document.querySelectorAll('.category-btn');
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                displayBoosts(button.dataset.category);
-            });
-        });
-    }
-
-// Add this function at the end of your app_v2.js file
-
-function updateLeaderboard() {
-    console.log('Updating leaderboard...');
-    fetch('/api/leaderboard')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(leaderboard => {
-        console.log('Leaderboard data received:', leaderboard);
-        const leaderboardBody = document.getElementById('leaderboard-body');
-        if (leaderboardBody) {
-            leaderboardBody.innerHTML = '';
-            leaderboard.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${entry.userId}</td>
-                    <td>${entry.score}</td>
-                    <td>${entry.pumping}</td>
-                `;
-                leaderboardBody.appendChild(row);
-            });
-        } else {
-            console.error('Leaderboard body element not found');
-        }
-    })
-    .catch(error => {
-        console.error('Error updating leaderboard:', error);
-        const leaderboardBody = document.getElementById('leaderboard-body');
-        if (leaderboardBody) {
-            leaderboardBody.innerHTML = `<tr><td colspan="4">Error loading leaderboard: ${error.message}</td></tr>`;
-        }
     });
-}
 
-// Call updateLeaderboard when the page loads
-document.addEventListener('DOMContentLoaded', updateLeaderboard);
+    // Initial UI update
+    updateUI();
 
-// Update leaderboard every 30 seconds
-setInterval(updateLeaderboard, 30000);
-
-    const boosts = {
-        nutrition: [
-            { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 50 },
-            { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 75 },
-            { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 30 },
-            { name: "Steak", icon: "🥩", description: "High protein meal", price: 100 },
-            { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 20 },
-        ],
-        equipment: [
-            { name: "Gym Entry", icon: "🏋️", description: "Access to gym facilities", price: 150 },
-            { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 500 },
-            { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 200 },
-        ],
-        activities: [
-            { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 80 },
-            { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 100 },
-            { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 90 },
-            { name: "Swimming", icon: "🏊", description: "Full body workout", price: 120 },
-            { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 70 },
-        ],
-        training: [
-            { name: "Chest Day", icon: "💪", description: "10x reps for chest", price: 300 },
-            { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 300 },
-            { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 300 },
-            { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 300 },
-            { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 300 },
-        ]
-    };
-
-    function displayBoosts(category) {
-        const boostItems = document.getElementById('boost-items');
-        if (boostItems) {
-            boostItems.innerHTML = '';
-            boosts[category].forEach(boost => {
-                const boostElement = document.createElement('div');
-                boostElement.className = 'boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-description">${boost.description}</div>
-                    <div class="boost-price">${boost.price} 💰</div>
-                `;
-                boostItems.appendChild(boostElement);
-            });
-        }
-    }
-
-    setInterval(updateLeaderboard, 30000);
-
+    tg.ready();
     tg.expand();
-
-    // Initial setup
-    attachEventListeners();
-    loadPage('gym');
 });
