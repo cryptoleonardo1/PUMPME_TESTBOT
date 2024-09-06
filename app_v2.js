@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay}`;
     }
 
-    function pump() {
+    function pump(e) {
+        e.preventDefault(); // Prevent default behavior
         if (energy > 0) {
             gains += gainsPerRep;
             energy = Math.max(0, energy - 1);
@@ -48,8 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
     character.addEventListener('mousedown', pump);
 
     // Prevent default behavior to stop unwanted effects
-    pumpMeContainer.addEventListener('touchend', (e) => e.preventDefault());
-    character.addEventListener('touchend', (e) => e.preventDefault());
+    [pumpMeContainer, character].forEach(element => {
+        element.addEventListener('touchend', (e) => e.preventDefault());
+        element.addEventListener('touchmove', (e) => e.preventDefault());
+        element.addEventListener('touchcancel', (e) => e.preventDefault());
+        element.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+
+    // Prevent text selection on the entire page
+    document.body.style.webkitUserSelect = 'none';
+    document.body.style.userSelect = 'none';
 
     // Energy regeneration
     setInterval(() => {

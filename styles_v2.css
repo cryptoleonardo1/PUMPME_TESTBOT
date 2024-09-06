@@ -112,22 +112,27 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Changed from center to flex-start */
   padding: 20px;
 }
 
 #pump-me-container {
   margin-bottom: 20px;
+  margin-top: 20px; /* Added margin-top to move it higher */
 }
 
 #pump-me-image {
-  width: 75px; /* Adjusted size */
+  width: 100px; /* Adjusted size */
   cursor: pointer;
+  user-select: none; /* Prevent selection */
+  -webkit-user-select: none; /* For Safari */
+  -moz-user-select: none; /* For Firefox */
+  -ms-user-select: none; /* For Internet Explorer/Edge */
 }
 
 #character-container {
-  width: 280px; /* Adjusted size */
-  height: 280px; /* Adjusted size */
+  width: 320px; /* Adjusted size */
+  height: 320px; /* Adjusted size */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,6 +143,11 @@ main {
   max-width: 100%;
   max-height: 100%;
   transition: transform 0.1s;
+  user-select: none; /* Prevent selection */
+  -webkit-user-select: none; /* For Safari */
+  -moz-user-select: none; /* For Firefox */
+  -ms-user-select: none; /* For Internet Explorer/Edge */
+  -webkit-touch-callout: none; /* Prevent callout on long-press */
 }
 
 nav {
