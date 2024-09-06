@@ -40,8 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    pumpMeContainer.addEventListener('click', pump);
-    character.addEventListener('click', pump);
+    // Use touchstart and mousedown events for better mobile compatibility
+    pumpMeContainer.addEventListener('touchstart', pump, { passive: false });
+    pumpMeContainer.addEventListener('mousedown', pump);
+
+    character.addEventListener('touchstart', pump, { passive: false });
+    character.addEventListener('mousedown', pump);
+
+    // Prevent default behavior to stop unwanted effects
+    pumpMeContainer.addEventListener('touchend', (e) => e.preventDefault());
+    character.addEventListener('touchend', (e) => e.preventDefault());
 
     // Energy regeneration
     setInterval(() => {
@@ -62,11 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pages.forEach(page => page.style.display = 'none');
             pages[index].style.display = 'flex';
         });
-    });
-
-    // Remove blue highlight on tap for the character
-    character.addEventListener('touchstart', (e) => {
-        e.preventDefault();
     });
 
     // Initial UI update
