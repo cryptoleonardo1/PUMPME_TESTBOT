@@ -1,7 +1,7 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    let gains = 1543999;
+    let gains = 1545727;
     let energy = 1000;
     let level = 6;
     let gainsPerRep = 12;
@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         energyBar.style.width = `${(energy / 1000) * 100}%`;
         energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
         levelDisplay.textContent = `Level ${level}/10`;
-        gainsPerRepDisplay.textContent = `💪 +${gainsPerRep}`;
-        gainsPerDayDisplay.textContent = `💪 +${gainsPerDay}`;
+        gainsPerRepDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep}`;
+        gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay}`;
     }
 
     function pump() {
@@ -53,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Navigation
     const navButtons = document.querySelectorAll('.nav-btn');
-    const pages = document.querySelectorAll('#app > div');
+    const pages = document.querySelectorAll('.page');
 
     navButtons.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             pages.forEach(page => page.style.display = 'none');
-            pages[index].style.display = 'block';
+            pages[index].style.display = 'flex';
         });
     });
 
