@@ -24,7 +24,8 @@ body, html {
 
 header {
   padding: 10px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 0 0 15px 15px;
 }
 
 #gains-container {
@@ -120,13 +121,13 @@ main {
 }
 
 #pump-me-image {
-  width: 200px;
+  width: 150px; /* Adjusted size */
   cursor: pointer;
 }
 
 #character-container {
-  width: 200px;
-  height: 200px;
+  width: 280px; /* Adjusted size */
+  height: 280px; /* Adjusted size */
   display: flex;
   justify-content: center;
   align-items: center;

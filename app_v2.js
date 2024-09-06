@@ -1,7 +1,7 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    let gains = 1545727;
+    let gains = 1547455;
     let energy = 1000;
     let level = 6;
     let gainsPerRep = 12;
@@ -62,6 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
             pages.forEach(page => page.style.display = 'none');
             pages[index].style.display = 'flex';
         });
+    });
+
+    // Remove blue highlight on tap for the character
+    character.addEventListener('touchstart', (e) => {
+        e.preventDefault();
     });
 
     // Initial UI update
