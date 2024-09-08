@@ -1,25 +1,43 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const redis = require('./redis-client');
+const redis = require('./lib/redis');
 const util = require('util');
 const app = express();
+
+// Error logging setup
+const logError = (error) => {
+  console.error('Error:', error.message);
+  console.error('Stack:', error.stack);
+};
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 console.log('Starting server...');
 console.log('REDIS_URL:', process.env.REDIS_URL ? 'Is set' : 'Is not set');
 
-app.use(express.static(path.join(__dirname)));
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+
+// API routes
+app.get('/api/leaderboard', require('./api/leaderboard'));
+app.post('/api/saveUserData', require('./api/saveUserData'));
+app.get('/api/getUserData', require('./api/getUserData'));
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Serve index.html for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Redis test route
 app.get('/api/redis-test', async (req, res) => {
   try {
     console.log('Redis test started');

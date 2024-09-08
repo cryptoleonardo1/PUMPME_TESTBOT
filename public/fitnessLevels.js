@@ -5,7 +5,7 @@ const fitnessLevels = [
         minGains: 0,
         maxGains: 10000,
         gainsPerRep: 1,
-        gainsPerDay: 10
+        gainsPerDay: 0
     },
     {
         level: 2,
@@ -13,7 +13,7 @@ const fitnessLevels = [
         minGains: 10001,
         maxGains: 30000,
         gainsPerRep: 3,
-        gainsPerDay: 300
+        gainsPerDay: 0
     },
     {
         level: 3,
@@ -21,7 +21,7 @@ const fitnessLevels = [
         minGains: 30001,
         maxGains: 100000,
         gainsPerRep: 7,
-        gainsPerDay: 700
+        gainsPerDay: 0
     },
     {
         level: 4,
@@ -80,5 +80,3 @@ const fitnessLevels = [
         gainsPerDay: 6300
     }
 ];
-
-export default fitnessLevels;

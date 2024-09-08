@@ -1,88 +1,5 @@
 const tg = window.Telegram.WebApp;
 
-const fitnessLevels = [
-    {
-        level: 1,
-        name: "Couch Potato",
-        minGains: 0,
-        maxGains: 10000,
-        gainsPerRep: 1,
-        gainsPerDay: 0
-    },
-    {
-        level: 2,
-        name: "Weekend Warrior",
-        minGains: 10001,
-        maxGains: 30000,
-        gainsPerRep: 3,
-        gainsPerDay: 0
-    },
-    {
-        level: 3,
-        name: "Gym Rat",
-        minGains: 30001,
-        maxGains: 100000,
-        gainsPerRep: 7,
-        gainsPerDay: 0
-    },
-    {
-        level: 4,
-        name: "Iron Pumpling",
-        minGains: 100001,
-        maxGains: 300000,
-        gainsPerRep: 12,
-        gainsPerDay: 1200
-    },
-    {
-        level: 5,
-        name: "Shredded Sensation",
-        minGains: 300001,
-        maxGains: 1000000,
-        gainsPerRep: 18,
-        gainsPerDay: 1800
-    },
-    {
-        level: 6,
-        name: "Flex Master",
-        minGains: 1000001,
-        maxGains: 2500000,
-        gainsPerRep: 25,
-        gainsPerDay: 2500
-    },
-    {
-        level: 7,
-        name: "Strength Sage",
-        minGains: 2500001,
-        maxGains: 5000000,
-        gainsPerRep: 33,
-        gainsPerDay: 3300
-    },
-    {
-        level: 8,
-        name: "Fitness Phenom",
-        minGains: 5000001,
-        maxGains: 10000000,
-        gainsPerRep: 42,
-        gainsPerDay: 4200
-    },
-    {
-        level: 9,
-        name: "Olympian Aspirant",
-        minGains: 10000001,
-        maxGains: 20000000,
-        gainsPerRep: 52,
-        gainsPerDay: 5200
-    },
-    {
-        level: 10,
-        name: "Legendary Lifter",
-        minGains: 20000001,
-        maxGains: Infinity,
-        gainsPerRep: 63,
-        gainsPerDay: 6300
-    }
-];
-
 document.addEventListener('DOMContentLoaded', () => {
     let gains = 0;
     let energy = 1000;
@@ -100,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
-    const characterContainer = document.getElementById('character-container');
 
     function updateLevel() {
         const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
@@ -181,34 +97,28 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             console.log('Leaderboard data:', data);
             const leaderboardBody = document.getElementById('leaderboard-body');
-            leaderboardBody.innerHTML = '';
-            data.forEach((user, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${user.username}</td>
-                    <td>${user.gains.toLocaleString()}</td>
-                `;
-                leaderboardBody.appendChild(row);
-            });
+            if (leaderboardBody) {
+                leaderboardBody.innerHTML = '';
+                data.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.username}</td>
+                        <td>${user.gains.toLocaleString()}</td>
+                    `;
+                    leaderboardBody.appendChild(row);
+                });
+            }
         })
         .catch(error => {
             console.error('Error updating leaderboard:', error);
             const leaderboardBody = document.getElementById('leaderboard-body');
-            leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+            if (leaderboardBody) {
+                leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+            }
         });
     }
-        
-    // Call updateLeaderboard when the Top Pumpers page is shown
-    document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
-    
-    // Update leaderboard every 30 seconds if on the Top Pumpers page
-    setInterval(() => {
-        if (document.getElementById('top-pumpers-page').style.display !== 'none') {
-            updateLeaderboard();
-        }
-    }, 30000);
-    
+
     function preventDefaultBehavior(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -224,22 +134,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('dragstart', preventDefaultBehavior);
 
     // Make character and PUMP ME clickable
-    [pumpMeContainer, character, characterContainer].forEach(element => {
+    [pumpMeContainer, character].forEach(element => {
         if (element) {
             element.addEventListener('touchstart', pump, { passive: false });
             element.addEventListener('mousedown', pump);
         }
     });
 
-    // Load user data on startup
-    loadUserData();
+    // Navigation
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.page');
 
-    // Update leaderboard every 30 seconds
-    setInterval(updateLeaderboard, 30000);
+    navButtons.forEach((btn, index) => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop event from bubbling up
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            pages.forEach(page => page.style.display = 'none');
+            pages[index].style.display = 'flex';
+            if (btn.id === 'top-pumpers-btn') {
+                updateLeaderboard();
+            }
+        });
+    });
 
-    // Initial leaderboard update
-    updateLeaderboard();
-    
+    // Remove preventDefault from nav buttons
+    document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+    document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
+    document.querySelector('nav').addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
+
     // Energy regeneration
     setInterval(() => {
         if (energy < 1000) {
@@ -255,24 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUI();
     }, 1000);
 
-    // Navigation
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const pages = document.querySelectorAll('.page');
-
-    navButtons.forEach((btn, index) => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop event from bubbling up
-            navButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            pages.forEach(page => page.style.display = 'none');
-            pages[index].style.display = 'flex';
-        });
-    });
-
-    // Remove preventDefault from nav buttons
-    document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
-    document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
-    document.querySelector('nav').addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
+    // Load user data on startup
+    loadUserData();
 
     // Initial UI update
     updateUI();

@@ -14,12 +14,12 @@
             <header>
                 <div id="gains-container">
                     <img src="/images/bicep-icon-blue.png" alt="Bicep Icon" id="bicep-icon">
-                    <div id="gains-display">1,547,455</div>
+                    <div id="gains-display">0</div>
                 </div>
                 <div id="status-bar">
                     <div class="status-item">
                         <div class="status-label">Gains per rep</div>
-                        <div class="status-value"><img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +12</div>
+                        <div class="status-value"><img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +1</div>
                     </div>
                     <div class="status-item">
                         <div class="status-label">Status</div>
@@ -27,13 +27,13 @@
                     </div>
                     <div class="status-item">
                         <div class="status-label">Gains per 24h</div>
-                        <div class="status-value"><img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +388</div>
+                        <div class="status-value"><img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +10</div>
                     </div>
                 </div>
                 <div id="energy-container">
                     <div id="energy-status-bar">
                         <span id="energy-status">Rested</span>
-                        <span id="level-display">Level 6/10</span>
+                        <span id="level-display">Level 1/10</span>
                     </div>
                     <div id="energy-bar-container">
                         <div id="energy-bar"></div>
@@ -51,33 +51,10 @@
             </main>
         </div>
         
-        <div id="boosts-page" class="page" style="display: none;">
-            <!-- Boosts page content -->
-        </div>
-        
-        <div id="social-page" class="page" style="display: none;">
-            <!-- Social page content -->
-        </div>
-        
-        <div id="top-pumpers-page" class="page" style="display: none;">
-            <h2>Top Pumpers</h2>
-            <table id="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Username</th>
-                        <th>Gains</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboard-body">
-                    <!-- Leaderboard data will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-        
-        <div id="profile-page" class="page" style="display: none;">
-            <!-- Profile page content -->
-        </div>
+        <div id="boosts-page" class="page" style="display: none;"></div>
+        <div id="social-page" class="page" style="display: none;"></div>
+        <div id="top-pumpers-page" class="page" style="display: none;"></div>
+        <div id="profile-page" class="page" style="display: none;"></div>
 
         <nav>
             <button class="nav-btn active" id="gym-btn">
@@ -103,6 +80,8 @@
         </nav>
     </div>
     
+    <script src="/fitnessLevels.js"></script>
     <script src="/app_v2.js"></script>
+    <script src="/boosts.js"></script>
 </body>
 </html>
