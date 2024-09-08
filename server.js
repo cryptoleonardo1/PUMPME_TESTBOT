@@ -1,36 +1,19 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const redis = require('./lib/redis');
+const redis = require('./redis-client');
 const util = require('util');
 const app = express();
 
 console.log('Starting server...');
 console.log('REDIS_URL:', process.env.REDIS_URL ? 'Is set' : 'Is not set');
 
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.get('/api/redis-test', async (req, res) => {
-  try {
-    console.log('Redis test started');
-    await redis.set('test-key', 'test-value', 'EX', 60);
-    const value = await redis.get('test-key');
-    console.log('Redis test completed, value:', value);
-    res.json({ success: true, value });
-  } catch (error) {
-    console.error('Redis test error:', util.inspect(error, { depth: null }));
-    res.status(500).json({ success: false, error: error.message });
-  }
 });
 
 app.get('/api/leaderboard', async (req, res) => {
@@ -110,4 +93,9 @@ app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
-module.exports = app;
+// Test Redis connection
+redis.ping().then(() => {
+  console.log('Redis connection successful');
+}).catch((error) => {
+  console.error('Redis connection failed:', error);
+});

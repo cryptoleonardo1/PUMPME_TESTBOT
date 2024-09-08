@@ -2,6 +2,11 @@ const Redis = require('ioredis');
 
 const REDIS_URL = process.env.REDIS_URL;
 
+if (!REDIS_URL) {
+  console.error('REDIS_URL is not set in environment variables');
+  process.exit(1);
+}
+
 const redis = new Redis(REDIS_URL, {
   tls: { rejectUnauthorized: false },
   maxRetriesPerRequest: null,
@@ -30,14 +35,6 @@ redis.on('connect', () => {
 
 redis.on('ready', () => {
   console.log('Redis ready');
-});
-
-redis.on('close', () => {
-  console.log('Redis connection closed');
-});
-
-redis.on('reconnecting', (params) => {
-  console.log('Redis reconnecting:', params);
 });
 
 module.exports = redis;
