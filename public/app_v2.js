@@ -91,7 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLeaderboard() {
         fetch('/api/leaderboard')
           .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
           })
           .then(data => {
@@ -99,15 +101,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const leaderboardBody = document.getElementById('leaderboard-body');
             if (leaderboardBody) {
               leaderboardBody.innerHTML = '';
-              data.forEach((user, index) => {
+              data.forEach((user) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                  <td>${index + 1}</td>
+                  <td>${user.rank}</td>
                   <td>${user.username}</td>
                   <td>${user.gains.toLocaleString()}</td>
                 `;
                 leaderboardBody.appendChild(row);
               });
+            } else {
+              console.error('Leaderboard body element not found');
             }
           })
           .catch(error => {
@@ -118,6 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
       }
+
+     // Call updateLeaderboard when the Top Pumpers page is shown
+    document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
 
     function preventDefaultBehavior(e) {
         e.preventDefault();
@@ -177,6 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLevel();
         updateUI();
     }, 1000);
+
+    // Update leaderboard every 30 seconds if on the Top Pumpers page
+    setInterval(() => {
+        if (document.getElementById('top-pumpers-page').style.display !== 'none') {
+        updateLeaderboard();
+        }
+    }, 30000);
 
     // Load user data on startup
     loadUserData();
