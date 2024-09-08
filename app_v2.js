@@ -1,11 +1,14 @@
+import fitnessLevels from './fitnessLevels.js';
+
 const tg = window.Telegram.WebApp;
 
 document.addEventListener('DOMContentLoaded', () => {
-    let gains = 1547455;
+    let gains = 0;
     let energy = 1000;
-    let level = 6;
-    let gainsPerRep = 12;
-    let gainsPerDay = 388;
+    let level = 1;
+    let gainsPerRep = 1;
+    let gainsPerDay = 10;
+    let boostMultiplier = 1; // For future boost implementations
 
     const gainsDisplay = document.getElementById('gains-display');
     const energyBar = document.getElementById('energy-bar');
@@ -17,20 +20,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
 
+    function updateLevel() {
+        const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
+        if (currentLevel && currentLevel.level !== level) {
+            level = currentLevel.level;
+            gainsPerRep = currentLevel.gainsPerRep;
+            gainsPerDay = currentLevel.gainsPerDay;
+            // You might want to show a level up message here
+            console.log(`Leveled up to ${currentLevel.name}!`);
+        }
+    }
+
     function updateUI() {
         gainsDisplay.textContent = gains.toLocaleString();
         energyBar.style.width = `${(energy / 1000) * 100}%`;
         energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
-        levelDisplay.textContent = `Level ${level}/10`;
-        gainsPerRepDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep}`;
-        gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay}`;
+        const currentLevel = fitnessLevels[level - 1];
+        levelDisplay.textContent = `${currentLevel.name} (Level ${level}/10)`;
+        gainsPerRepDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep * boostMultiplier}`;
+        gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
     }
 
-    function pump(e) {
-        e.preventDefault(); // Prevent default behavior
+    function pump() {
         if (energy > 0) {
-            gains += gainsPerRep;
+            gains += gainsPerRep * boostMultiplier;
             energy = Math.max(0, energy - 1);
+            updateLevel();
             updateUI();
 
             // Animate character
@@ -56,10 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         element.addEventListener('contextmenu', (e) => e.preventDefault());
     });
 
-    // Prevent text selection on the entire page
-    document.body.style.webkitUserSelect = 'none';
-    document.body.style.userSelect = 'none';
-
     // Energy regeneration
     setInterval(() => {
         if (energy < 1000) {
@@ -68,18 +79,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 
-    // Navigation
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const pages = document.querySelectorAll('.page');
+    // Gains per day
+    setInterval(() => {
+        gains += gainsPerDay * boostMultiplier / (24 * 60 * 60); // Divide by seconds in a day for smooth increments
+        updateLevel();
+        updateUI();
+    }, 1000); // Update every second
 
-    navButtons.forEach((btn, index) => {
-        btn.addEventListener('click', () => {
-            navButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            pages.forEach(page => page.style.display = 'none');
-            pages[index].style.display = 'flex';
-        });
-    });
+    // Navigation (keep your existing navigation code here)
+
+    // Prevent text selection on the entire page
+    document.body.style.webkitUserSelect = 'none';
+    document.body.style.userSelect = 'none';
 
     // Initial UI update
     updateUI();
