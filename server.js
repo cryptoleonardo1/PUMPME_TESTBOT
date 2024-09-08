@@ -46,10 +46,10 @@ app.get('/api/leaderboard', async (req, res) => {
       leaderboard.push({ 
         userId,
         username,
-        gains: score,
-        pumping: "Various"
+        gains: score
       });
     }
+    console.log('Processed leaderboard:', leaderboard);
     res.json(leaderboard);
   } catch (error) {
     console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
@@ -75,6 +75,7 @@ app.get('/api/getUserData', async (req, res) => {
     const { userId } = req.query;
     console.log('Getting user data for userId:', userId);
     const userData = await redis.hgetall(`user:${userId}`);
+    console.log('Raw user data:', userData);
     if (Object.keys(userData).length === 0) {
       res.json({ gains: 0, level: 1 });
     } else {

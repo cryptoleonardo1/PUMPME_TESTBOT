@@ -171,24 +171,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateLeaderboard() {
-        fetch('/api/getLeaderboard')
-        .then(response => response.json())
+        fetch('/api/leaderboard')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Leaderboard data:', data);
             const leaderboardBody = document.getElementById('leaderboard-body');
             leaderboardBody.innerHTML = '';
             data.forEach((user, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>@${user.username}</td>
+                    <td>${user.username}</td>
                     <td>${user.gains.toLocaleString()}</td>
                 `;
                 leaderboardBody.appendChild(row);
             });
         })
-        .catch((error) => console.error('Error updating leaderboard:', error));
+        .catch((error) => {
+            console.error('Error updating leaderboard:', error);
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+        });
     }
-
+    
+    // Call updateLeaderboard when the Top Pumpers page is shown
+    document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
+    
+    // Update leaderboard every 30 seconds if on the Top Pumpers page
+    setInterval(() => {
+        if (document.getElementById('top-pumpers-page').style.display !== 'none') {
+            updateLeaderboard();
+        }
+    }, 30000);
+    
     function preventDefaultBehavior(e) {
         e.preventDefault();
         e.stopPropagation();
