@@ -54,7 +54,9 @@ app.get('/api/leaderboard', async (req, res) => {
     console.log('Processed leaderboard:', leaderboard);
     res.json(leaderboard);
   } catch (error) {
-    console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
+    console.error('Error fetching leaderboard:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Redis client status:', redis.status);
     res.status(500).json({ success: false, error: 'Error fetching leaderboard', details: error.message });
   }
 });
