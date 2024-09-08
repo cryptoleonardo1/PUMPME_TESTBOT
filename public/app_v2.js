@@ -90,34 +90,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateLeaderboard() {
         fetch('/api/leaderboard')
-        .then(response => {
+          .then(response => {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.json();
-        })
-        .then(data => {
+          })
+          .then(data => {
             console.log('Leaderboard data:', data);
             const leaderboardBody = document.getElementById('leaderboard-body');
             if (leaderboardBody) {
-                leaderboardBody.innerHTML = '';
-                data.forEach((user, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${user.username}</td>
-                        <td>${user.gains.toLocaleString()}</td>
-                    `;
-                    leaderboardBody.appendChild(row);
-                });
+              leaderboardBody.innerHTML = '';
+              data.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>${index + 1}</td>
+                  <td>${user.username}</td>
+                  <td>${user.gains.toLocaleString()}</td>
+                `;
+                leaderboardBody.appendChild(row);
+              });
             }
-        })
-        .catch(error => {
+          })
+          .catch(error => {
             console.error('Error updating leaderboard:', error);
             const leaderboardBody = document.getElementById('leaderboard-body');
             if (leaderboardBody) {
-                leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+              leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
             }
-        });
-    }
+          });
+      }
 
     function preventDefaultBehavior(e) {
         e.preventDefault();
