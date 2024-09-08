@@ -36,12 +36,14 @@ app.get('/api/redis-test', async (req, res) => {
 app.get('/api/leaderboard', async (req, res) => {
   console.log('Leaderboard request received');
   try {
+    console.log('Fetching leaderboard data from Redis...');
     const leaderboardData = await redis.zrevrange('leaderboard', 0, 9, 'WITHSCORES');
     console.log('Raw leaderboard data:', leaderboardData);
     const leaderboard = [];
     for (let i = 0; i < leaderboardData.length; i += 2) {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1], 10);
+      console.log(`Fetching username for userId: ${userId}`);
       const username = await redis.hget(`user:${userId}`, 'username') || 'Anonymous';
       leaderboard.push({ 
         userId,
@@ -57,13 +59,13 @@ app.get('/api/leaderboard', async (req, res) => {
   }
 });
 
-// Update the save user data endpoint
 app.post('/api/saveUserData', async (req, res) => {
   try {
     const { userId, username, gains, level } = req.body;
     console.log('Saving user data:', { userId, username, gains, level });
     await redis.hset(`user:${userId}`, 'username', username, 'gains', gains, 'level', level);
     await redis.zadd('leaderboard', gains, userId);
+    console.log('User data saved successfully');
     res.json({ success: true });
   } catch (error) {
     console.error('Error saving user data:', util.inspect(error, { depth: null }));
@@ -71,7 +73,6 @@ app.post('/api/saveUserData', async (req, res) => {
   }
 });
 
-// Update the get user data endpoint
 app.get('/api/getUserData', async (req, res) => {
   try {
     const { userId } = req.query;
@@ -79,8 +80,10 @@ app.get('/api/getUserData', async (req, res) => {
     const userData = await redis.hgetall(`user:${userId}`);
     console.log('Raw user data:', userData);
     if (Object.keys(userData).length === 0) {
+      console.log('No user data found, returning default values');
       res.json({ gains: 0, level: 1 });
     } else {
+      console.log('User data found, returning:', userData);
       res.json({
         gains: parseInt(userData.gains) || 0,
         level: parseInt(userData.level) || 1
