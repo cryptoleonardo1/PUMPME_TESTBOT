@@ -174,16 +174,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigation
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
-
+    
     navButtons.forEach((btn, index) => {
         btn.addEventListener('click', (e) => {
-            e.preventDefault();
+            e.stopPropagation(); // Stop event from bubbling up
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             pages.forEach(page => page.style.display = 'none');
             pages[index].style.display = 'flex';
         });
     });
+
+    // Remove preventDefault from nav buttons
+document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
+document.querySelector('nav').addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
+
 
     // Initial UI update
     updateUI();

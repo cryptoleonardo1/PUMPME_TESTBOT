@@ -5,6 +5,10 @@ body, html {
   font-family: Arial, sans-serif;
   background-color: #1e3a8a;
   color: #ffffff;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 #app {
@@ -143,11 +147,9 @@ main {
   max-width: 100%;
   max-height: 100%;
   transition: transform 0.1s;
-  user-select: none; /* Prevent selection */
-  -webkit-user-select: none; /* For Safari */
-  -moz-user-select: none; /* For Firefox */
-  -ms-user-select: none; /* For Internet Explorer/Edge */
-  -webkit-touch-callout: none; /* Prevent callout on long-press */
+  user-drag: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 nav {
@@ -159,6 +161,7 @@ nav {
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1000;
 }
 
 .nav-btn {
@@ -170,6 +173,9 @@ nav {
   cursor: pointer;
   color: white;
   font-size: 12px;
+  padding: 5px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .nav-icon {
@@ -179,10 +185,11 @@ nav {
   background-repeat: no-repeat;
   background-position: center;
   margin-bottom: 5px;
+  pointer-events: none;
 }
 
-.nav-btn.active {
-  color: #4ade80;
+.nav-btn:active {
+  opacity: 0.7;
 }
 
 #gym-btn .nav-icon { background-image: url('/images/gym-icon.png'); }
@@ -190,3 +197,18 @@ nav {
 #social-btn .nav-icon { background-image: url('/images/social-icon.png'); }
 #top-pumpers-btn .nav-icon { background-image: url('/images/top-pumpers-icon.png'); }
 #profile-btn .nav-icon { background-image: url('/images/profile-icon.png'); }
+
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+img {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
