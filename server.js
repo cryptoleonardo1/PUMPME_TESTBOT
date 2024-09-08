@@ -40,9 +40,13 @@ app.get('/api/leaderboard', async (req, res) => {
     console.log('Raw leaderboard data:', leaderboardData);
     const leaderboard = [];
     for (let i = 0; i < leaderboardData.length; i += 2) {
+      const userId = leaderboardData[i];
+      const score = parseInt(leaderboardData[i + 1], 10);
+      const username = await redis.hget(`user:${userId}`, 'username') || 'Anonymous';
       leaderboard.push({ 
-        userId: leaderboardData[i], 
-        score: parseInt(leaderboardData[i + 1], 10),
+        userId,
+        username,
+        gains: score,
         pumping: "Various"
       });
     }
@@ -50,6 +54,38 @@ app.get('/api/leaderboard', async (req, res) => {
   } catch (error) {
     console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
     res.status(500).json({ success: false, error: 'Error fetching leaderboard' });
+  }
+});
+
+app.post('/api/saveUserData', async (req, res) => {
+  try {
+    const { userId, username, gains, level } = req.body;
+    console.log('Saving user data:', { userId, username, gains, level });
+    await redis.hset(`user:${userId}`, 'username', username, 'gains', gains, 'level', level);
+    await redis.zadd('leaderboard', gains, userId);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving user data:', util.inspect(error, { depth: null }));
+    res.status(500).json({ success: false, error: 'Error saving user data' });
+  }
+});
+
+app.get('/api/getUserData', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    console.log('Getting user data for userId:', userId);
+    const userData = await redis.hgetall(`user:${userId}`);
+    if (Object.keys(userData).length === 0) {
+      res.json({ gains: 0, level: 1 });
+    } else {
+      res.json({
+        gains: parseInt(userData.gains) || 0,
+        level: parseInt(userData.level) || 1
+      });
+    }
+  } catch (error) {
+    console.error('Error getting user data:', util.inspect(error, { depth: null }));
+    res.status(500).json({ success: false, error: 'Error getting user data' });
   }
 });
 

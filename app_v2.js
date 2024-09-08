@@ -7,7 +7,7 @@ const fitnessLevels = [
         minGains: 0,
         maxGains: 10000,
         gainsPerRep: 1,
-        gainsPerDay: 10
+        gainsPerDay: 0
     },
     {
         level: 2,
@@ -15,7 +15,7 @@ const fitnessLevels = [
         minGains: 10001,
         maxGains: 30000,
         gainsPerRep: 3,
-        gainsPerDay: 300
+        gainsPerDay: 0
     },
     {
         level: 3,
@@ -23,7 +23,7 @@ const fitnessLevels = [
         minGains: 30001,
         maxGains: 100000,
         gainsPerRep: 7,
-        gainsPerDay: 700
+        gainsPerDay: 0
     },
     {
         level: 4,
@@ -84,11 +84,11 @@ const fitnessLevels = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-    let gains = 1547455;
+    let gains = 0;
     let energy = 1000;
-    let level = 6;
-    let gainsPerRep = 12;
-    let gainsPerDay = 388;
+    let level = 1;
+    let gainsPerRep = 1;
+    let gainsPerDay = 0;
     let boostMultiplier = 1;
 
     const gainsDisplay = document.getElementById('gains-display');
@@ -130,12 +130,63 @@ document.addEventListener('DOMContentLoaded', () => {
             energy = Math.max(0, energy - 1);
             updateLevel();
             updateUI();
+            saveUserData();
 
             character.style.transform = 'scale(1.1)';
             setTimeout(() => {
                 character.style.transform = 'scale(1)';
             }, 100);
         }
+    }
+
+    function saveUserData() {
+        fetch('/api/saveUserData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: tg.initDataUnsafe?.user?.id,
+                username: tg.initDataUnsafe?.user?.username,
+                gains: gains,
+                level: level
+            }),
+        })
+        .then(response => response.json())
+        .then(data => console.log('User data saved:', data))
+        .catch((error) => console.error('Error saving user data:', error));
+    }
+
+    function loadUserData() {
+        fetch(`/api/getUserData?userId=${tg.initDataUnsafe?.user?.id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.gains !== undefined) {
+                gains = data.gains;
+                updateLevel();
+                updateUI();
+            }
+        })
+        .catch((error) => console.error('Error loading user data:', error));
+    }
+
+    function updateLeaderboard() {
+        fetch('/api/getLeaderboard')
+        .then(response => response.json())
+        .then(data => {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = '';
+            data.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>@${user.username}</td>
+                    <td>${user.gains.toLocaleString()}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        })
+        .catch((error) => console.error('Error updating leaderboard:', error));
     }
 
     function preventDefaultBehavior(e) {
@@ -160,6 +211,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Load user data on startup
+    loadUserData();
+
+    // Update leaderboard every 30 seconds
+    setInterval(updateLeaderboard, 30000);
+
+    // Initial leaderboard update
+    updateLeaderboard();
+    
     // Energy regeneration
     setInterval(() => {
         if (energy < 1000) {
