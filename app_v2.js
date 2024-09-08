@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let level = 1;
     let gainsPerRep = 1;
     let gainsPerDay = 10;
-    let boostMultiplier = 1; // For future boost implementations
+    let boostMultiplier = 1;
 
     const gainsDisplay = document.getElementById('gains-display');
     const energyBar = document.getElementById('energy-bar');
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
             level = currentLevel.level;
             gainsPerRep = currentLevel.gainsPerRep;
             gainsPerDay = currentLevel.gainsPerDay;
-            // You might want to show a level up message here
             console.log(`Leveled up to ${currentLevel.name}!`);
         }
     }
@@ -41,14 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
         gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
     }
 
-    function pump() {
+    function pump(e) {
+        e.preventDefault(); // Prevent default touch behavior
         if (energy > 0) {
             gains += gainsPerRep * boostMultiplier;
             energy = Math.max(0, energy - 1);
             updateLevel();
             updateUI();
 
-            // Animate character
             character.style.transform = 'scale(1.1)';
             setTimeout(() => {
                 character.style.transform = 'scale(1)';
@@ -56,20 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Use touchstart and mousedown events for better mobile compatibility
-    pumpMeContainer.addEventListener('touchstart', pump, { passive: false });
-    pumpMeContainer.addEventListener('mousedown', pump);
+    // Prevent selection and default behaviors
+    function preventDefaultBehavior(e) {
+        e.preventDefault();
+        return false;
+    }
 
-    character.addEventListener('touchstart', pump, { passive: false });
-    character.addEventListener('mousedown', pump);
-
-    // Prevent default behavior to stop unwanted effects
     [pumpMeContainer, character].forEach(element => {
-        element.addEventListener('touchend', (e) => e.preventDefault());
-        element.addEventListener('touchmove', (e) => e.preventDefault());
-        element.addEventListener('touchcancel', (e) => e.preventDefault());
-        element.addEventListener('contextmenu', (e) => e.preventDefault());
+        element.addEventListener('touchstart', pump, { passive: false });
+        element.addEventListener('mousedown', pump);
+        element.addEventListener('touchmove', preventDefaultBehavior, { passive: false });
+        element.addEventListener('touchend', preventDefaultBehavior, { passive: false });
+        element.addEventListener('touchcancel', preventDefaultBehavior, { passive: false });
+        element.addEventListener('contextmenu', preventDefaultBehavior);
     });
+
+    // Prevent selection on the entire document
+    document.addEventListener('selectstart', preventDefaultBehavior);
+    document.addEventListener('dragstart', preventDefaultBehavior);
 
     // Energy regeneration
     setInterval(() => {
@@ -81,16 +84,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Gains per day
     setInterval(() => {
-        gains += gainsPerDay * boostMultiplier / (24 * 60 * 60); // Divide by seconds in a day for smooth increments
+        gains += gainsPerDay * boostMultiplier / (24 * 60 * 60);
         updateLevel();
         updateUI();
-    }, 1000); // Update every second
+    }, 1000);
 
-    // Navigation (keep your existing navigation code here)
+    // Navigation
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.page');
 
-    // Prevent text selection on the entire page
-    document.body.style.webkitUserSelect = 'none';
-    document.body.style.userSelect = 'none';
+    navButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            pages.forEach(page => page.style.display = 'none');
+            pages[index].style.display = 'flex';
+        });
+    });
 
     // Initial UI update
     updateUI();
