@@ -10,10 +10,10 @@ module.exports = async (req, res) => {
     for (let i = 0; i < leaderboardData.length; i += 2) {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1], 10);
-      const username = await redis.hget(`user:${userId}`, 'username') || 'Anonymous';
+      const userData = await redis.hgetall(`user:${userId}`);
       leaderboard.push({
         rank: Math.floor(i / 2) + 1,
-        username,
+        username: userData.username || 'Anonymous',
         gains: score
       });
     }

@@ -122,9 +122,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
       }
-
-     // Call updateLeaderboard when the Top Pumpers page is shown
-    document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
+      
+      // Call updateLeaderboard when the Top Pumpers page is shown
+      document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
+      
+      // Update leaderboard every 30 seconds if on the Top Pumpers page
+      setInterval(() => {
+        if (document.getElementById('top-pumpers-page').style.display !== 'none') {
+          updateLeaderboard();
+        }
+      }, 30000);
 
     function preventDefaultBehavior(e) {
         e.preventDefault();
@@ -184,13 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLevel();
         updateUI();
     }, 1000);
-
-    // Update leaderboard every 30 seconds if on the Top Pumpers page
-    setInterval(() => {
-        if (document.getElementById('top-pumpers-page').style.display !== 'none') {
-        updateLeaderboard();
-        }
-    }, 30000);
 
     // Load user data on startup
     loadUserData();
