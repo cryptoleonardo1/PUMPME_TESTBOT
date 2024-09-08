@@ -1,13 +1,94 @@
-import fitnessLevels from './fitnessLevels.js';
-
 const tg = window.Telegram.WebApp;
 
+const fitnessLevels = [
+    {
+        level: 1,
+        name: "Couch Potato",
+        minGains: 0,
+        maxGains: 10000,
+        gainsPerRep: 1,
+        gainsPerDay: 10
+    },
+    {
+        level: 2,
+        name: "Weekend Warrior",
+        minGains: 10001,
+        maxGains: 30000,
+        gainsPerRep: 3,
+        gainsPerDay: 300
+    },
+    {
+        level: 3,
+        name: "Gym Rat",
+        minGains: 30001,
+        maxGains: 100000,
+        gainsPerRep: 7,
+        gainsPerDay: 700
+    },
+    {
+        level: 4,
+        name: "Iron Pumpling",
+        minGains: 100001,
+        maxGains: 300000,
+        gainsPerRep: 12,
+        gainsPerDay: 1200
+    },
+    {
+        level: 5,
+        name: "Shredded Sensation",
+        minGains: 300001,
+        maxGains: 1000000,
+        gainsPerRep: 18,
+        gainsPerDay: 1800
+    },
+    {
+        level: 6,
+        name: "Flex Master",
+        minGains: 1000001,
+        maxGains: 2500000,
+        gainsPerRep: 25,
+        gainsPerDay: 2500
+    },
+    {
+        level: 7,
+        name: "Strength Sage",
+        minGains: 2500001,
+        maxGains: 5000000,
+        gainsPerRep: 33,
+        gainsPerDay: 3300
+    },
+    {
+        level: 8,
+        name: "Fitness Phenom",
+        minGains: 5000001,
+        maxGains: 10000000,
+        gainsPerRep: 42,
+        gainsPerDay: 4200
+    },
+    {
+        level: 9,
+        name: "Olympian Aspirant",
+        minGains: 10000001,
+        maxGains: 20000000,
+        gainsPerRep: 52,
+        gainsPerDay: 5200
+    },
+    {
+        level: 10,
+        name: "Legendary Lifter",
+        minGains: 20000001,
+        maxGains: Infinity,
+        gainsPerRep: 63,
+        gainsPerDay: 6300
+    }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
-    let gains = 0;
+    let gains = 1547455;
     let energy = 1000;
-    let level = 1;
-    let gainsPerRep = 1;
-    let gainsPerDay = 10;
+    let level = 6;
+    let gainsPerRep = 12;
+    let gainsPerDay = 388;
     let boostMultiplier = 1;
 
     const gainsDisplay = document.getElementById('gains-display');
@@ -41,7 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function pump(e) {
-        e.preventDefault(); // Prevent default touch behavior
+        e.preventDefault();
+        e.stopPropagation();
         if (energy > 0) {
             gains += gainsPerRep * boostMultiplier;
             energy = Math.max(0, energy - 1);
@@ -55,24 +137,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Prevent selection and default behaviors
     function preventDefaultBehavior(e) {
         e.preventDefault();
+        e.stopPropagation();
         return false;
     }
+
+    // Prevent selection and default behaviors
+    document.body.addEventListener('touchstart', preventDefaultBehavior, { passive: false });
+    document.body.addEventListener('touchmove', preventDefaultBehavior, { passive: false });
+    document.body.addEventListener('touchend', preventDefaultBehavior, { passive: false });
+    document.body.addEventListener('contextmenu', preventDefaultBehavior);
+    document.body.addEventListener('selectstart', preventDefaultBehavior);
+    document.body.addEventListener('dragstart', preventDefaultBehavior);
 
     [pumpMeContainer, character].forEach(element => {
         element.addEventListener('touchstart', pump, { passive: false });
         element.addEventListener('mousedown', pump);
-        element.addEventListener('touchmove', preventDefaultBehavior, { passive: false });
-        element.addEventListener('touchend', preventDefaultBehavior, { passive: false });
-        element.addEventListener('touchcancel', preventDefaultBehavior, { passive: false });
-        element.addEventListener('contextmenu', preventDefaultBehavior);
     });
-
-    // Prevent selection on the entire document
-    document.addEventListener('selectstart', preventDefaultBehavior);
-    document.addEventListener('dragstart', preventDefaultBehavior);
 
     // Energy regeneration
     setInterval(() => {
@@ -94,7 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const pages = document.querySelectorAll('.page');
 
     navButtons.forEach((btn, index) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             pages.forEach(page => page.style.display = 'none');
