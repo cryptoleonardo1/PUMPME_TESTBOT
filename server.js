@@ -25,38 +25,47 @@ app.use(express.json());
 // API routes
 app.get('/api/leaderboard', async (req, res) => {
   try {
+    console.log('Fetching leaderboard data');
     const leaderboardData = await redis.zrevrange('leaderboard', 0, 9, 'WITHSCORES');
+    console.log('Raw leaderboard data:', leaderboardData);
     const leaderboard = [];
     for (let i = 0; i < leaderboardData.length; i += 2) {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1], 10);
+      console.log(`Fetching username for user ${userId}`);
       const username = await redis.hget(`user:${userId}`, 'username') || 'Anonymous';
       leaderboard.push({ userId, username, gains: score });
     }
+    console.log('Processed leaderboard:', leaderboard);
     res.json(leaderboard);
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
-    res.status(500).json({ error: 'Error fetching leaderboard' });
+    res.status(500).json({ error: 'Error fetching leaderboard', details: error.message });
   }
 });
 
 app.post('/api/saveUserData', async (req, res) => {
   try {
     const { userId, username, gains, level } = req.body;
+    console.log('Saving user data:', { userId, username, gains, level });
     await redis.hset(`user:${userId}`, 'username', username, 'gains', gains, 'level', level);
     await redis.zadd('leaderboard', gains, userId);
+    console.log('User data saved successfully');
     res.json({ success: true });
   } catch (error) {
     console.error('Error saving user data:', error);
-    res.status(500).json({ error: 'Error saving user data' });
+    res.status(500).json({ error: 'Error saving user data', details: error.message });
   }
 });
 
 app.get('/api/getUserData', async (req, res) => {
   try {
     const { userId } = req.query;
+    console.log(`Getting user data for userId: ${userId}`);
     const userData = await redis.hgetall(`user:${userId}`);
+    console.log('User data:', userData);
     if (Object.keys(userData).length === 0) {
+      console.log('No user data found, returning default values');
       res.json({ gains: 0, level: 1 });
     } else {
       res.json({
@@ -66,13 +75,14 @@ app.get('/api/getUserData', async (req, res) => {
     }
   } catch (error) {
     console.error('Error getting user data:', error);
-    res.status(500).json({ error: 'Error getting user data' });
+    res.status(500).json({ error: 'Error getting user data', details: error.message });
   }
 });
 
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error', details: err.message });
 });
 
 // Serve index.html for all other routes
@@ -171,6 +181,13 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+// Test Redis connection
+redis.ping().then(() => {
+  console.log('Redis connection successful');
+}).catch((error) => {
+  console.error('Redis connection failed:', error);
 });
 
 module.exports = app;
