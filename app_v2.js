@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
+    const characterContainer = document.getElementById('character-container');
 
     function updateLevel() {
         const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
@@ -151,9 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('selectstart', preventDefaultBehavior);
     document.body.addEventListener('dragstart', preventDefaultBehavior);
 
-    [pumpMeContainer, character].forEach(element => {
-        element.addEventListener('touchstart', pump, { passive: false });
-        element.addEventListener('mousedown', pump);
+    // Make character and PUMP ME clickable
+    [pumpMeContainer, character, characterContainer].forEach(element => {
+        if (element) {
+            element.addEventListener('touchstart', pump, { passive: false });
+            element.addEventListener('mousedown', pump);
+        }
     });
 
     // Energy regeneration
@@ -174,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigation
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
-    
+
     navButtons.forEach((btn, index) => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation(); // Stop event from bubbling up
@@ -186,10 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Remove preventDefault from nav buttons
-document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
-document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
-document.querySelector('nav').addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
-
+    document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+    document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
+    document.querySelector('nav').addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
 
     // Initial UI update
     updateUI();
