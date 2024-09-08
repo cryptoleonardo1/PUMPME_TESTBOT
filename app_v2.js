@@ -122,6 +122,39 @@ document.addEventListener('DOMContentLoaded', () => {
         gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
     }
 
+    function saveUserData() {
+        const userId = tg.initDataUnsafe?.user?.id;
+        const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
+        fetch('/api/saveUserData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId, username, gains, level }),
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => console.log('User data saved:', data))
+        .catch(error => console.error('Error saving user data:', error));
+    }
+
+    function loadUserData() {
+        const userId = tg.initDataUnsafe?.user?.id;
+        fetch(`/api/getUserData?userId=${userId}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            gains = data.gains;
+            level = data.level;
+            updateUI();
+        })
+        .catch(error => console.error('Error loading user data:', error));
+    }
+
     function pump(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -139,43 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function saveUserData() {
-        fetch('/api/saveUserData', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: tg.initDataUnsafe?.user?.id,
-                username: tg.initDataUnsafe?.user?.username,
-                gains: gains,
-                level: level
-            }),
-        })
-        .then(response => response.json())
-        .then(data => console.log('User data saved:', data))
-        .catch((error) => console.error('Error saving user data:', error));
-    }
-
-    function loadUserData() {
-        fetch(`/api/getUserData?userId=${tg.initDataUnsafe?.user?.id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.gains !== undefined) {
-                gains = data.gains;
-                updateLevel();
-                updateUI();
-            }
-        })
-        .catch((error) => console.error('Error loading user data:', error));
-    }
-
     function updateLeaderboard() {
         fetch('/api/leaderboard')
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.json();
         })
         .then(data => {
@@ -192,13 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 leaderboardBody.appendChild(row);
             });
         })
-        .catch((error) => {
+        .catch(error => {
             console.error('Error updating leaderboard:', error);
             const leaderboardBody = document.getElementById('leaderboard-body');
             leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
         });
     }
-    
+        
     // Call updateLeaderboard when the Top Pumpers page is shown
     document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
     

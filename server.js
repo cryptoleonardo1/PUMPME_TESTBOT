@@ -53,10 +53,11 @@ app.get('/api/leaderboard', async (req, res) => {
     res.json(leaderboard);
   } catch (error) {
     console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
-    res.status(500).json({ success: false, error: 'Error fetching leaderboard' });
+    res.status(500).json({ success: false, error: 'Error fetching leaderboard', details: error.message });
   }
 });
 
+// Update the save user data endpoint
 app.post('/api/saveUserData', async (req, res) => {
   try {
     const { userId, username, gains, level } = req.body;
@@ -66,10 +67,11 @@ app.post('/api/saveUserData', async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.error('Error saving user data:', util.inspect(error, { depth: null }));
-    res.status(500).json({ success: false, error: 'Error saving user data' });
+    res.status(500).json({ success: false, error: 'Error saving user data', details: error.message });
   }
 });
 
+// Update the get user data endpoint
 app.get('/api/getUserData', async (req, res) => {
   try {
     const { userId } = req.query;
@@ -86,7 +88,7 @@ app.get('/api/getUserData', async (req, res) => {
     }
   } catch (error) {
     console.error('Error getting user data:', util.inspect(error, { depth: null }));
-    res.status(500).json({ success: false, error: 'Error getting user data' });
+    res.status(500).json({ success: false, error: 'Error getting user data', details: error.message });
   }
 });
 
