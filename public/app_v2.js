@@ -57,18 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadUserData() {
-        const userId = tg.initDataUnsafe?.user?.id;
+      const userId = tg.initDataUnsafe?.user?.id;
+      if (userId) {
         fetch(`/api/getUserData?userId=${userId}`)
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            gains = data.gains;
-            level = data.level;
+          .then(response => response.json())
+          .then(data => {
+            gains = data.gains || 0;
+            level = data.level || 1;
             updateUI();
-        })
-        .catch(error => console.error('Error loading user data:', error));
+          })
+          .catch(error => console.error('Error loading user data:', error));
+      }
     }
 
     function pump(e) {
@@ -89,49 +88,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateLeaderboard() {
-        fetch('/api/leaderboard')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log('Leaderboard data:', data);
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            if (leaderboardBody) {
-              leaderboardBody.innerHTML = '';
-              data.forEach((user) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                  <td>${user.rank}</td>
-                  <td>${user.username}</td>
-                  <td>${user.gains.toLocaleString()}</td>
-                `;
-                leaderboardBody.appendChild(row);
-              });
-            } else {
-              console.error('Leaderboard body element not found');
-            }
-          })
-          .catch(error => {
-            console.error('Error updating leaderboard:', error);
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            if (leaderboardBody) {
-              leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
-            }
-          });
-      }
+      fetch('/api/leaderboard')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Leaderboard data:', data);
+          const leaderboardBody = document.getElementById('leaderboard-body');
+          if (leaderboardBody) {
+            leaderboardBody.innerHTML = '';
+            data.forEach((user) => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${user.rank}</td>
+                <td>${user.username}</td>
+                <td>${user.gains.toLocaleString()}</td>
+              `;
+              leaderboardBody.appendChild(row);
+            });
+          } else {
+            console.error('Leaderboard body element not found');
+          }
+        })
+        .catch(error => {
+          console.error('Error updating leaderboard:', error);
+          const leaderboardBody = document.getElementById('leaderboard-body');
+          if (leaderboardBody) {
+            leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+          }
+        });
+    }
       
-      // Call updateLeaderboard when the Top Pumpers page is shown
-      document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
-      
-      // Update leaderboard every 30 seconds if on the Top Pumpers page
-      setInterval(() => {
-        if (document.getElementById('top-pumpers-page').style.display !== 'none') {
-          updateLeaderboard();
-        }
-      }, 30000);
+// Call updateLeaderboard when the Top Pumpers page is shown
+document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
+
+// Update leaderboard every 30 seconds if on the Top Pumpers page
+setInterval(() => {
+  if (document.getElementById('top-pumpers-page').style.display !== 'none') {
+    updateLeaderboard();
+  }
+}, 30000);
 
     function preventDefaultBehavior(e) {
         e.preventDefault();

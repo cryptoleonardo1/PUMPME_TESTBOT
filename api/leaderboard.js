@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
       const score = parseInt(leaderboardData[i + 1], 10);
       const userData = await redis.hgetall(`user:${userId}`);
       leaderboard.push({
-        rank: Math.floor(i / 2) + 1,
+        rank: Math.floor(i / 2) + 1,  // This calculates the rank
         username: userData.username || 'Anonymous',
         gains: score
       });
