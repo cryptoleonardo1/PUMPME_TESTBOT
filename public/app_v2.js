@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             leaderboardBody.innerHTML = '';
             rank=0;
             data.forEach((user) => {
-              rank=rank+10;
+              rank=rank+100;
               const row = document.createElement('tr');
               row.innerHTML = `
                 <td>${rank}</td>
