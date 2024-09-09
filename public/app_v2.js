@@ -127,6 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Call updateLeaderboard when the Top Pumpers page is shown
 document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
 
+// Call boosts
+document.getElementById('boosts-btn').addEventListener('click', boosts);
+
 // Update leaderboard every 30 seconds if on the Top Pumpers page
 setInterval(() => {
   if (document.getElementById('top-pumpers-page').style.display !== 'none') {
@@ -170,6 +173,9 @@ setInterval(() => {
             if (btn.id === 'top-pumpers-btn') {
                 updateLeaderboard();
             }
+            if (btn.id === 'boosts-btn') {
+              updateLeaderboard();
+          }
         });
     });
 
