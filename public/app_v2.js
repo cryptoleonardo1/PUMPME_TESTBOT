@@ -100,10 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const leaderboardBody = document.getElementById('leaderboard-body');
           if (leaderboardBody) {
             leaderboardBody.innerHTML = '';
+            rank=0;
             data.forEach((user) => {
+              rank=rank+1;
               const row = document.createElement('tr');
               row.innerHTML = `
-                <td>${user.rank}</td>
+                <td>${rank}</td>
                 <td>${user.username}</td>
                 <td>${user.gains.toLocaleString()}</td>
               `;
