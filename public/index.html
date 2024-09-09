@@ -6,6 +6,7 @@
     <title>PUMPME.APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="/styles_v2.css">
+    <link rel="stylesheet" href="/boosts.css">
     <link rel="icon" href="/public/images/x-icon.png" type="image/png">
 </head>
 <body>
@@ -51,7 +52,20 @@
             </main>
         </div>
         
-        <div id="boosts-page" class="page" style="display: none;"></div>
+        <!-- Updated Boosts page content -->
+        <div id="boosts-page" class="page" style="display: none;">
+            <h1>Boosts</h1>
+            <div class="boost-categories">
+                <button class="category-btn active" data-category="nutrition">Nutrition</button>
+                <button class="category-btn" data-category="equipment">Equipment</button>
+                <button class="category-btn" data-category="activities">Activities</button>
+                <button class="category-btn" data-category="training">Training</button>
+            </div>
+            
+            <div class="boost-items" id="boost-items">
+                <!-- Items will be dynamically added here -->
+            </div>
+        </div>
         <div id="social-page" class="page" style="display: none;"></div>
         <div id="top-pumpers-page" class="page" style="display: none;">
             <h2>Top Pumpers</h2>

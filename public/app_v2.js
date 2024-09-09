@@ -174,10 +174,39 @@ setInterval(() => {
                 updateLeaderboard();
             }
             if (btn.id === 'boosts-btn') {
-              updateLeaderboard();
-          }
+                // Trigger the display of boosts when the Boosts button is clicked
+                displayBoosts('nutrition'); // Start with nutrition category
+            }
         });
     });
+ // Add this function to handle boost display
+ function displayBoosts(category) {
+  const boostItems = document.getElementById('boost-items');
+  if (boostItems) {
+      boostItems.innerHTML = '';
+      boosts[category].forEach(boost => {
+          const boostElement = document.createElement('div');
+          boostElement.className = 'boost-item';
+          boostElement.innerHTML = `
+              <div class="boost-icon">${boost.icon}</div>
+              <div class="boost-name">${boost.name}</div>
+              <div class="boost-description">${boost.description}</div>
+              <div class="boost-price">${boost.price} 💰</div>
+          `;
+          boostItems.appendChild(boostElement);
+      });
+  }
+}
+
+// Add event listeners for boost category buttons
+const categoryButtons = document.querySelectorAll('.category-btn');
+categoryButtons.forEach(button => {
+  button.addEventListener('click', () => {
+      categoryButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      displayBoosts(button.dataset.category);
+  });
+});
 
     // Remove preventDefault from nav buttons
     document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
