@@ -182,9 +182,9 @@ setInterval(() => {
  // Add this function to handle boost display
  function displayBoosts(category) {
   const boostItems = document.getElementById('boost-items');
-  if (boostItems) {
+  if (boostItems && window.boosts) {
       boostItems.innerHTML = '';
-      boosts[category].forEach(boost => {
+      window.boosts[category].forEach(boost => {
           const boostElement = document.createElement('div');
           boostElement.className = 'boost-item';
           boostElement.innerHTML = `

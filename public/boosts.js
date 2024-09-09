@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const boostItems = document.getElementById('boost-items');
     const categoryButtons = document.querySelectorAll('.category-btn');
 
-    const boosts = {
+    window.boosts = {
         nutrition: [
             { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 50 },
             { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 75 },
