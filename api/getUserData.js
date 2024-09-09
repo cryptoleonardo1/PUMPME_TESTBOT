@@ -1,6 +1,8 @@
-import redis from '../lib/redis';
+//import redis from '../lib/redis';
+import redis from '../redis-client';
 
-const redis = require('../lib/redis');
+//const redis = require('../lib/redis');
+const redis = require('../redis-client');
 
 module.exports = async function(req, res) {
   if (req.method === 'GET') {
