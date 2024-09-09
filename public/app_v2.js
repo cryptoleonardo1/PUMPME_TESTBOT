@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
 
 // Call boosts
-document.getElementById('boosts-btn').addEventListener('click', boosts);
+//document.getElementById('boosts-btn').addEventListener('click', boosts);
 
 // Update leaderboard every 30 seconds if on the Top Pumpers page
 setInterval(() => {
