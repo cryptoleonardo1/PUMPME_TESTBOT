@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Boosts functionality
         function displayBoosts(category) {
+          console.log("Displaying boosts for category: " + category);
           const boostItems = document.getElementById('boost-items');
           if (boostItems && window.boosts) {
               boostItems.innerHTML = '';
@@ -38,8 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   
       function setupBoostsCategoryButtons() {
-          const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-          categoryButtons.forEach(button => {
+        console.log("Setting up boost categorybuttons");
+        const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+        console.log("Found " + categoryButtons.length + " category buttons");
+        categoryButtons.forEach(button => {
               button.addEventListener('click', (e) => {
                   e.preventDefault();
                   categoryButtons.forEach(btn => btn.classList.remove('active'));
