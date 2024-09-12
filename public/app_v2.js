@@ -42,16 +42,23 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Setting up boost categorybuttons");
         const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
         console.log("Found " + categoryButtons.length + " category buttons");
+        let activeButton = document.querySelector('#boosts-page .category-btn.active');
+    
         categoryButtons.forEach(button => {
-              button.addEventListener('click', (e) => {
-                  e.preventDefault();
-                  categoryButtons.forEach(btn => btn.classList.remove('active'));
-                  button.classList.add('active');
-                  displayBoosts(button.dataset.category);
-              });
-          });
-      }
-  
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (button !== activeButton) {
+                    if (activeButton) {
+                        activeButton.classList.remove('active');
+                    }
+                    button.classList.add('active');
+                    activeButton = button;
+                    displayBoosts(button.dataset.category);
+                }
+            });
+        });
+    }
+
       function initializeBoostsPage() {
           displayBoosts('nutrition');
           setupBoostsCategoryButtons();
