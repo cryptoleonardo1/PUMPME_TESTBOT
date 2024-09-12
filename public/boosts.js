@@ -26,36 +26,3 @@ window.boosts = {
         { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 300 },
     ]
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-    const boostItems = document.getElementById('boost-items');
-    const categoryButtons = document.querySelectorAll('.category-btn');
-
-    function displayBoosts(category) {
-        if (boostItems) {
-            boostItems.innerHTML = '';
-            window.boosts[category].forEach(boost => {
-                const boostElement = document.createElement('div');
-                boostElement.className = 'boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-description">${boost.description}</div>
-                    <div class="boost-price">${boost.price} 💰</div>
-                `;
-                boostItems.appendChild(boostElement);
-            });
-        }
-    }
-
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            displayBoosts(button.dataset.category);
-        });
-    });
-
-    // Initially display nutrition boosts
-    displayBoosts('nutrition');
-});
