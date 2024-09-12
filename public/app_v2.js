@@ -57,17 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadUserData() {
-      const userId = tg.initDataUnsafe?.user?.id;
-      if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
-          .then(response => response.json())
-          .then(data => {
-            gains = data.gains || 0;
-            level = data.level || 1;
-            updateUI();
-          })
-          .catch(error => console.error('Error loading user data:', error));
-      }
+        const userId = tg.initDataUnsafe?.user?.id;
+        if (userId) {
+            fetch(`/api/getUserData?userId=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                gains = data.gains || 0;
+                level = data.level || 1;
+                updateUI();
+            })
+            .catch(error => console.error('Error loading user data:', error));
+        }
     }
 
     function pump(e) {
@@ -88,54 +88,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateLeaderboard() {
-      fetch('/api/leaderboard')
+        fetch('/api/leaderboard')
         .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
         })
         .then(data => {
-          console.log('Leaderboard data:', data);
-          const leaderboardBody = document.getElementById('leaderboard-body');
-          if (leaderboardBody) {
-            leaderboardBody.innerHTML = '';
-            rank=0;
-            data.forEach((user) => {
-              rank=rank+1;
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${rank}</td>
-                <td>${user.username}</td>
-                <td>${user.gains.toLocaleString()}</td>
-              `;
-              leaderboardBody.appendChild(row);
-            });
-          } else {
-            console.error('Leaderboard body element not found');
-          }
+            console.log('Leaderboard data:', data);
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            if (leaderboardBody) {
+                leaderboardBody.innerHTML = '';
+                let rank = 0;
+                data.forEach((user) => {
+                    rank = rank + 1;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${rank}</td>
+                        <td>${user.username}</td>
+                        <td>${user.gains.toLocaleString()}</td>
+                    `;
+                    leaderboardBody.appendChild(row);
+                });
+            } else {
+                console.error('Leaderboard body element not found');
+            }
         })
         .catch(error => {
-          console.error('Error updating leaderboard:', error);
-          const leaderboardBody = document.getElementById('leaderboard-body');
-          if (leaderboardBody) {
-            leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
-          }
+            console.error('Error updating leaderboard:', error);
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            if (leaderboardBody) {
+                leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+            }
         });
     }
-      
-// Call updateLeaderboard when the Top Pumpers page is shown
-document.getElementById('top-pumpers-btn').addEventListener('click', updateLeaderboard);
-
-// Call boosts
-//document.getElementById('boosts-btn').addEventListener('click', boosts);
-
-// Update leaderboard every 30 seconds if on the Top Pumpers page
-setInterval(() => {
-  if (document.getElementById('top-pumpers-page').style.display !== 'none') {
-    updateLeaderboard();
-  }
-}, 30000);
 
     function preventDefaultBehavior(e) {
         e.preventDefault();
@@ -164,24 +151,23 @@ setInterval(() => {
     const pages = document.querySelectorAll('.page');
 
     navButtons.forEach((btn, index) => {
-      btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          navButtons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          pages.forEach(page => page.style.display = 'none');
-          pages[index].style.display = 'flex';
-          if (btn.id === 'top-pumpers-btn') {
-              updateLeaderboard();
-          }
-          if (btn.id === 'boosts-btn') {
-              initializeBoostsPage();
-          }
-      });
-  });
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            pages.forEach(page => page.style.display = 'none');
+            pages[index].style.display = 'flex';
+            if (btn.id === 'top-pumpers-btn') {
+                updateLeaderboard();
+            }
+            if (btn.id === 'boosts-btn') {
+                initializeBoostsPage();
+            }
+        });
+    });
 
- // Add this function to handle boost display
     function initializeBoostsPage() {
-        displayBoosts('nutrition'); // Start with nutrition category
+        displayBoosts('nutrition');
         setupBoostsCategoryButtons();
     }
 
@@ -213,19 +199,6 @@ setInterval(() => {
             });
         }
     }
-    
-    // Call initializeBoostsPage once when the page loads
-    initializeBoostsPage();
-
-// Add event listeners for boost category buttons
-const categoryButtons = document.querySelectorAll('.category-btn');
-categoryButtons.forEach(button => {
-  button.addEventListener('click', () => {
-      categoryButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      displayBoosts(button.dataset.category);
-  });
-});
 
     // Remove preventDefault from nav buttons
     document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
@@ -252,6 +225,9 @@ categoryButtons.forEach(button => {
 
     // Initial UI update
     updateUI();
+
+    // Initialize the Boosts page
+    initializeBoostsPage();
 
     tg.ready();
     tg.expand();
