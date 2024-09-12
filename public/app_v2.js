@@ -204,6 +204,37 @@ function updateProfilePage() {
   }
 }
 
+const socialTasks = [
+  { name: "Follow us on Facebook", icon: "facebook-icon.png", reward: 100000, completed: false },
+  { name: "Follow us on Instagram", icon: "instagram-icon.png", reward: 100000, completed: true },
+  { name: "Join our TG channel", icon: "telegram-icon.png", reward: 5000, completed: true },
+  { name: "Follow our X account", icon: "twitter-icon.png", reward: 5000, completed: true }
+];
+
+function updateSocialPage() {
+  const socialTasksContainer = document.getElementById('social-tasks-container');
+  if (socialTasksContainer) {
+      socialTasksContainer.innerHTML = '';
+      socialTasks.forEach(task => {
+          const taskElement = document.createElement('div');
+          taskElement.className = 'social-task';
+          taskElement.innerHTML = `
+              <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
+              <div class="social-task-content">
+                  <div class="social-task-name">${task.name}</div>
+                  <div class="social-task-reward">+${task.reward.toLocaleString()}</div>
+              </div>
+              <div class="social-task-status">
+                  ${task.completed 
+                      ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' 
+                      : '<img src="/public/images/chevron-right-icon.png" alt="Not completed" class="chevron-icon">'}
+              </div>
+          `;
+          socialTasksContainer.appendChild(taskElement);
+      });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
     
@@ -224,6 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
               updateLeaderboard();
           } else if (btn.id === 'profile-btn') {
               updateProfilePage();
+          } else if (btn.id === 'social-btn') {
+              updateSocialPage();
           }
       });
   });

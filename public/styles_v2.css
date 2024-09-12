@@ -247,6 +247,61 @@ main {
   color: #ffd700;
 }
 
+#social-page {
+  padding: 20px;
+}
+
+#social-page h2 {
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.social-task {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.social-task-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.social-task-content {
+  flex-grow: 1;
+}
+
+.social-task-name {
+  color: #ffffff;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.social-task-reward {
+  color: #ffd700;
+  font-size: 14px;
+}
+
+.social-task-status {
+  margin-left: 15px;
+}
+
+.status-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.chevron-icon {
+  width: 24px;
+  height: 24px;
+  color: #ffffff;
+}
+
 nav {
   display: flex;
   justify-content: space-around;
