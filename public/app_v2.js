@@ -152,6 +152,58 @@ function initializeBoostsPage() {
     setupBoostsCategoryButtons();
 }
 
+function updateProfilePage() {
+  const attributes = [
+      { name: "Strength", value: 60 },
+      { name: "Endurance", value: 45 },
+      { name: "Agility", value: 30 },
+      { name: "Flexibility", value: 50 },
+      { name: "Recovery", value: 70 }
+  ];
+
+  const attributesContainer = document.getElementById('attributes-container');
+  if (attributesContainer) {
+      attributesContainer.innerHTML = '';
+      attributes.forEach(attr => {
+          const attrElement = document.createElement('div');
+          attrElement.className = 'attribute-item';
+          attrElement.innerHTML = `
+              <div class="attribute-name">${attr.name}</div>
+              <div class="attribute-bar-container">
+                  <div class="attribute-bar" style="width: ${attr.value}%"></div>
+              </div>
+              <div class="attribute-value">${attr.value}</div>
+          `;
+          attributesContainer.appendChild(attrElement);
+      });
+  }
+
+  // This is a placeholder for active boosts. In a real application, 
+  // you would fetch this data from your backend or local storage.
+  const activeBoosts = [
+      { name: "Protein Shake", duration: "2h 30m" },
+      { name: "Pre-workout", duration: "45m" }
+  ];
+
+  const activeBoostsContainer = document.getElementById('active-boosts-container');
+  if (activeBoostsContainer) {
+      activeBoostsContainer.innerHTML = '';
+      if (activeBoosts.length > 0) {
+          activeBoosts.forEach(boost => {
+              const boostElement = document.createElement('div');
+              boostElement.className = 'active-boost-item';
+              boostElement.innerHTML = `
+                  <div class="boost-name">${boost.name}</div>
+                  <div class="boost-duration">${boost.duration}</div>
+              `;
+              activeBoostsContainer.appendChild(boostElement);
+          });
+      } else {
+          activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+      }
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
     
@@ -159,20 +211,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const pages = document.querySelectorAll('.page');
 
     navButtons.forEach((btn, index) => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("Nav button clicked:", btn.id);
-            navButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            pages.forEach(page => page.style.display = 'none');
-            pages[index].style.display = 'flex';
-            if (btn.id === 'boosts-btn') {
-                initializeBoostsPage();
-            } else if (btn.id === 'top-pumpers-btn') {
-                updateLeaderboard();
-            }
-        });
-    });
+      btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          console.log("Nav button clicked:", btn.id);
+          navButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          pages.forEach(page => page.style.display = 'none');
+          pages[index].style.display = 'flex';
+          if (btn.id === 'boosts-btn') {
+              initializeBoostsPage();
+          } else if (btn.id === 'top-pumpers-btn') {
+              updateLeaderboard();
+          } else if (btn.id === 'profile-btn') {
+              updateProfilePage();
+          }
+      });
+  });
 
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');

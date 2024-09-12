@@ -185,6 +185,68 @@ main {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
+/* Profile page styles */
+#profile-page h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-section {
+  margin-bottom: 30px;
+}
+
+.profile-section h3 {
+  margin-bottom: 15px;
+}
+
+.attribute-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.attribute-name {
+  width: 100px;
+  margin-right: 10px;
+}
+
+.attribute-bar-container {
+  flex-grow: 1;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.attribute-bar {
+  height: 100%;
+  background-color: #ffd700;
+  border-radius: 10px;
+}
+
+.attribute-value {
+  width: 40px;
+  text-align: right;
+  margin-left: 10px;
+}
+
+.active-boost-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.boost-name {
+  font-weight: bold;
+}
+
+.boost-duration {
+  color: #ffd700;
+}
+
 nav {
   display: flex;
   justify-content: space-around;
