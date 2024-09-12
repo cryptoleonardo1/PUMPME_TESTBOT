@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
       function initializeBoostsPage() {
-          displayBoosts('nutrition');
+          displayBoosts('equipment');
           setupBoostsCategoryButtons();
       }
 
