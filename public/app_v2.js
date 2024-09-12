@@ -18,133 +18,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
 
-    function updateLevel() {
-        const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
-        if (currentLevel && currentLevel.level !== level) {
-            level = currentLevel.level;
-            gainsPerRep = currentLevel.gainsPerRep;
-            gainsPerDay = currentLevel.gainsPerDay;
-            console.log(`Leveled up to ${currentLevel.name}!`);
+        // Boosts functionality
+    const boostItems = document.getElementById('boost-items');
+    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+
+    function displayBoosts(category) {
+        if (boostItems && window.boosts) {
+            boostItems.innerHTML = '';
+            window.boosts[category].forEach(boost => {
+                const boostElement = document.createElement('div');
+                boostElement.className = 'boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-icon">${boost.icon}</div>
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-description">${boost.description}</div>
+                    <div class="boost-price">${boost.price} 💰</div>
+                `;
+                boostItems.appendChild(boostElement);
+            });
         }
     }
 
-    function updateUI() {
-        gainsDisplay.textContent = gains.toLocaleString();
-        energyBar.style.width = `${(energy / 1000) * 100}%`;
-        energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
-        const currentLevel = fitnessLevels[level - 1];
-        levelDisplay.textContent = `${currentLevel.name} (Level ${level}/10)`;
-        gainsPerRepDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep * boostMultiplier}`;
-        gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
-    }
-
-    function saveUserData() {
-        const userId = tg.initDataUnsafe?.user?.id;
-        const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-        fetch('/api/saveUserData', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId, username, gains, level }),
-        })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-        })
-        .then(data => console.log('User data saved:', data))
-        .catch(error => console.error('Error saving user data:', error));
-    }
-
-    function loadUserData() {
-        const userId = tg.initDataUnsafe?.user?.id;
-        if (userId) {
-            fetch(`/api/getUserData?userId=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                gains = data.gains || 0;
-                level = data.level || 1;
-                updateUI();
-            })
-            .catch(error => console.error('Error loading user data:', error));
-        }
-    }
-
-    function pump(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (energy > 0) {
-            gains += gainsPerRep * boostMultiplier;
-            energy = Math.max(0, energy - 1);
-            updateLevel();
-            updateUI();
-            saveUserData();
-
-            character.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                character.style.transform = 'scale(1)';
-            }, 100);
-        }
-    }
-
-    function updateLeaderboard() {
-        fetch('/api/leaderboard')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Leaderboard data:', data);
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            if (leaderboardBody) {
-                leaderboardBody.innerHTML = '';
-                let rank = 0;
-                data.forEach((user) => {
-                    rank = rank + 1;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${rank}</td>
-                        <td>${user.username}</td>
-                        <td>${user.gains.toLocaleString()}</td>
-                    `;
-                    leaderboardBody.appendChild(row);
-                });
-            } else {
-                console.error('Leaderboard body element not found');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating leaderboard:', error);
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            if (leaderboardBody) {
-                leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
-            }
+    function setupBoostsCategoryButtons() {
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                displayBoosts(button.dataset.category);
+            });
         });
     }
 
-    function preventDefaultBehavior(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
+    function initializeBoostsPage() {
+        displayBoosts('nutrition');
+        setupBoostsCategoryButtons();
     }
-
-    // Prevent selection and default behaviors
-    document.body.addEventListener('touchstart', preventDefaultBehavior, { passive: false });
-    document.body.addEventListener('touchmove', preventDefaultBehavior, { passive: false });
-    document.body.addEventListener('touchend', preventDefaultBehavior, { passive: false });
-    document.body.addEventListener('contextmenu', preventDefaultBehavior);
-    document.body.addEventListener('selectstart', preventDefaultBehavior);
-    document.body.addEventListener('dragstart', preventDefaultBehavior);
-
-    // Make character and PUMP ME clickable
-    [pumpMeContainer, character].forEach(element => {
-        if (element) {
-            element.addEventListener('touchstart', pump, { passive: false });
-            element.addEventListener('mousedown', pump);
-        }
-    });
 
     // Navigation
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -166,40 +74,134 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    function initializeBoostsPage() {
-        displayBoosts('nutrition');
-        setupBoostsCategoryButtons();
-    }
+    function updateLevel() {
+      const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
+      if (currentLevel && currentLevel.level !== level) {
+          level = currentLevel.level;
+          gainsPerRep = currentLevel.gainsPerRep;
+          gainsPerDay = currentLevel.gainsPerDay;
+          console.log(`Leveled up to ${currentLevel.name}!`);
+      }
+  }
 
-    function setupBoostsCategoryButtons() {
-        const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                displayBoosts(button.dataset.category);
-            });
-        });
-    }
+  function updateUI() {
+      gainsDisplay.textContent = gains.toLocaleString();
+      energyBar.style.width = `${(energy / 1000) * 100}%`;
+      energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
+      const currentLevel = fitnessLevels[level - 1];
+      levelDisplay.textContent = `${currentLevel.name} (Level ${level}/10)`;
+      gainsPerRepDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep * boostMultiplier}`;
+      gainsPerDayDisplay.innerHTML = `<img src="/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
+  }
 
-    function displayBoosts(category) {
-        const boostItems = document.getElementById('boost-items');
-        if (boostItems && window.boosts) {
-            boostItems.innerHTML = '';
-            window.boosts[category].forEach(boost => {
-                const boostElement = document.createElement('div');
-                boostElement.className = 'boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-description">${boost.description}</div>
-                    <div class="boost-price">${boost.price} 💰</div>
-                `;
-                boostItems.appendChild(boostElement);
-            });
-        }
-    }
+  function saveUserData() {
+      const userId = tg.initDataUnsafe?.user?.id;
+      const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
+      fetch('/api/saveUserData', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId, username, gains, level }),
+      })
+      .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          return response.json();
+      })
+      .then(data => console.log('User data saved:', data))
+      .catch(error => console.error('Error saving user data:', error));
+  }
 
+  function loadUserData() {
+      const userId = tg.initDataUnsafe?.user?.id;
+      if (userId) {
+          fetch(`/api/getUserData?userId=${userId}`)
+          .then(response => response.json())
+          .then(data => {
+              gains = data.gains || 0;
+              level = data.level || 1;
+              updateUI();
+          })
+          .catch(error => console.error('Error loading user data:', error));
+      }
+  }
+
+  function pump(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (energy > 0) {
+          gains += gainsPerRep * boostMultiplier;
+          energy = Math.max(0, energy - 1);
+          updateLevel();
+          updateUI();
+          saveUserData();
+
+          character.style.transform = 'scale(1.1)';
+          setTimeout(() => {
+              character.style.transform = 'scale(1)';
+          }, 100);
+      }
+  }
+
+  function updateLeaderboard() {
+      fetch('/api/leaderboard')
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log('Leaderboard data:', data);
+          const leaderboardBody = document.getElementById('leaderboard-body');
+          if (leaderboardBody) {
+              leaderboardBody.innerHTML = '';
+              let rank = 0;
+              data.forEach((user) => {
+                  rank = rank + 1;
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                      <td>${rank}</td>
+                      <td>${user.username}</td>
+                      <td>${user.gains.toLocaleString()}</td>
+                  `;
+                  leaderboardBody.appendChild(row);
+              });
+          } else {
+              console.error('Leaderboard body element not found');
+          }
+      })
+      .catch(error => {
+          console.error('Error updating leaderboard:', error);
+          const leaderboardBody = document.getElementById('leaderboard-body');
+          if (leaderboardBody) {
+              leaderboardBody.innerHTML = '<tr><td colspan="3">Error loading leaderboard. Please try again later.</td></tr>';
+          }
+      });
+  }
+
+  function preventDefaultBehavior(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+  }
+
+  // Prevent selection and default behaviors
+  document.body.addEventListener('touchstart', preventDefaultBehavior, { passive: false });
+  document.body.addEventListener('touchmove', preventDefaultBehavior, { passive: false });
+  document.body.addEventListener('touchend', preventDefaultBehavior, { passive: false });
+  document.body.addEventListener('contextmenu', preventDefaultBehavior);
+  document.body.addEventListener('selectstart', preventDefaultBehavior);
+  document.body.addEventListener('dragstart', preventDefaultBehavior);
+
+  // Make character and PUMP ME clickable
+  [pumpMeContainer, character].forEach(element => {
+      if (element) {
+          element.addEventListener('touchstart', pump, { passive: false });
+          element.addEventListener('mousedown', pump);
+      }
+  });
+  
     // Remove preventDefault from nav buttons
     document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
     document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
