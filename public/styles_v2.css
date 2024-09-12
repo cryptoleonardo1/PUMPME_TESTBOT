@@ -19,7 +19,13 @@ body, html {
   margin: 0 auto;
 }
 
-/* Add these styles for consistent page titles */
+.page {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px; /* Space for fixed nav */
+}
+
 .page h2 {
   text-align: left;
   color: #ffffff;
@@ -118,65 +124,48 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Changed from center to flex-start */
+  justify-content: flex-start;
   padding: 20px;
 }
 
 #pump-me-container {
-  margin-top: 10px; /* This will create 10px space between the top black screen and the PUMP ME image */
+  margin-top: 10px;
   margin-bottom: 20px;
-  text-align: center; /* This ensures the image is centered horizontally */
+  text-align: center;
 }
 
 #pump-me-image {
-    width: 150px; /* Increase this value by 50% from its original size */
-    height: auto; /* This maintains the aspect ratio */
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-/* Adjust the main content area to ensure proper spacing */
-#gym-page main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 0; /* Remove any top padding if it exists */
+  width: 150px;
+  height: auto;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 #character-container {
-  width: 320px; /* Adjust if needed */
-  height: 320px; /* Adjust if needed */
+  width: 320px;
+  height: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  margin-top: 20px; /* Adjust this value as needed */
+  margin-top: 20px;
 }
 
 #character {
   max-width: 100%;
   max-height: 100%;
   transition: transform 0.1s;
-  pointer-events: auto; /* Change from 'none' to 'auto' */
+  pointer-events: auto;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-.page h2 {
-  text-align: left;
-  color: #ffffff;
-  font-size: 24px;
-  margin: 20px 0 20px 20px;
-  font-weight: bold;
-}
-
-/* Update the Boosts page styles */
+/* Boosts page styles */
 #boosts-page {
   padding: 0 20px 20px;
 }
@@ -244,10 +233,9 @@ main {
   font-weight: bold;
 }
 
+/* Top Pumpers page styles */
 #top-pumpers-page {
-  background-color: #1e3a8a;
-  padding: 20px;
-  color: white;
+  padding: 0 20px 20px;
 }
 
 #leaderboard-table {
@@ -275,7 +263,7 @@ main {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Update Profile page styles */
+/* Profile page styles */
 #profile-page {
   padding: 0 20px 20px;
 }
@@ -336,13 +324,9 @@ main {
   color: #ffd700;
 }
 
+/* Social page styles */
 #social-page {
-  padding: 20px;
-}
-
-#social-page h2 {
-  color: #ffffff;
-  margin-bottom: 20px;
+  padding: 0 20px 20px;
 }
 
 .social-task {
@@ -378,12 +362,6 @@ main {
   align-items: center;
 }
 
-.gains-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
-}
-
 .social-task-status {
   margin-left: 15px;
 }
@@ -397,6 +375,7 @@ main {
   color: #ffffff;
 }
 
+/* Navigation styles */
 nav {
   display: flex;
   justify-content: space-around;
