@@ -3,9 +3,13 @@
     padding-bottom: 60px; /* To account for the bottom nav */
 }
 
-h1 {
-    color: white;
+h2 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 24px;
+    margin-top: 20px;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .boost-categories {
@@ -44,11 +48,6 @@ h1 {
 
 .boost-item:hover {
     transform: translateY(-5px);
-}
-
-/* If it's the last item and in an odd position, align it to the left */
-.boost-item:last-child:nth-child(odd) {
-    grid-column: 1;
 }
 
 .boost-icon {
