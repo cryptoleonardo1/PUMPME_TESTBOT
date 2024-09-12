@@ -27,7 +27,7 @@ body, html {
 }
 
 .page h2 {
-  text-align: left;
+  text-align: center;
   color: #ffffff;
   font-size: 24px;
   margin: 20px 0 20px 20px;
@@ -163,6 +163,14 @@ main {
   pointer-events: auto;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+#boosts-page h2,
+#social-page h2,
+#top-pumpers-page h2,
+#profile-page h2 {
+    text-align: center;
+    margin: 20px 0;
 }
 
 /* Boosts page styles */
