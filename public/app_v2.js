@@ -19,40 +19,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const character = document.getElementById('character');
 
         // Boosts functionality
-    const boostItems = document.getElementById('boost-items');
-    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-
-    function displayBoosts(category) {
-        if (boostItems && window.boosts) {
-            boostItems.innerHTML = '';
-            window.boosts[category].forEach(boost => {
-                const boostElement = document.createElement('div');
-                boostElement.className = 'boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-description">${boost.description}</div>
-                    <div class="boost-price">${boost.price} 💰</div>
-                `;
-                boostItems.appendChild(boostElement);
-            });
-        }
-    }
-
-    function setupBoostsCategoryButtons() {
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                displayBoosts(button.dataset.category);
-            });
-        });
-    }
-
-    function initializeBoostsPage() {
-        displayBoosts('nutrition');
-        setupBoostsCategoryButtons();
-    }
+        function displayBoosts(category) {
+          const boostItems = document.getElementById('boost-items');
+          if (boostItems && window.boosts) {
+              boostItems.innerHTML = '';
+              window.boosts[category].forEach(boost => {
+                  const boostElement = document.createElement('div');
+                  boostElement.className = 'boost-item';
+                  boostElement.innerHTML = `
+                      <div class="boost-icon">${boost.icon}</div>
+                      <div class="boost-name">${boost.name}</div>
+                      <div class="boost-description">${boost.description}</div>
+                      <div class="boost-price">${boost.price} 💰</div>
+                  `;
+                  boostItems.appendChild(boostElement);
+              });
+          }
+      }
+  
+      function setupBoostsCategoryButtons() {
+          const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+          categoryButtons.forEach(button => {
+              button.addEventListener('click', () => {
+                  categoryButtons.forEach(btn => btn.classList.remove('active'));
+                  button.classList.add('active');
+                  displayBoosts(button.dataset.category);
+              });
+          });
+      }
+  
+      function initializeBoostsPage() {
+          displayBoosts('nutrition');
+          setupBoostsCategoryButtons();
+      }
 
     // Navigation
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -201,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
           element.addEventListener('mousedown', pump);
       }
   });
-  
+
     // Remove preventDefault from nav buttons
     document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
     document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
