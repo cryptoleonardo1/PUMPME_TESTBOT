@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       function setupBoostsCategoryButtons() {
           const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
           categoryButtons.forEach(button => {
-              button.addEventListener('click', () => {
+              button.addEventListener('click', (e) => {
+                  e.preventDefault();
                   categoryButtons.forEach(btn => btn.classList.remove('active'));
                   button.classList.add('active');
                   displayBoosts(button.dataset.category);
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navButtons.forEach((btn, index) => {
         btn.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.preventDefault();
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             pages.forEach(page => page.style.display = 'none');
