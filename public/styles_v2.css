@@ -19,11 +19,13 @@ body, html {
   margin: 0 auto;
 }
 
-.page {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 60px; /* Space for fixed nav */
+/* Add these styles for consistent page titles */
+.page h2 {
+  text-align: left;
+  color: #ffffff;
+  font-size: 24px;
+  margin: 20px 0 20px 20px;
+  font-weight: bold;
 }
 
 header {
@@ -166,6 +168,82 @@ main {
   -webkit-user-drag: none;
 }
 
+.page h2 {
+  text-align: left;
+  color: #ffffff;
+  font-size: 24px;
+  margin: 20px 0 20px 20px;
+  font-weight: bold;
+}
+
+/* Update the Boosts page styles */
+#boosts-page {
+  padding: 0 20px 20px;
+}
+
+.boost-categories {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.category-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 10px;
+  border-bottom: 2px solid transparent;
+}
+
+.category-btn.active {
+  border-bottom-color: #ffd700;
+}
+
+.boost-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.boost-item {
+  background-color: rgba(75, 0, 130, 0.6);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.boost-item:hover {
+  transform: translateY(-5px);
+}
+
+.boost-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.boost-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.boost-description {
+  font-size: 12px;
+  color: #cccccc;
+  margin-bottom: 10px;
+}
+
+.boost-price {
+  display: inline-block;
+  background-color: #ffd700;
+  color: #000000;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-weight: bold;
+}
+
 #top-pumpers-page {
   background-color: #1e3a8a;
   padding: 20px;
@@ -197,10 +275,9 @@ main {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Profile page styles */
-#profile-page h2 {
-  text-align: center;
-  margin-bottom: 20px;
+/* Update Profile page styles */
+#profile-page {
+  padding: 0 20px 20px;
 }
 
 .profile-section {
