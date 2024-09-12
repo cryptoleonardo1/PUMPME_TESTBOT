@@ -285,20 +285,26 @@ main {
 .social-task-reward {
   color: #ffd700;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.gains-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
 }
 
 .social-task-status {
   margin-left: 15px;
 }
 
-.status-icon {
+.status-icon, .chevron-icon {
   width: 24px;
   height: 24px;
 }
 
 .chevron-icon {
-  width: 24px;
-  height: 24px;
   color: #ffffff;
 }
 

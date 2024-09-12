@@ -205,10 +205,10 @@ function updateProfilePage() {
 }
 
 const socialTasks = [
-  { name: "Follow us on Facebook", icon: "facebook-icon.png", reward: 100000, completed: false },
-  { name: "Follow us on Instagram", icon: "instagram-icon.png", reward: 100000, completed: true },
+  { name: "Follow us on Instagram", icon: "instagram-icon.png", reward: 5000, completed: true },
   { name: "Join our TG channel", icon: "telegram-icon.png", reward: 5000, completed: true },
-  { name: "Follow our X account", icon: "twitter-icon.png", reward: 5000, completed: true }
+  { name: "Follow our X account", icon: "twitter-icon.png", reward: 5000, completed: true },
+  { name: "Refer a friend", icon: "refer-friend-icon.png", reward: 5000, completed: false }
 ];
 
 function updateSocialPage() {
@@ -222,7 +222,10 @@ function updateSocialPage() {
               <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
               <div class="social-task-content">
                   <div class="social-task-name">${task.name}</div>
-                  <div class="social-task-reward">+${task.reward.toLocaleString()}</div>
+                  <div class="social-task-reward">
+                      <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                      +${task.reward.toLocaleString()}
+                  </div>
               </div>
               <div class="social-task-status">
                   ${task.completed 
