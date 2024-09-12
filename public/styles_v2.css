@@ -121,17 +121,28 @@ main {
 }
 
 #pump-me-container {
+  margin-top: 10px; /* This will create 10px space between the top black screen and the PUMP ME image */
   margin-bottom: 20px;
-  margin-top: 20px; /* Added margin-top to move it higher */
+  text-align: center; /* This ensures the image is centered horizontally */
 }
 
 #pump-me-image {
-  width: 100px; /* Adjusted size */
-  cursor: pointer;
-  user-select: none; /* Prevent selection */
-  -webkit-user-select: none; /* For Safari */
-  -moz-user-select: none; /* For Firefox */
-  -ms-user-select: none; /* For Internet Explorer/Edge */
+    width: 150px; /* Increase this value by 50% from its original size */
+    height: auto; /* This maintains the aspect ratio */
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Adjust the main content area to ensure proper spacing */
+#gym-page main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0; /* Remove any top padding if it exists */
 }
 
 #character-container {
@@ -143,6 +154,7 @@ main {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  margin-top: 20px; /* Adjust this value as needed */
 }
 
 #character {
