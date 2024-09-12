@@ -19,48 +19,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const character = document.getElementById('character');
 
         // Boosts functionality
-        function displayBoosts(category) {
-          console.log("Displaying boosts for category: " + category);
-          const boostItems = document.getElementById('boost-items');
-          if (boostItems && window.boosts) {
-              boostItems.innerHTML = '';
-              window.boosts[category].forEach(boost => {
-                  const boostElement = document.createElement('div');
-                  boostElement.className = 'boost-item';
-                  boostElement.innerHTML = `
-                      <div class="boost-icon">${boost.icon}</div>
-                      <div class="boost-name">${boost.name}</div>
-                      <div class="boost-description">${boost.description}</div>
-                      <div class="boost-price">${boost.price} 💰</div>
-                  `;
-                  boostItems.appendChild(boostElement);
+        function setupBoostsCategoryButtons() {
+          console.log("Setting up boost category buttons");
+          const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+          console.log("Found", categoryButtons.length, "category buttons");
+          
+          categoryButtons.forEach(button => {
+              button.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  console.log("Category button clicked:", button.dataset.category);
+                  categoryButtons.forEach(btn => btn.classList.remove('active'));
+                  button.classList.add('active');
+                  displayBoosts(button.dataset.category);
               });
-          }
+          });
       }
-  
-      function setupBoostsCategoryButtons() {
-        console.log("Setting up boost categorybuttons");
-        const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-        console.log("Found " + categoryButtons.length + " category buttons");
-        let activeButton = document.querySelector('#boosts-page .category-btn.active');
-    
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (button !== activeButton) {
-                    if (activeButton) {
-                        activeButton.classList.remove('active');
-                    }
-                    button.classList.add('active');
-                    activeButton = button;
-                    displayBoosts(button.dataset.category);
-                }
-            });
-        });
-    }
-
+      
       function initializeBoostsPage() {
-          displayBoosts('equipment');
+          console.log("Initializing Boosts page");
+          const defaultCategory = 'equipment';  // or 'nutrition', depending on your preference
+          const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+          categoryButtons.forEach(btn => btn.classList.remove('active'));
+          const defaultButton = document.querySelector(`#boosts-page .category-btn[data-category="${defaultCategory}"]`);
+          if (defaultButton) {
+              defaultButton.classList.add('active');
+          }
+          displayBoosts(defaultCategory);
           setupBoostsCategoryButtons();
       }
 
@@ -216,6 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('nav').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
     document.querySelector('nav').addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
     document.querySelector('nav').addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
+
+    // Make sure this function is called when the Boosts nav button is clicked
+    document.querySelector('#boosts-btn').addEventListener('click', initializeBoostsPage);
 
     // Energy regeneration
     setInterval(() => {
