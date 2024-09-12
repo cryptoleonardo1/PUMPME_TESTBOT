@@ -164,39 +164,58 @@ setInterval(() => {
     const pages = document.querySelectorAll('.page');
 
     navButtons.forEach((btn, index) => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop event from bubbling up
-            navButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            pages.forEach(page => page.style.display = 'none');
-            pages[index].style.display = 'flex';
-            if (btn.id === 'top-pumpers-btn') {
-                updateLeaderboard();
-            }
-            if (btn.id === 'boosts-btn') {
-                // Trigger the display of boosts when the Boosts button is clicked
-                displayBoosts('nutrition'); // Start with nutrition category
-            }
-        });
-    });
- // Add this function to handle boost display
- function displayBoosts(category) {
-  const boostItems = document.getElementById('boost-items');
-  if (boostItems && window.boosts) {
-      boostItems.innerHTML = '';
-      window.boosts[category].forEach(boost => {
-          const boostElement = document.createElement('div');
-          boostElement.className = 'boost-item';
-          boostElement.innerHTML = `
-              <div class="boost-icon">${boost.icon}</div>
-              <div class="boost-name">${boost.name}</div>
-              <div class="boost-description">${boost.description}</div>
-              <div class="boost-price">${boost.price} 💰</div>
-          `;
-          boostItems.appendChild(boostElement);
+      btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          pages.forEach(page => page.style.display = 'none');
+          pages[index].style.display = 'flex';
+          if (btn.id === 'top-pumpers-btn') {
+              updateLeaderboard();
+          }
+          if (btn.id === 'boosts-btn') {
+              initializeBoostsPage();
+          }
       });
-  }
-}
+  });
+
+ // Add this function to handle boost display
+    function initializeBoostsPage() {
+        displayBoosts('nutrition'); // Start with nutrition category
+        setupBoostsCategoryButtons();
+    }
+
+    function setupBoostsCategoryButtons() {
+        const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                displayBoosts(button.dataset.category);
+            });
+        });
+    }
+
+    function displayBoosts(category) {
+        const boostItems = document.getElementById('boost-items');
+        if (boostItems && window.boosts) {
+            boostItems.innerHTML = '';
+            window.boosts[category].forEach(boost => {
+                const boostElement = document.createElement('div');
+                boostElement.className = 'boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-icon">${boost.icon}</div>
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-description">${boost.description}</div>
+                    <div class="boost-price">${boost.price} 💰</div>
+                `;
+                boostItems.appendChild(boostElement);
+            });
+        }
+    }
+    
+    // Call initializeBoostsPage once when the page loads
+    initializeBoostsPage();
 
 // Add event listeners for boost category buttons
 const categoryButtons = document.querySelectorAll('.category-btn');
