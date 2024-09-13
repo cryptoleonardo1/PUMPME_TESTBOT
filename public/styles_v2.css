@@ -257,7 +257,7 @@ main {
   font-weight: bold;
 }
 
-.boost-price img.bicep-icon {
+.boost-price img.flex-icon {
   width: 16px; /* Adjust size as needed */
   height: 16px;
   margin-right: 5px;
@@ -268,12 +268,6 @@ main {
 .boost-price span {
   display: inline-block;
   vertical-align: middle;
-}
-
-.bicep-icon {
-  width: 16px; /* Adjust size as needed */
-  height: 16px;
-  margin-right: 5px;
 }
 
 /* Top Pumpers page styles */
