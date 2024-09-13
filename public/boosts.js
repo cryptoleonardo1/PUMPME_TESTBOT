@@ -32,8 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryButtons = document.querySelectorAll('.category-btn');
 
     function displayBoosts(category) {
-        const boostItems = document.getElementById('boost-items');
-        if (boostItems && window.boosts) {
+        if (boostItems) {
             boostItems.innerHTML = '';
             window.boosts[category].forEach(boost => {
                 const boostElement = document.createElement('div');
@@ -42,10 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="boost-icon">${boost.icon}</div>
                     <div class="boost-name">${boost.name}</div>
                     <div class="boost-description">${boost.description}</div>
-                    <div class="boost-price">
-                        <img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon">
-                        ${boost.price}
-                    </div>
+                    <div class="boost-price">${boost.price} 💰</div>
                 `;
                 boostItems.appendChild(boostElement);
             });
