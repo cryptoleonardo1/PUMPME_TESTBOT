@@ -98,9 +98,9 @@ header {
   justify-content: center;
 }
 
-.gains-icon {
-  width: 16px;
-  height: 16px;
+.boost-price .gains-icon {
+  width: 20px;
+  height: 20px;
   margin-right: 5px;
 }
 
@@ -228,7 +228,7 @@ main {
 }
 
 .boost-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
 }
 
 .boost-icon {
@@ -248,7 +248,9 @@ main {
 }
 
 .boost-price {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #ffd700;
   color: #000000;
   padding: 5px 10px;
