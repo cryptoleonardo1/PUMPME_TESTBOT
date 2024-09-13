@@ -99,8 +99,8 @@ header {
 }
 
 .boost-price .gains-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;  /* Adjust this value as needed */
+  height: 16px; /* Adjust this value as needed */
   margin-right: 5px;
 }
 
@@ -231,7 +231,7 @@ main {
   transform: translateY(-10px);
 }
 
-.boost-icon {
+.boost-item .boost-icon {
   font-size: 40px;
   margin-bottom: 10px;
 }
