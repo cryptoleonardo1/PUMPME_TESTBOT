@@ -248,12 +248,19 @@ main {
 }
 
 .boost-price {
-  display: inline-block;
-  background-color: #ffd700;
-  color: #000000;
+  display: inline-flex;
+  align-items: center;
+  background-color: #2ecc40; /* Green background */
+  color: #ffffff; /* White text */
   padding: 5px 10px;
   border-radius: 15px;
   font-weight: bold;
+}
+
+.bicep-icon {
+  width: 16px; /* Adjust size as needed */
+  height: 16px;
+  margin-right: 5px;
 }
 
 /* Top Pumpers page styles */
