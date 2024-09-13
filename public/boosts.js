@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryButtons = document.querySelectorAll('.category-btn');
 
     function displayBoosts(category) {
+        console.log("Displaying boosts for category:", category);
         if (boostItems) {
             boostItems.innerHTML = '';
             window.boosts[category].forEach(boost => {
+                console.log("Creating boost item:", boost.name);
                 const boostElement = document.createElement('div');
                 boostElement.className = 'boost-item';
                 boostElement.innerHTML = `
@@ -48,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 boostItems.appendChild(boostElement);
             });
+            console.log("Finished creating boost items");
+        } else {
+            console.error("boostItems element not found");
         }
     }
 
