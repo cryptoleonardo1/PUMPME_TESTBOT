@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="boost-description">${boost.description}</div>
                     <div class="boost-price">
                         <img src="/public/images/bicep-icon-yellow.png" alt="Bicep Icon" class="bicep-icon">
-                        ${boost.price}
+                        <span>${boost.price}</span>
                     </div>
                 `;
                 boostItems.appendChild(boostElement);

@@ -257,6 +257,19 @@ main {
   font-weight: bold;
 }
 
+.boost-price img.bicep-icon {
+  width: 16px; /* Adjust size as needed */
+  height: 16px;
+  margin-right: 5px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.boost-price span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .bicep-icon {
   width: 16px; /* Adjust size as needed */
   height: 16px;
