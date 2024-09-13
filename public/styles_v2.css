@@ -46,7 +46,7 @@ header {
 }
 
 #gains-container {
-  background-color: #000000;
+  background-color: #2a2a2a;
   padding: 10px;
   border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
@@ -76,7 +76,7 @@ header {
 }
 
 .status-item {
-  background-color: rgba(74, 85, 104, 0.8);  /* Slightly transparent gray */
+  background-color: #2a2a2a;  /* rgba(74, 85, 104, 0.8); Slightly transparent gray */ 
   padding: 8px;
   border-radius: 10px;
   text-align: center;
@@ -106,7 +106,7 @@ header {
 
 #energy-container {
   background-color: transparent;
-  padding: 10px 0;
+  padding: 10px;
 }
 
 #energy-status-bar {
