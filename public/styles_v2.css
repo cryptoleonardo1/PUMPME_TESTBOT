@@ -40,19 +40,19 @@ header {
   border-radius: 0 0 15px 15px;
 }
 
-/* Update the header styles */
 #gym-page header {
   padding: 0;
   background-color: transparent;
-  border-radius: 0;
 }
-
 
 #gains-container {
   background-color: #000000;
   padding: 10px;
   border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #bicep-icon {
@@ -68,17 +68,20 @@ header {
 }
 
 #status-bar {
-  background: linear-gradient(to right, #1e3a8a, #3b82f6);
-  padding: 10px;
-  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 10px;
+  background-color: transparent;
+  padding: 0;
 }
 
 .status-item {
-  background-color: #4a5568;
+  background-color: rgba(74, 85, 104, 0.8);  /* Slightly transparent gray */
   padding: 8px;
   border-radius: 10px;
   text-align: center;
+  flex: 1;
+  margin: 0 5px;  /* Add space between frames */
 }
 
 .status-label {
@@ -102,9 +105,8 @@ header {
 }
 
 #energy-container {
-  background: linear-gradient(to right, #1e3a8a, #3b82f6);
-  padding: 10px;
-  border-radius: 15px;
+  background-color: transparent;
+  padding: 10px 0;
 }
 
 #energy-status-bar {
