@@ -103,9 +103,7 @@ function updateLeaderboard() {
 }
 
 function displayBoosts(category) {
-    console.log("Displaying boosts for category:", category);
-    const boostItems = document.getElementById('boost-items');
-    if (boostItems && window.boosts) {
+    if (boostItems) {
         boostItems.innerHTML = '';
         window.boosts[category].forEach(boost => {
             const boostElement = document.createElement('div');
@@ -115,14 +113,20 @@ function displayBoosts(category) {
                 <div class="boost-name">${boost.name}</div>
                 <div class="boost-description">${boost.description}</div>
                 <div class="boost-price">
-                <img src="/public/images/flex-icon.png" alt="Flex Icon" class="flex-icon">
-                <span>${boost.price}</span>
+                    <img src="/public/images/flex-icon.png" alt="Flex Icon" class="flex-icon">
+                    <span>${boost.price}</span>
                 </div>
             `;
             boostItems.appendChild(boostElement);
+            
+            // Add click event listener to the boost price
+            const priceElement = boostElement.querySelector('.boost-price');
+            priceElement.addEventListener('click', function() {
+                // Here you can add the logic for what happens when the price is clicked
+                console.log(`Boost "${boost.name}" price clicked!`);
+                // For example, you might want to purchase the boost here
+            });
         });
-    } else {
-        console.error("boost-items element not found or window.boosts is not defined");
     }
 }
 

@@ -250,23 +250,28 @@ main {
 .boost-price {
   display: inline-flex;
   align-items: center;
-  background-color: #2ecc40; /* Green background */
+  background-color: #2a2a2a; /* Dark background */
   color: #ffffff; /* White text */
   padding: 5px 10px;
   border-radius: 15px;
   font-weight: bold;
+  border: 2px solid #2ecc40; /* Green border */
+  cursor: pointer; /* Indicates it's clickable */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
-.boost-price img.flex-icon {
-  width: 16px; /* Adjust size as needed */
+.boost-price:hover, .boost-price:active {
+  background-color: #2ecc40; /* Green background on hover/active */
+}
+
+.boost-price .flex-icon {
+  width: 16px;
   height: 16px;
   margin-right: 5px;
-  display: inline-block;
   vertical-align: middle;
 }
 
 .boost-price span {
-  display: inline-block;
   vertical-align: middle;
 }
 
