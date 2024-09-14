@@ -378,6 +378,22 @@ main {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.social-task:hover {
+  background-color: #3a3a3a;
+}
+
+.social-task.active {
+  background-color: #2ecc40; /* Green background when active */
+}
+
+/* Ensure text remains visible when background is green */
+.social-task.active .social-task-name,
+.social-task.active .social-task-reward {
+  color: #ffffff;
 }
 
 .social-task-icon {

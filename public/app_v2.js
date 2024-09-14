@@ -219,30 +219,40 @@ const socialTasks = [
 ];
 
 function updateSocialPage() {
-  const socialTasksContainer = document.getElementById('social-tasks-container');
-  if (socialTasksContainer) {
-      socialTasksContainer.innerHTML = '';
-      socialTasks.forEach(task => {
-          const taskElement = document.createElement('div');
-          taskElement.className = 'social-task';
-          taskElement.innerHTML = `
-              <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
-              <div class="social-task-content">
-                  <div class="social-task-name">${task.name}</div>
-                  <div class="social-task-reward">
-                      <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
-                      +${task.reward.toLocaleString()}
-                  </div>
-              </div>
-              <div class="social-task-status">
-                  ${task.completed 
-                      ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' 
-                      : '<img src="/public/images/chevron-right-icon.png" alt="Not completed" class="chevron-icon">'}
-              </div>
-          `;
-          socialTasksContainer.appendChild(taskElement);
-      });
-  }
+    const socialTasksContainer = document.getElementById('social-tasks-container');
+    if (socialTasksContainer) {
+        socialTasksContainer.innerHTML = '';
+        socialTasks.forEach(task => {
+            const taskElement = document.createElement('div');
+            taskElement.className = 'social-task';
+            taskElement.innerHTML = `
+                <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
+                <div class="social-task-content">
+                    <div class="social-task-name">${task.name}</div>
+                    <div class="social-task-reward">
+                        <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                        +${task.reward.toLocaleString()}
+                    </div>
+                </div>
+                <div class="social-task-status">
+                    ${task.completed 
+                        ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' 
+                        : '<img src="/public/images/chevron-right-icon.png" alt="Not completed" class="chevron-icon">'}
+                </div>
+            `;
+            socialTasksContainer.appendChild(taskElement);
+
+            // Add click event listener
+            taskElement.addEventListener('click', function() {
+                // Toggle the 'active' class
+                this.classList.toggle('active');
+                
+                // Here you can add any additional logic for when a task is clicked
+                console.log(`Task "${task.name}" clicked!`);
+                // For example, you might want to mark the task as completed or initiate some action
+            });
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
