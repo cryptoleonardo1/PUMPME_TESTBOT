@@ -504,15 +504,6 @@ main {
   transform: scale(0.98);
 }
 
-/* Style specifically for the "Done" button */
-.popup-button:last-child {
-  background-color: #3498db;
-}
-
-.popup-button:last-child:hover {
-  background-color: #2980b9;
-}
-
 .primary-button {
   background-color: #2ecc40;
   color: white;
