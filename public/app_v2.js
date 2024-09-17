@@ -212,7 +212,14 @@ function updateProfilePage() {
 }
 
 const socialTasks = [
-  { name: "Follow us on Instagram", icon: "instagram-icon.png", reward: 5000, completed: true },
+  {     
+    id: 'instagram',
+    name: "Follow us on Instagram", 
+    icon: "instagram-icon.png", 
+    reward: 5000, 
+    completed: false,
+    link: "https://www.instagram.com/pumpme.me/" 
+},
   { name: "Join our TG channel", icon: "telegram-icon.png", reward: 5000, completed: true },
   { name: "Follow our X account", icon: "twitter-icon.png", reward: 5000, completed: true },
   { name: "Refer a friend", icon: "refer-friend-icon.png", reward: 5000, completed: false }
@@ -235,24 +242,68 @@ function updateSocialPage() {
                     </div>
                 </div>
                 <div class="social-task-status">
-                    ${task.completed 
-                        ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' 
-                        : '<img src="/public/images/chevron-right-icon.png" alt="Not completed" class="chevron-icon">'}
+                    <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                         alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                         class="${task.completed ? 'status-icon' : 'chevron-icon'}">
                 </div>
             `;
             socialTasksContainer.appendChild(taskElement);
 
-            // Add click event listener
-            taskElement.addEventListener('click', function() {
-                // Toggle the 'active' class
-                this.classList.toggle('active');
-                
-                // Here you can add any additional logic for when a task is clicked
-                console.log(`Task "${task.name}" clicked!`);
-                // For example, you might want to mark the task as completed or initiate some action
-            });
+            taskElement.addEventListener('click', () => handleTaskClick(task));
         });
     }
+}
+
+function handleTaskClick(task) {
+    if (task.completed) return;
+
+    const popupContent = `
+        <h2>Follow us on Instagram</h2>
+        <p>Click the button below to open our Instagram page:</p>
+        <a href="${task.link}" target="_blank" class="popup-button">Open Instagram</a>
+        <button onclick="completeTask('${task.id}')" class="popup-button">I've completed this task</button>
+    `;
+
+    showPopup(popupContent);
+}
+
+function completeTask(taskId) {
+    const task = socialTasks.find(t => t.id === taskId);
+    if (task && !task.completed) {
+        task.completed = true;
+        gains += task.reward;
+        updateUI();
+        updateSocialPage();
+        closePopup();
+        showRewardPopup(task.reward);
+    }
+}
+
+function showPopup(content) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.innerHTML = `
+        <div class="popup-content">
+            ${content}
+            <button onclick="closePopup()" class="popup-close">Close</button>
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
+
+function closePopup() {
+    const popup = document.querySelector('.popup');
+    if (popup) {
+        popup.remove();
+    }
+}
+
+function showRewardPopup(reward) {
+    const rewardPopupContent = `
+        <h2>Task Completed!</h2>
+        <p>You've earned ${reward.toLocaleString()} gains!</p>
+    `;
+    showPopup(rewardPopupContent);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
