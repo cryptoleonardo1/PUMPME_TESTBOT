@@ -265,7 +265,7 @@ function handleTaskClick(task) {
     if (task.completed) return;
 
     const popupContent = `
-        <img src="/public/images/bull-lifting.png" alt="PUMP ME Character" class="character-image">
+        <img src="public/images/bull-lifting.png" alt="PUMP ME Character" class="character-image">
         <p>Click the button below to open our ${task.id === 'instagram' ? 'Instagram' : 'X'} page:</p>
         <div class="button-container">
             <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${task.id === 'instagram' ? 'Instagram' : 'X'}</a>
@@ -297,6 +297,18 @@ function showPopup(content) {
         </div>
     `;
     document.body.appendChild(popup);
+
+    // Add error handling for the image
+    const img = popup.querySelector('.character-image');
+    if (img) {
+        img.onerror = function() {
+            console.error('Failed to load image:', this.src);
+            this.style.display = 'none';
+        };
+        img.onload = function() {
+            console.log('Image loaded successfully:', this.src);
+        };
+    }
 }
 
 function closePopup() {
