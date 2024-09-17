@@ -265,7 +265,7 @@ function handleTaskClick(task) {
     if (task.completed) return;
 
     const popupContent = `
-        <img src="https://i.imgur.com/65MUCRq.png" alt="PUMP ME Character" class="character-image">
+        <img src="https://i.imgur.com/a/szbp9Ze.png" alt="PUMP ME Character" class="character-image">
         <p>Click the button below to open our ${task.id === 'instagram' ? 'Instagram' : 'X'} page:</p>
         <div class="button-container">
             <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${task.id === 'instagram' ? 'Instagram' : 'X'}</a>
