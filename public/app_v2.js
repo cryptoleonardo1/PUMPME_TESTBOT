@@ -221,7 +221,14 @@ const socialTasks = [
     link: "https://www.instagram.com/pumpme.me/" 
 },
   { name: "Join our TG channel", icon: "telegram-icon.png", reward: 5000, completed: true },
-  { name: "Follow our X account", icon: "twitter-icon.png", reward: 5000, completed: true },
+  {
+    id: 'twitter',
+    name: "Follow our X account",
+    icon: "twitter-icon.png",
+    reward: 5000,
+    completed: false,
+    link: "https://x.com/Pumpme_me"
+  },
   { name: "Refer a friend", icon: "refer-friend-icon.png", reward: 5000, completed: false }
 ];
 
@@ -258,10 +265,10 @@ function handleTaskClick(task) {
     if (task.completed) return;
 
     const popupContent = `
-        <h2>Follow us on Instagram</h2>
-        <p>Click the button below to open our Instagram page:</p>
-        <a href="${task.link}" target="_blank" class="popup-button">Open Instagram</a>
-        <button onclick="completeTask('${task.id}')" class="popup-button">I've completed this task</button>
+        <h2>${task.name}</h2>
+        <p>Click the button below to open our ${task.id === 'instagram' ? 'Instagram' : 'X'} page:</p>
+        <a href="${task.link}" target="_blank" class="popup-button">Open ${task.id === 'instagram' ? 'Instagram' : 'X'}</a>
+        <button onclick="completeTask('${task.id}')" class="popup-button">Done</button>
     `;
 
     showPopup(popupContent);
@@ -285,7 +292,6 @@ function showPopup(content) {
     popup.innerHTML = `
         <div class="popup-content">
             ${content}
-            <button onclick="closePopup()" class="popup-close">Close</button>
         </div>
     `;
     document.body.appendChild(popup);
