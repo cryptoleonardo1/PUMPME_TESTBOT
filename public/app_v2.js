@@ -267,8 +267,10 @@ function handleTaskClick(task) {
     const popupContent = `
         <h2>${task.name}</h2>
         <p>Click the button below to open our ${task.id === 'instagram' ? 'Instagram' : 'X'} page:</p>
-        <a href="${task.link}" target="_blank" class="popup-button">Open ${task.id === 'instagram' ? 'Instagram' : 'X'}</a>
-        <button onclick="completeTask('${task.id}')" class="popup-button">Done</button>
+        <div class="button-container">
+            <a href="${task.link}" target="_blank" class="popup-button">Open ${task.id === 'instagram' ? 'Instagram' : 'X'}</a>
+            <button onclick="completeTask('${task.id}')" class="popup-button">Done</button>
+        </div>
     `;
 
     showPopup(popupContent);
@@ -308,6 +310,7 @@ function showRewardPopup(reward) {
     const rewardPopupContent = `
         <h2>Task Completed!</h2>
         <p>You've earned ${reward.toLocaleString()} gains!</p>
+        <button onclick="closePopup()" class="popup-button ok-button">OK</button>
     `;
     showPopup(rewardPopupContent);
 }
