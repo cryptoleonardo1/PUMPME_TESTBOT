@@ -453,13 +453,15 @@ main {
   padding: 30px;
   border-radius: 25px;
   text-align: center;
-  width: 300px;
+  width: 90%; /* Adjust width to be responsive */
+  max-width: 350px; /* Increase max-width */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .character-image {
-  width: 150px;
-  height: auto;
+  width: 150px; /* Set a fixed width */
+  height: 150px; /* Set a fixed height */
+  object-fit: contain; /* Ensure the entire image is visible */
   margin-bottom: 20px;
 }
 
