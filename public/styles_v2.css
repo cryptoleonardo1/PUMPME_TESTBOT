@@ -453,15 +453,15 @@ main {
   padding: 30px;
   border-radius: 25px;
   text-align: center;
-  width: 90%; /* Adjust width to be responsive */
-  max-width: 350px; /* Increase max-width */
+  width: 90%;
+  max-width: 350px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .character-image {
-  width: 150px; /* Set a fixed width */
-  height: 150px; /* Set a fixed height */
-  object-fit: contain; /* Ensure the entire image is visible */
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
   margin-bottom: 20px;
 }
 
@@ -472,10 +472,9 @@ main {
 }
 
 .popup-content h2 {
-  margin-top: 0;
+  margin: 0 0 15px;
   color: #ffffff;
   font-size: 24px;
-  margin-bottom: 15px;
 }
 
 .popup-content p {
@@ -496,10 +495,7 @@ main {
   font-weight: bold;
   transition: background-color 0.3s ease, transform 0.1s ease;
   text-decoration: none;
-}
-
-.popup-button:hover {
-  background-color: #27ae60;
+  color: white;
 }
 
 .popup-button:active {
@@ -508,33 +504,22 @@ main {
 
 .primary-button {
   background-color: #2ecc40;
-  color: white;
 }
 
 .primary-button:hover {
   background-color: #27ae60;
 }
 
-.secondary-button {
+.secondary-button, .ok-button {
   background-color: #3498db;
-  color: white;
 }
 
-.secondary-button:hover {
+.secondary-button:hover, .ok-button:hover {
   background-color: #2980b9;
-}
-
-.popup-button:active {
-  transform: scale(0.98);
 }
 
 .ok-button {
-  background-color: #3498db;
   margin-top: 20px;
-}
-
-.ok-button:hover {
-  background-color: #2980b9;
 }
 
 /* Navigation styles */
