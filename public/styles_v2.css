@@ -459,8 +459,9 @@ main {
 }
 
 .character-image {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
   object-fit: contain;
   margin-bottom: 20px;
 }
