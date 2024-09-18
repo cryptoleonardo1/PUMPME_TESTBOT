@@ -453,8 +453,8 @@ main {
   padding: 20px;
   border-radius: 15px;
   text-align: center;
-  width: 70%;
-  max-width: 200px;
+  width: 90%;
+  max-width: 300px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -489,7 +489,7 @@ main {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
-  border: none;
+  border: 10px;
   border-radius: 25px;
   cursor: pointer;
   font-size: 14px;
