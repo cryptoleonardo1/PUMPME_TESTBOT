@@ -312,8 +312,9 @@ function setupTaskCategoryButtons() {
 }
 
 function displayTasks(category) {
+    console.log("Displaying tasks for category:", category);
     const tasksContainer = document.getElementById('social-tasks-container');
-    if (tasksContainer) {
+    if (tasksContainer && socialTasks[category]) {
         tasksContainer.innerHTML = '';
         socialTasks[category].forEach(task => {
             const taskElement = document.createElement('div');
@@ -339,6 +340,8 @@ function displayTasks(category) {
                 taskElement.addEventListener('click', () => handleTaskClick(task));
             }
         });
+    } else {
+        console.error("Tasks container not found or invalid category:", category);
     }
 }
 
