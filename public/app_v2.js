@@ -413,26 +413,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
 
-    navButtons.forEach((btn, index) => {
-      btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          console.log("Nav button clicked:", btn.id);
-          navButtons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          pages.forEach(page => page.style.display = 'none');
-          pages[index].style.display = 'flex';
-          if (btn.id === 'boosts-btn') {
-              initializeBoostsPage();
-          } else if (btn.id === 'top-pumpers-btn') {
-              updateLeaderboard();
-          } else if (btn.id === 'profile-btn') {
-              updateProfilePage();
-          } else if (btn.id === 'social-btn') {
-              updateSocialPage();
-          }
-      });
-  });
+    // Hide all pages except the gym page on initial load
+    pages.forEach(page => {
+        if (page.id === 'gym-page') {
+            page.style.display = 'flex';
+        } else {
+            page.style.display = 'none';
+        }
+    });
 
+    // Ensure the gym button is active on initial load
+    const gymButton = document.getElementById('gym-btn');
+    if (gymButton) {
+        gymButton.classList.add('active');
+    }
+
+    navButtons.forEach((btn, index) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Nav button clicked:", btn.id);
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            pages.forEach(page => page.style.display = 'none');
+            pages[index].style.display = 'flex';
+            if (btn.id === 'boosts-btn') {
+                initializeBoostsPage();
+            } else if (btn.id === 'top-pumpers-btn') {
+                updateLeaderboard();
+            } else if (btn.id === 'profile-btn') {
+                updateProfilePage();
+            } else if (btn.id === 'social-btn') {
+                updateSocialPage();
+            }
+        });
+    });
+
+    // Initialize the gym page
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
     [pumpMeContainer, character].forEach(element => {
@@ -457,7 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadUserData();
     updateUI();
-    initializeBoostsPage();
 
     tg.ready();
     tg.expand();
