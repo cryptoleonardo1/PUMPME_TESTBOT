@@ -255,10 +255,21 @@ function navigateToPage(pageId) {
     if (selectedPage) {
         selectedPage.style.display = 'block';
         
-        // If it's the Tasks page, reset to the Socials sub-page
-        if (pageId === 'social-page') {
-            displayTasks('socials');
-            updateTaskCategoryButtons('socials');
+        // Initialize page-specific content
+        switch(pageId) {
+            case 'boosts-page':
+                initializeBoostsPage();
+                break;
+            case 'social-page':
+                displayTasks('socials');
+                updateTaskCategoryButtons('socials');
+                break;
+            case 'top-pumpers-page':
+                updateLeaderboard();
+                break;
+            case 'profile-page':
+                updateProfilePage();
+                break;
         }
     }
 }
@@ -411,42 +422,20 @@ function showRewardPopup(reward) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed");
-    
     const navButtons = document.querySelectorAll('.nav-btn');
-    const pages = document.querySelectorAll('.page');
-
     navButtons.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log("Nav button clicked:", btn.id);
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            let pageId;
-            switch(btn.id) {
-                case 'boosts-btn':
-                    pageId = 'boosts-page';
-                    initializeBoostsPage();
-                    break;
-                case 'top-pumpers-btn':
-                    pageId = 'top-pumpers-page';
-                    updateLeaderboard();
-                    break;
-                case 'profile-btn':
-                    pageId = 'profile-page';
-                    updateProfilePage();
-                    break;
-                case 'social-btn':
-                    pageId = 'social-page';
-                    break;
-                default:
-                    pageId = btn.id.replace('-btn', '-page');
-            }
-            
+            const pageId = btn.id.replace('-btn', '-page');
             navigateToPage(pageId);
         });
-      });
+    });
+
+    // Initialize the first page (assuming it's the gym page)
+    navigateToPage('gym-page');
+});
 
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
