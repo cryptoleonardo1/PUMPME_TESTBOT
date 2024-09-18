@@ -266,8 +266,8 @@ const socialTasks = [
     ]
 };
 
-function updateSocialPage() {
-    console.log("Updating Social page");
+function updateTasksPage() {
+    console.log("Updating Tasks page");
     
     // Set up category buttons
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
@@ -280,11 +280,11 @@ function updateSocialPage() {
     });
 
     // Initialize the page
-    initializeSocialPage();
+    initializeTasksPage();
 }
 
-function initializeSocialPage() {
-    console.log("Initializing Social page");
+function initializeTasksPage() {
+    console.log("Initializing Tasks page");
     const defaultCategory = 'socials';
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(btn => btn.classList.remove('active'));
@@ -293,12 +293,11 @@ function initializeSocialPage() {
         defaultButton.classList.add('active');
     }
     displayTasks(defaultCategory);
-    setupSocialCategoryButtons();
 }
 
-function setupSocialCategoryButtons() {
-    console.log("Setting up social category buttons");
-    const categoryButtons = document.querySelectorAll('#social-page .category-btn');
+function setupTaskCategoryButtons() {
+    console.log("Setting up task category buttons");
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     console.log("Found", categoryButtons.length, "category buttons");
     
     categoryButtons.forEach(button => {
@@ -313,9 +312,9 @@ function setupSocialCategoryButtons() {
 }
 
 function displayTasks(category) {
-    const socialTasksContainer = document.getElementById('social-tasks-container');
-    if (socialTasksContainer) {
-        socialTasksContainer.innerHTML = '';
+    const tasksContainer = document.getElementById('social-tasks-container');
+    if (tasksContainer) {
+        tasksContainer.innerHTML = '';
         socialTasks[category].forEach(task => {
             const taskElement = document.createElement('div');
             taskElement.className = 'social-task';
@@ -334,7 +333,7 @@ function displayTasks(category) {
                          class="${task.completed ? 'status-icon' : 'chevron-icon'}">
                 </div>
             `;
-            socialTasksContainer.appendChild(taskElement);
+            tasksContainer.appendChild(taskElement);
 
             if (!task.noPopup) {
                 taskElement.addEventListener('click', () => handleTaskClick(task));
@@ -465,8 +464,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateLeaderboard();
             } else if (btn.id === 'profile-btn') {
                 updateProfilePage();
-            } else if (btn.id === 'social-btn') {
-                initializeSocialPage();
+            } else if (btn.id === 'tasks-btn') {
+                initializeTasksPage();
             }
         });
     });
