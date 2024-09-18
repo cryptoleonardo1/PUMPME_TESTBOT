@@ -422,8 +422,8 @@ main {
 }
 
 .social-task-icon {
-  width: 24px; /* or whatever size your other icons are */
-  height: 24px;
+  width: 60px; /* or whatever size your other icons are */
+  height: 60px;
   margin-right: 15px;
 }
 
