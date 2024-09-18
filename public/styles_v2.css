@@ -454,7 +454,7 @@ main {
   border-radius: 15px;
   text-align: center;
   width: 70%;
-  max-width: 300px;
+  max-width: 200px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -465,7 +465,7 @@ main {
   width: 100px;
   height: 100px;
   object-fit: contain;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .button-container {
