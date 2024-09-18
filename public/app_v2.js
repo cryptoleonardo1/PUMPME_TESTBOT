@@ -289,23 +289,16 @@ function displayTasks(category) {
             const taskElement = document.createElement('div');
             taskElement.className = 'social-task';
             taskElement.innerHTML = `
-                ${task.icon.includes('.png') 
-    ? `${task.icon.includes('.png') 
-    ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
-    : `<span class="social-task-icon">${task.icon}</span>`
-}`
-    : `<span class="social-task-icon">${task.icon}</span>`
-}                <div class="social-task-content">
+                <div class="social-task-icon">${task.icon}</div>
+                <div class="social-task-content">
                     <div class="social-task-name">${task.name}</div>
-                    <div class="social-task-reward">
-                        <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
-                        +${task.reward.toLocaleString()}
-                    </div>
+                </div>
+                <div class="social-task-reward">
+                    <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                    +${task.reward.toLocaleString()}
                 </div>
                 <div class="social-task-status">
-                    <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                         alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                         class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+                    <img src="/public/images/pump-me-logo.png" alt="PUMP ME" class="pump-me-logo">
                 </div>
             `;
             socialTasksContainer.appendChild(taskElement);
