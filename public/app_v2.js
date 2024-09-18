@@ -110,7 +110,7 @@ function displayBoosts(category) {
             const boostElement = document.createElement('div');
             boostElement.className = 'boost-item';
             boostElement.innerHTML = `
-                <img src="/public/images/${boost.icon}" alt="${boost.name}" class="boost-icon">
+                <div class="boost-icon">${boost.icon}</div>
                 <div class="boost-content">
                     <div class="boost-name">${boost.name}</div>
                     <div class="boost-description">${boost.description}</div>
