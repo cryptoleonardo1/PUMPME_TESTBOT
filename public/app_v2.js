@@ -260,9 +260,9 @@ const socialTasks = [
         { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
     ],
     'in-game': [
-        { id: 'reps', name: "Make 50,000 reps", icon: "🏋️", reward: 3000, completed: false, noPopup: true },
-        { id: 'level', name: "Achieve Level 7", icon: "🏅", reward: 3000, completed: false, noPopup: true },
-        { id: 'purchase', name: "Purchase 50 Boosts", icon: "🚀", reward: 3000, completed: false, noPopup: true }
+        { id: 'reps', name: "Make 50,000 reps", icon: "reps-icon.png", reward: 3000, completed: false, noPopup: true },
+        { id: 'level', name: "Achieve Level 7", icon: "level-icon.png", reward: 3000, completed: false, noPopup: true },
+        { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 3000, completed: false, noPopup: true }
     ]
 };
 function updateSocialPage() {
