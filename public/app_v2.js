@@ -205,7 +205,7 @@ function updateProfilePage() {
       }
   }
 }
-
+/*
 const socialTasks = [
     {
       id: 'telegram',
@@ -247,13 +247,41 @@ const socialTasks = [
       completed: true,
       noPopup: true
     }
-  ];
+  ]; */
 
-  function updateSocialPage() {
+  const socialTasks = {
+    socials: [
+        { id: 'telegram', name: "PUMPME.APP on Telegram", icon: "telegram-icon.png", reward: 5000, completed: false, link: "https://t.me/pumpme_me" },
+        { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
+        { id: 'instagram', name: "PUMPME.APP on Instagram", icon: "instagram-icon.png", reward: 5000, completed: false, link: "https://www.instagram.com/pumpme.me/" },
+        { id: 'twitter-like-retweet', name: "Like & Retweet", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" }
+    ],
+    referrals: [
+        { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
+    ],
+    'in-game': []
+};
+function updateSocialPage() {
+    const socialTasksContainer = document.getElementById('social-tasks-container');
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayTasks(button.dataset.category);
+        });
+    });
+
+    // Display initial category (Socials)
+    displayTasks('socials');
+}
+
+function displayTasks(category) {
     const socialTasksContainer = document.getElementById('social-tasks-container');
     if (socialTasksContainer) {
         socialTasksContainer.innerHTML = '';
-        socialTasks.forEach(task => {
+        socialTasks[category].forEach(task => {
             const taskElement = document.createElement('div');
             taskElement.className = 'social-task';
             taskElement.innerHTML = `
