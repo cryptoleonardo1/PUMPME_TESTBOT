@@ -212,34 +212,41 @@ function updateProfilePage() {
 }
 
 const socialTasks = [
-  {     
-    id: 'instagram',
-    name: "Follow us on Instagram", 
-    icon: "instagram-icon.png", 
-    reward: 5000, 
-    completed: false,
-    link: "https://www.instagram.com/pumpme.me/" 
-},
-  { name: "Join our TG channel", icon: "telegram-icon.png", reward: 5000, completed: true },
-  {
-    id: 'twitter',
-    name: "Follow our X account",
-    icon: "twitter-icon.png",
-    reward: 5000,
-    completed: false,
-    link: "https://x.com/Pumpme_me"
-  },
-  {
-    id: 'refer',
-    name: "Refer a friend",
-    icon: "refer-friend-icon.png",
-    reward: 5000,
-    completed: true, // Set this to true
-    noPopup: true // Add this property
-  }
-];
+    { 
+      id: 'instagram',
+      name: "PUMPME.APP on Instagram", 
+      icon: "instagram-icon.png", 
+      reward: 5000, 
+      completed: false,
+      link: "https://www.instagram.com/pumpme.me/"
+    },
+    {
+      id: 'telegram',
+      name: "PUMPME.APP on Telegram",
+      icon: "telegram-icon.png",
+      reward: 5000,
+      completed: false,
+      link: "https://t.me/pumpme_me"
+    },
+    {
+      id: 'twitter',
+      name: "PUMPME.APP on X",
+      icon: "twitter-icon.png",
+      reward: 5000,
+      completed: false,
+      link: "https://x.com/Pumpme_me"
+    },
+    {
+      id: 'refer',
+      name: "Refer a friend",
+      icon: "refer-friend-icon.png",
+      reward: 10000,
+      completed: true,
+      noPopup: true
+    }
+  ];
 
-function updateSocialPage() {
+  function updateSocialPage() {
     const socialTasksContainer = document.getElementById('social-tasks-container');
     if (socialTasksContainer) {
         socialTasksContainer.innerHTML = '';
@@ -273,11 +280,26 @@ function updateSocialPage() {
 function handleTaskClick(task) {
     if (task.completed) return;
 
+    let platformName;
+    switch(task.id) {
+        case 'instagram':
+            platformName = 'Instagram';
+            break;
+        case 'telegram':
+            platformName = 'Telegram';
+            break;
+        case 'twitter':
+            platformName = 'X';
+            break;
+        default:
+            platformName = task.id;
+    }
+
     const popupContent = `
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>Click the button below to open our ${task.id === 'instagram' ? 'Instagram' : 'X'} page:</p>
+        <p>Click the button below to open our ${platformName} page:</p>
         <div class="button-container">
-            <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${task.id === 'instagram' ? 'Instagram' : 'X'}</a>
+            <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${platformName}</a>
             <button onclick="completeTask('${task.id}')" class="popup-button secondary-button">Done</button>
         </div>
     `;
