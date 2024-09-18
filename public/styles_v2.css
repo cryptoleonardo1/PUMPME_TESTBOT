@@ -465,11 +465,11 @@ main {
   width: 100px;
   height: 100px;
   object-fit: contain;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .button-container {
-  width: 100%;
+  width: 80%;
 }
 
 .popup-content h2 {
@@ -481,7 +481,7 @@ main {
 .popup-content p {
   color: #ffffff;
   margin-bottom: 15px;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .popup-button {
