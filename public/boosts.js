@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const boostItems = document.getElementById('boost-items');
     const categoryButtons = document.querySelectorAll('.category-btn');
 
-    function displayBoosts(category) {
+    function displayBoostsItems(category) {
         console.log("Displaying boosts for category:", category);
         if (boostItems) {
             boostItems.innerHTML = '';
@@ -60,10 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            displayBoosts(button.dataset.category);
+            displayBoostsItems(button.dataset.category);
         });
     });
 
     // Initially display nutrition boosts
-    displayBoosts('nutrition');
+    displayBoostsItems('nutrition');
 });
