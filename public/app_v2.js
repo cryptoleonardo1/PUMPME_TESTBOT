@@ -265,6 +265,7 @@ const socialTasks = [
         { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 3000, completed: false, noPopup: true }
     ]
 };
+
 function updateSocialPage() {
     const socialTasksContainer = document.getElementById('social-tasks-container');
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
@@ -279,6 +280,36 @@ function updateSocialPage() {
 
     // Display initial category (Socials)
     displayTasks('socials');
+    initializeSocialPage();
+}
+
+function initializeSocialPage() {
+    console.log("Initializing Social page");
+    const defaultCategory = 'socials';
+    const categoryButtons = document.querySelectorAll('#social-page .category-btn');
+    categoryButtons.forEach(btn => btn.classList.remove('active'));
+    const defaultButton = document.querySelector(`#social-page .category-btn[data-category="${defaultCategory}"]`);
+    if (defaultButton) {
+        defaultButton.classList.add('active');
+    }
+    displayTasks(defaultCategory);
+    setupSocialCategoryButtons();
+}
+
+function setupSocialCategoryButtons() {
+    console.log("Setting up social category buttons");
+    const categoryButtons = document.querySelectorAll('#social-page .category-btn');
+    console.log("Found", categoryButtons.length, "category buttons");
+    
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Category button clicked:", button.dataset.category);
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayTasks(button.dataset.category);
+        });
+    });
 }
 
 function displayTasks(category) {
@@ -289,13 +320,8 @@ function displayTasks(category) {
             const taskElement = document.createElement('div');
             taskElement.className = 'social-task';
             taskElement.innerHTML = `
-                ${task.icon.includes('.png') 
-    ? `${task.icon.includes('.png') 
-    ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
-    : `<span class="social-task-icon">${task.icon}</span>`
-}`
-    : `<span class="social-task-icon">${task.icon}</span>`
-}                <div class="social-task-content">
+                <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
+                <div class="social-task-content">
                     <div class="social-task-name">${task.name}</div>
                     <div class="social-task-reward">
                         <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
@@ -440,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (btn.id === 'profile-btn') {
                 updateProfilePage();
             } else if (btn.id === 'social-btn') {
-                updateSocialPage();
+                initializeSocialPage();
             }
         });
     });
