@@ -286,6 +286,7 @@ function updateTasksPage() {
 function initializeTasksPage() {
     console.log("Initializing Tasks page");
     const defaultCategory = 'socials';
+    setupTaskCategoryButtons(); // Add this line
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(btn => btn.classList.remove('active'));
     const defaultButton = document.querySelector(`.task-categories .category-btn[data-category="${defaultCategory}"]`);
@@ -314,35 +315,47 @@ function setupTaskCategoryButtons() {
 function displayTasks(category) {
     console.log("Displaying tasks for category:", category);
     const tasksContainer = document.getElementById('social-tasks-container');
-    if (tasksContainer && socialTasks[category]) {
-        tasksContainer.innerHTML = '';
-        socialTasks[category].forEach(task => {
-            const taskElement = document.createElement('div');
-            taskElement.className = 'social-task';
-            taskElement.innerHTML = `
-                <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
-                <div class="social-task-content">
-                    <div class="social-task-name">${task.name}</div>
-                    <div class="social-task-reward">
-                        <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
-                        +${task.reward.toLocaleString()}
-                    </div>
-                </div>
-                <div class="social-task-status">
-                    <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                         alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                         class="${task.completed ? 'status-icon' : 'chevron-icon'}">
-                </div>
-            `;
-            tasksContainer.appendChild(taskElement);
-
-            if (!task.noPopup) {
-                taskElement.addEventListener('click', () => handleTaskClick(task));
-            }
-        });
-    } else {
-        console.error("Tasks container not found or invalid category:", category);
+    if (!tasksContainer) {
+        console.error("Tasks container not found");
+        return;
     }
+    
+    if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
+        console.error("Invalid category or tasks not found for category:", category);
+        tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
+        return;
+    }
+
+    tasksContainer.innerHTML = '';
+    socialTasks[category].forEach(task => {
+        if (!task || typeof task !== 'object') {
+            console.error("Invalid task object:", task);
+            return;
+        }
+
+        const taskElement = document.createElement('div');
+        taskElement.className = 'social-task';
+        taskElement.innerHTML = `
+            <img src="/public/images/${task.icon || 'default-icon.png'}" alt="${task.name || 'Task'}" class="social-task-icon">
+            <div class="social-task-content">
+                <div class="social-task-name">${task.name || 'Unnamed Task'}</div>
+                <div class="social-task-reward">
+                    <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                    +${(task.reward || 0).toLocaleString()}
+                </div>
+            </div>
+            <div class="social-task-status">
+                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+            </div>
+        `;
+        tasksContainer.appendChild(taskElement);
+
+        if (!task.noPopup) {
+            taskElement.addEventListener('click', () => handleTaskClick(task));
+        }
+    });
 }
 
 function handleTaskClick(task) {
