@@ -205,49 +205,6 @@ function updateProfilePage() {
       }
   }
 }
-/*
-const socialTasks = [
-    {
-      id: 'telegram',
-      name: "PUMPME.APP on Telegram",
-      icon: "telegram-icon.png",
-      reward: 5000,
-      completed: false,
-      link: "https://t.me/pumpme_me"
-    },
-    {
-      id: 'twitter',
-      name: "PUMPME.APP on X",
-      icon: "twitter-icon.png",
-      reward: 5000,
-      completed: false,
-      link: "https://x.com/Pumpme_me"
-    },
-    { 
-      id: 'instagram',
-      name: "PUMPME.APP on Instagram", 
-      icon: "instagram-icon.png", 
-      reward: 5000, 
-      completed: false,
-      link: "https://www.instagram.com/pumpme.me/"
-    },
-    {
-      id: 'twitter-like-retweet',
-      name: "Like & Retweet",
-      icon: "twitter-icon.png",
-      reward: 5000,
-      completed: false,
-      link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" // You may want to update this to a specific tweet URL
-    },
-    {
-      id: 'refer',
-      name: "Refer a friend",
-      icon: "refer-friend-icon.png",
-      reward: 5000,
-      completed: true,
-      noPopup: true
-    }
-  ]; */
 
   const socialTasks = {
     socials: [
@@ -266,17 +223,22 @@ const socialTasks = [
     ]
 };
 
+console.log('Social tasks:', socialTasks);
+
 function updateSocialPage() {
+    console.log('Updating social page');
     const taskCategories = document.querySelectorAll('.task-categories .category-btn');
     taskCategories.forEach(button => {
         button.addEventListener('click', () => {
             const category = button.dataset.category;
+            console.log(`Category button clicked: ${category}`);
             displayTasks(category);
             updateTaskCategoryButtons(category);
         });
     });
 
     // Always start with Socials category
+    console.log('Initial display of socials category');
     displayTasks('socials');
     updateTaskCategoryButtons('socials');
 }
@@ -311,21 +273,19 @@ function updateTaskCategoryButtons(activeCategory) {
 }
 
 function displayTasks(category) {
+    console.log(`Displaying tasks for category: ${category}`);
     const socialTasksContainer = document.getElementById('social-tasks-container');
     if (socialTasksContainer) {
-        // Clear previous content
-        socialTasksContainer.innerHTML = '';
-        
-        // Check if the category exists and has tasks
+        socialTasksContainer.innerHTML = ''; // Clear previous content
+        console.log(`Cleared container for ${category}`);
+
         if (socialTasks[category] && socialTasks[category].length > 0) {
+            console.log(`Found ${socialTasks[category].length} tasks for ${category}`);
             socialTasks[category].forEach(task => {
                 const taskElement = document.createElement('div');
                 taskElement.className = 'social-task';
                 taskElement.innerHTML = `
-                    ${task.icon.includes('.png') 
-                        ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
-                        : `<span class="social-task-icon">${task.icon}</span>`
-                    }
+                    <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
                     <div class="social-task-content">
                         <div class="social-task-name">${task.name}</div>
                         <div class="social-task-reward">
@@ -340,15 +300,18 @@ function displayTasks(category) {
                     </div>
                 `;
                 socialTasksContainer.appendChild(taskElement);
+                console.log(`Added task: ${task.name} for ${category}`);
 
                 if (!task.noPopup) {
                     taskElement.addEventListener('click', () => handleTaskClick(task));
                 }
             });
         } else {
-            // Display a message if there are no tasks for this category
-            socialTasksContainer.innerHTML = '<p>No tasks available in this category.</p>';
+            console.log(`No tasks found for ${category}`);
+            socialTasksContainer.innerHTML = `<p>No tasks available for ${category}.</p>`;
         }
+    } else {
+        console.error('socialTasksContainer not found');
     }
 }
 
