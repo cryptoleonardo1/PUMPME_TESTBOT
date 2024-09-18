@@ -220,11 +220,12 @@ main {
 }
 
 .boost-item {
+  display: flex;
+  align-items: center;
   background-color: #2a2a2a;
   border-radius: 10px;
   padding: 15px;
-  text-align: center;
-  transition: transform 0.3s ease;
+  margin-bottom: 10px;
 }
 
 .boost-item:hover {
@@ -232,32 +233,38 @@ main {
 }
 
 .boost-icon {
-  font-size: 40px;
-  margin-bottom: 10px;
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+}
+
+.boost-content {
+  flex-grow: 1;
 }
 
 .boost-name {
+  color: #ffffff;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
 .boost-description {
-  font-size: 12px;
   color: #cccccc;
-  margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .boost-price {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  background-color: #2a2a2a; /* Dark background */
-  color: #ffffff; /* White text */
-  padding: 5px 10px;
-  border-radius: 15px;
+  color: #ffd700;
   font-weight: bold;
-  border: 2px solid #2ecc40; /* Green border */
-  cursor: pointer; /* Indicates it's clickable */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.price-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
 }
 
 .boost-price:hover, .boost-price:active {

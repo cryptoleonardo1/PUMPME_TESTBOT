@@ -7,7 +7,7 @@ window.boosts = {
         { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 20 },
     ],
     equipment: [
-        { name: "Gym Entry", icon: "🏋️", description: "Access to gym facilities", price: 150 },
+        { name: "Gym Entry", icon: "💳", description: "Access to gym facilities", price: 150 },
         { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 500 },
         { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 200 },
     ],
@@ -19,7 +19,7 @@ window.boosts = {
         { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 70 },
     ],
     training: [
-        { name: "Chest Day", icon: "💪", description: "10x reps for chest", price: 300 },
+        { name: "Chest Day", icon: "🏋️", description: "10x reps for chest", price: 300 },
         { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 300 },
         { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 300 },
         { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 300 },
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="boost-name">${boost.name}</div>
                     <div class="boost-description">${boost.description}</div>
                     <div class="boost-price">
-                        <img src="/public/images/flex-icon.png" alt="Flex Icon" class="flex-icon">
+                        <span class="flex-icon"></span>
                         <span>${boost.price}</span>
                     </div>
                 `;

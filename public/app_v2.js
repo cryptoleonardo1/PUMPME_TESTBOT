@@ -103,29 +103,24 @@ function updateLeaderboard() {
 }
 
 function displayBoosts(category) {
-    if (boostItems) {
+    const boostItems = document.getElementById('boost-items');
+    if (boostItems && window.boosts) {
         boostItems.innerHTML = '';
         window.boosts[category].forEach(boost => {
             const boostElement = document.createElement('div');
             boostElement.className = 'boost-item';
             boostElement.innerHTML = `
-                <div class="boost-icon">${boost.icon}</div>
-                <div class="boost-name">${boost.name}</div>
-                <div class="boost-description">${boost.description}</div>
+                <img src="/public/images/${boost.icon}" alt="${boost.name}" class="boost-icon">
+                <div class="boost-content">
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-description">${boost.description}</div>
+                </div>
                 <div class="boost-price">
-                    <img src="/public/images/flex-icon.png" alt="Flex Icon" class="flex-icon">
-                    <span>${boost.price}</span>
+                    <img src="/public/images/bicep-icon-yellow.png" alt="Price" class="price-icon">
+                    ${boost.price}
                 </div>
             `;
             boostItems.appendChild(boostElement);
-            
-            // Add click event listener to the boost price
-            const priceElement = boostElement.querySelector('.boost-price');
-            priceElement.addEventListener('click', function() {
-                // Here you can add the logic for what happens when the price is clicked
-                console.log(`Boost "${boost.name}" price clicked!`);
-                // For example, you might want to purchase the boost here
-            });
         });
     }
 }
