@@ -228,7 +228,10 @@ console.log('Social tasks:', socialTasks);
 function updateSocialPage() {
     console.log('Updating social page');
     const taskCategories = document.querySelectorAll('.task-categories .category-btn');
+    console.log(`Found ${taskCategories.length} category buttons`);
+    
     taskCategories.forEach(button => {
+        console.log(`Setting up listener for category: ${button.dataset.category}`);
         button.addEventListener('click', () => {
             const category = button.dataset.category;
             console.log(`Category button clicked: ${category}`);
@@ -273,14 +276,16 @@ function updateTaskCategoryButtons(activeCategory) {
 }
 
 function displayTasks(category) {
-    console.log(`Displaying tasks for category: ${category}`);
+    console.log(`Attempting to display tasks for category: ${category}`);
+    console.log('Current socialTasks object:', socialTasks);
+    
     const socialTasksContainer = document.getElementById('social-tasks-container');
     if (socialTasksContainer) {
         socialTasksContainer.innerHTML = ''; // Clear previous content
         console.log(`Cleared container for ${category}`);
 
         if (socialTasks[category] && socialTasks[category].length > 0) {
-            console.log(`Found ${socialTasks[category].length} tasks for ${category}`);
+            console.log(`Found ${socialTasks[category].length} tasks for ${category}:`, socialTasks[category]);
             socialTasks[category].forEach(task => {
                 const taskElement = document.createElement('div');
                 taskElement.className = 'social-task';
