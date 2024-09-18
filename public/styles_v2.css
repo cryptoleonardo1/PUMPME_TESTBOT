@@ -451,21 +451,18 @@ main {
 .popup-content {
   background-color: #2a2a2a;
   padding: 30px;
-  border-radius: 15px;
+  border-radius: 25px;
   text-align: center;
-  width: 100%;
-  max-width: 300px;
+  width: 90%;
+  max-width: 400px; /* Increased from 350px to accommodate larger image */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .character-image {
-  width: 100px;
-  height: 100px;
+  width: 200px; /* Doubled from 100px */
+  height: 200px; /* Doubled from 100px */
   object-fit: contain;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .button-container {
@@ -483,18 +480,18 @@ main {
 
 .popup-content p {
   color: #ffffff;
-  margin-bottom: 15px;
-  font-size: 18px;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
 .popup-button {
   display: inline-block;
-  padding: 10px 20px;
-  margin: 5px 0;
+  padding: 12px 24px;
+  margin: 8px 0;
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   transition: background-color 0.3s ease, transform 0.1s ease;
   text-decoration: none;
@@ -508,7 +505,7 @@ main {
 
 .primary-button {
   background-color: #2ecc40;
-  width: 80%; /* Adjust this value to control the width of the green button */
+  width: 80%;
 }
 
 .primary-button:hover {
@@ -517,9 +514,9 @@ main {
 
 .secondary-button {
   background-color: #3498db;
-  width: 40%; /* Adjust this value to control the width of the blue button */
-  padding: 8px 15px; /* Smaller padding for the blue button */
-  font-size: 12px; /* Smaller font size for the blue button */
+  width: 40%;
+  padding: 10px 18px;
+  font-size: 14px;
 }
 
 .secondary-button:hover, .ok-button:hover {
