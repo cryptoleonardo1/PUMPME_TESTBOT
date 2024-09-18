@@ -469,7 +469,10 @@ main {
 }
 
 .button-container {
-  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .popup-content h2 {
@@ -485,11 +488,10 @@ main {
 }
 
 .popup-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 20px;
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px 0;
+  border: none;
   border-radius: 25px;
   cursor: pointer;
   font-size: 14px;
@@ -497,6 +499,7 @@ main {
   transition: background-color 0.3s ease, transform 0.1s ease;
   text-decoration: none;
   color: white;
+  text-align: center;
 }
 
 .popup-button:active {
@@ -505,14 +508,18 @@ main {
 
 .primary-button {
   background-color: #2ecc40;
+  width: 80%; /* Adjust this value to control the width of the green button */
 }
 
 .primary-button:hover {
   background-color: #27ae60;
 }
 
-.secondary-button, .ok-button {
+.secondary-button {
   background-color: #3498db;
+  width: 40%; /* Adjust this value to control the width of the blue button */
+  padding: 8px 15px; /* Smaller padding for the blue button */
+  font-size: 12px; /* Smaller font size for the blue button */
 }
 
 .secondary-button:hover, .ok-button:hover {
