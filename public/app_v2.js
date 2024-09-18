@@ -357,14 +357,23 @@ function handleTaskClick(task) {
 }
 
 function completeTask(taskId) {
-    const task = socialTasks.find(t => t.id === taskId);
+    const category = Object.keys(socialTasks).find(key => 
+        socialTasks[key].some(task => task.id === taskId)
+    );
+    
+    if (!category) {
+        console.error('Task category not found');
+        return;
+    }
+
+    const task = socialTasks[category].find(t => t.id === taskId);
     if (task && !task.completed) {
         task.completed = true;
         gains += task.reward;
         updateUI();
-        updateSocialPage();
         closePopup();
         showRewardPopup(task.reward);
+        updateSocialPage(); // Refresh the social page to show updated task status
     }
 }
 
@@ -377,18 +386,6 @@ function showPopup(content) {
         </div>
     `;
     document.body.appendChild(popup);
-
-    // Add error handling for the image
-    const img = popup.querySelector('.character-image');
-    if (img) {
-        img.onerror = function() {
-            console.error('Failed to load image:', this.src);
-            this.style.display = 'none';
-        };
-        img.onload = function() {
-            console.log('Image loaded successfully:', this.src);
-        };
-    }
 }
 
 function closePopup() {
