@@ -259,7 +259,11 @@ const socialTasks = [
     referrals: [
         { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
     ],
-    'in-game': []
+    'in-game': [
+        { id: 'reps', name: "Make 50,000 reps", icon: "🏋️", reward: 3000, completed: false, noPopup: true },
+        { id: 'level', name: "Achieve Level 7", icon: "🏅", reward: 3000, completed: false, noPopup: true },
+        { id: 'purchase', name: "Purchase 50 Boosts", icon: "🚀", reward: 3000, completed: false, noPopup: true }
+    ]
 };
 function updateSocialPage() {
     const socialTasksContainer = document.getElementById('social-tasks-container');
@@ -285,8 +289,13 @@ function displayTasks(category) {
             const taskElement = document.createElement('div');
             taskElement.className = 'social-task';
             taskElement.innerHTML = `
-                <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
-                <div class="social-task-content">
+                ${task.icon.includes('.png') 
+    ? `${task.icon.includes('.png') 
+    ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
+    : `<span class="social-task-icon">${task.icon}</span>`
+}`
+    : `<span class="social-task-icon">${task.icon}</span>`
+}                <div class="social-task-content">
                     <div class="social-task-name">${task.name}</div>
                     <div class="social-task-reward">
                         <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
