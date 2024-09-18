@@ -450,10 +450,10 @@ main {
 
 .popup-content {
   background-color: #2a2a2a;
-  padding: 20px;
+  padding: 30px;
   border-radius: 15px;
   text-align: center;
-  width: 90%;
+  width: 100%;
   max-width: 300px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -465,11 +465,11 @@ main {
   width: 100px;
   height: 100px;
   object-fit: contain;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .button-container {
-  width: 80%;
+  width: 60%;
 }
 
 .popup-content h2 {
