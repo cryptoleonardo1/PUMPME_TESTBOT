@@ -229,7 +229,14 @@ const socialTasks = [
     completed: false,
     link: "https://x.com/Pumpme_me"
   },
-  { name: "Refer a friend", icon: "refer-friend-icon.png", reward: 5000, completed: false }
+  {
+    id: 'refer',
+    name: "Refer a friend",
+    icon: "refer-friend-icon.png",
+    reward: 5000,
+    completed: true, // Set this to true
+    noPopup: true // Add this property
+  }
 ];
 
 function updateSocialPage() {
@@ -256,7 +263,9 @@ function updateSocialPage() {
             `;
             socialTasksContainer.appendChild(taskElement);
 
-            taskElement.addEventListener('click', () => handleTaskClick(task));
+            if (!task.noPopup) {
+                taskElement.addEventListener('click', () => handleTaskClick(task));
+            }
         });
     }
 }
