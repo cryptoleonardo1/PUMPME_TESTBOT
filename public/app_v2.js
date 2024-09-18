@@ -391,11 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
           pages[index].style.display = 'flex';
           if (btn.id === 'boosts-btn') {
               initializeBoostsPage();
-          } else if (btn.id === 'leaderboard-btn') {
+          } else if (btn.id === 'top-pumpers-btn') {
               updateLeaderboard();
           } else if (btn.id === 'profile-btn') {
               updateProfilePage();
-          } else if (btn.id === 'challenges-btn') {
+          } else if (btn.id === 'social-btn') {
               updateSocialPage();
           }
       });
