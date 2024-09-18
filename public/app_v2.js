@@ -267,9 +267,10 @@ const socialTasks = [
 };
 
 function updateSocialPage() {
-    const socialTasksContainer = document.getElementById('social-tasks-container');
+    console.log("Updating Social page");
+    
+    // Set up category buttons
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
-
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
             categoryButtons.forEach(btn => btn.classList.remove('active'));
@@ -278,17 +279,16 @@ function updateSocialPage() {
         });
     });
 
-    // Display initial category (Socials)
-    displayTasks('socials');
+    // Initialize the page
     initializeSocialPage();
 }
 
 function initializeSocialPage() {
     console.log("Initializing Social page");
     const defaultCategory = 'socials';
-    const categoryButtons = document.querySelectorAll('#social-page .category-btn');
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(btn => btn.classList.remove('active'));
-    const defaultButton = document.querySelector(`#social-page .category-btn[data-category="${defaultCategory}"]`);
+    const defaultButton = document.querySelector(`.task-categories .category-btn[data-category="${defaultCategory}"]`);
     if (defaultButton) {
         defaultButton.classList.add('active');
     }
