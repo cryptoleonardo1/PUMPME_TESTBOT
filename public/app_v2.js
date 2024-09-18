@@ -212,14 +212,6 @@ function updateProfilePage() {
 }
 
 const socialTasks = [
-    { 
-      id: 'instagram',
-      name: "PUMPME.APP on Instagram", 
-      icon: "instagram-icon.png", 
-      reward: 5000, 
-      completed: false,
-      link: "https://www.instagram.com/pumpme.me/"
-    },
     {
       id: 'telegram',
       name: "PUMPME.APP on Telegram",
@@ -236,11 +228,27 @@ const socialTasks = [
       completed: false,
       link: "https://x.com/Pumpme_me"
     },
+    { 
+      id: 'instagram',
+      name: "PUMPME.APP on Instagram", 
+      icon: "instagram-icon.png", 
+      reward: 5000, 
+      completed: false,
+      link: "https://www.instagram.com/pumpme.me/"
+    },
+    {
+      id: 'twitter-like-retweet',
+      name: "Like & Retweet",
+      icon: "twitter-icon.png",
+      reward: 5000,
+      completed: false,
+      link: "https://x.com/Pumpme_me" // You may want to update this to a specific tweet URL
+    },
     {
       id: 'refer',
       name: "Refer a friend",
       icon: "refer-friend-icon.png",
-      reward: 10000,
+      reward: 5000,
       completed: true,
       noPopup: true
     }
@@ -281,23 +289,32 @@ function handleTaskClick(task) {
     if (task.completed) return;
 
     let platformName;
+    let actionText;
     switch(task.id) {
         case 'instagram':
             platformName = 'Instagram';
+            actionText = 'Follow us on Instagram';
             break;
         case 'telegram':
             platformName = 'Telegram';
+            actionText = 'Join our Telegram channel';
             break;
         case 'twitter':
             platformName = 'X';
+            actionText = 'Follow us on X';
+            break;
+        case 'twitter-like-retweet':
+            platformName = 'X';
+            actionText = 'Like & Retweet our post on X';
             break;
         default:
             platformName = task.id;
+            actionText = 'Complete the task';
     }
 
     const popupContent = `
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>Click the button below to open our ${platformName} page:</p>
+        <p>${actionText}:</p>
         <div class="button-container">
             <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${platformName}</a>
             <button onclick="completeTask('${task.id}')" class="popup-button secondary-button">Done</button>
