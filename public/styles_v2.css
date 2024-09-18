@@ -182,7 +182,7 @@ main {
 
 #boosts-page h2,
 #social-page h2,
-#top-pumpers-page h2,
+#leaderboard-page h2,
 #profile-page h2 {
     text-align: center;
     margin: 20px 0;
@@ -276,7 +276,7 @@ main {
 }
 
 /* Top Pumpers page styles */
-#top-pumpers-page {
+#leaderboard-page {
   padding: 0 20px 20px;
 }
 

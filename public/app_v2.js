@@ -242,7 +242,7 @@ const socialTasks = [
       icon: "twitter-icon.png",
       reward: 5000,
       completed: false,
-      link: "https://x.com/Pumpme_me" // You may want to update this to a specific tweet URL
+      link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" // You may want to update this to a specific tweet URL
     },
     {
       id: 'refer',
@@ -391,11 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
           pages[index].style.display = 'flex';
           if (btn.id === 'boosts-btn') {
               initializeBoostsPage();
-          } else if (btn.id === 'top-pumpers-btn') {
+          } else if (btn.id === 'leaderboard-btn') {
               updateLeaderboard();
           } else if (btn.id === 'profile-btn') {
               updateProfilePage();
-          } else if (btn.id === 'social-btn') {
+          } else if (btn.id === 'challenges-btn') {
               updateSocialPage();
           }
       });
