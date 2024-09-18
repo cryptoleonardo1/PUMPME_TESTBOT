@@ -265,20 +265,48 @@ const socialTasks = [
         { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 3000, completed: false, noPopup: true }
     ]
 };
-function updateSocialPage() {
-    const socialTasksContainer = document.getElementById('social-tasks-container');
-    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
 
-    categoryButtons.forEach(button => {
+function updateSocialPage() {
+    const taskCategories = document.querySelectorAll('.task-categories .category-btn');
+    taskCategories.forEach(button => {
         button.addEventListener('click', () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
             displayTasks(button.dataset.category);
+            updateTaskCategoryButtons(button.dataset.category);
         });
     });
 
-    // Display initial category (Socials)
+    // Always start with Socials category
     displayTasks('socials');
+    updateTaskCategoryButtons('socials');
+}
+
+function navigateToPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+    
+    // Show the selected page
+    const selectedPage = document.getElementById(pageId);
+    if (selectedPage) {
+        selectedPage.style.display = 'block';
+        
+        // If it's the Tasks page, reset to the Socials sub-page
+        if (pageId === 'social-page') {
+            displayTasks('socials');
+            updateTaskCategoryButtons('socials');
+        }
+    }
+}
+
+// Add this new function to update the category buttons
+function updateTaskCategoryButtons(activeCategory) {
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+    categoryButtons.forEach(button => {
+        if (button.dataset.category === activeCategory) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
 }
 
 function displayTasks(category) {
@@ -413,25 +441,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
 
-    navButtons.forEach((btn, index) => {
-      btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          console.log("Nav button clicked:", btn.id);
-          navButtons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          pages.forEach(page => page.style.display = 'none');
-          pages[index].style.display = 'flex';
-          if (btn.id === 'boosts-btn') {
-              initializeBoostsPage();
-          } else if (btn.id === 'top-pumpers-btn') {
-              updateLeaderboard();
-          } else if (btn.id === 'profile-btn') {
-              updateProfilePage();
-          } else if (btn.id === 'social-btn') {
-              updateSocialPage();
-          }
+    navButtons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Nav button clicked:", btn.id);
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            let pageId;
+            switch(btn.id) {
+                case 'boosts-btn':
+                    pageId = 'boosts-page';
+                    initializeBoostsPage();
+                    break;
+                case 'top-pumpers-btn':
+                    pageId = 'top-pumpers-page';
+                    updateLeaderboard();
+                    break;
+                case 'profile-btn':
+                    pageId = 'profile-page';
+                    updateProfilePage();
+                    break;
+                case 'social-btn':
+                    pageId = 'social-page';
+                    break;
+                default:
+                    pageId = btn.id.replace('-btn', '-page');
+            }
+            
+            navigateToPage(pageId);
+        });
       });
-  });
 
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
