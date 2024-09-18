@@ -205,6 +205,49 @@ function updateProfilePage() {
       }
   }
 }
+/*
+const socialTasks = [
+    {
+      id: 'telegram',
+      name: "PUMPME.APP on Telegram",
+      icon: "telegram-icon.png",
+      reward: 5000,
+      completed: false,
+      link: "https://t.me/pumpme_me"
+    },
+    {
+      id: 'twitter',
+      name: "PUMPME.APP on X",
+      icon: "twitter-icon.png",
+      reward: 5000,
+      completed: false,
+      link: "https://x.com/Pumpme_me"
+    },
+    { 
+      id: 'instagram',
+      name: "PUMPME.APP on Instagram", 
+      icon: "instagram-icon.png", 
+      reward: 5000, 
+      completed: false,
+      link: "https://www.instagram.com/pumpme.me/"
+    },
+    {
+      id: 'twitter-like-retweet',
+      name: "Like & Retweet",
+      icon: "twitter-icon.png",
+      reward: 5000,
+      completed: false,
+      link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" // You may want to update this to a specific tweet URL
+    },
+    {
+      id: 'refer',
+      name: "Refer a friend",
+      icon: "refer-friend-icon.png",
+      reward: 5000,
+      completed: true,
+      noPopup: true
+    }
+  ]; */
 
   const socialTasks = {
     socials: [
@@ -222,112 +265,55 @@ function updateProfilePage() {
         { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 3000, completed: false, noPopup: true }
     ]
 };
-
-console.log('Social tasks:', socialTasks);
-
 function updateSocialPage() {
-    console.log('Updating social page');
-    const taskCategories = document.querySelectorAll('.task-categories .category-btn');
-    console.log(`Found ${taskCategories.length} category buttons`);
-    
-    taskCategories.forEach(button => {
-        console.log(`Setting up listener for category: ${button.dataset.category}`);
+    const socialTasksContainer = document.getElementById('social-tasks-container');
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+
+    categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const category = button.dataset.category;
-            console.log(`Category button clicked: ${category}`);
-            displayTasks(category);
-            updateTaskCategoryButtons(category);
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayTasks(button.dataset.category);
         });
     });
 
-    // Always start with Socials category
-    console.log('Initial display of socials category');
+    // Display initial category (Socials)
     displayTasks('socials');
-    updateTaskCategoryButtons('socials');
-}
-
-function navigateToPage(pageId) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-    
-    // Show the selected page
-    const selectedPage = document.getElementById(pageId);
-    if (selectedPage) {
-        selectedPage.style.display = 'block';
-        
-        // Initialize page-specific content
-        switch(pageId) {
-            case 'boosts-page':
-                initializeBoostsPage();
-                break;
-            case 'social-page':
-                displayTasks('socials');
-                updateTaskCategoryButtons('socials');
-                break;
-            case 'top-pumpers-page':
-                updateLeaderboard();
-                break;
-            case 'profile-page':
-                updateProfilePage();
-                break;
-        }
-    }
-}
-
-// Add this new function to update the category buttons
-function updateTaskCategoryButtons(activeCategory) {
-    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
-    categoryButtons.forEach(button => {
-        if (button.dataset.category === activeCategory) {
-            button.classList.add('active');
-        } else {
-            button.classList.remove('active');
-        }
-    });
 }
 
 function displayTasks(category) {
-    console.log(`Attempting to display tasks for category: ${category}`);
-    console.log('Current socialTasks object:', socialTasks);
-    
     const socialTasksContainer = document.getElementById('social-tasks-container');
     if (socialTasksContainer) {
-        socialTasksContainer.innerHTML = ''; // Clear previous content
-        console.log(`Cleared container for ${category}`);
-
-        if (socialTasks[category] && socialTasks[category].length > 0) {
-            console.log(`Found ${socialTasks[category].length} tasks for ${category}:`, socialTasks[category]);
-            socialTasks[category].forEach(task => {
-                const taskElement = document.createElement('div');
-                taskElement.className = 'social-task';
-                taskElement.innerHTML = `
-                    <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
-                    <div class="social-task-content">
-                        <div class="social-task-name">${task.name}</div>
-                        <div class="social-task-reward">
-                            <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
-                            +${task.reward.toLocaleString()}
-                        </div>
+        socialTasksContainer.innerHTML = '';
+        socialTasks[category].forEach(task => {
+            const taskElement = document.createElement('div');
+            taskElement.className = 'social-task';
+            taskElement.innerHTML = `
+                ${task.icon.includes('.png') 
+    ? `${task.icon.includes('.png') 
+    ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
+    : `<span class="social-task-icon">${task.icon}</span>`
+}`
+    : `<span class="social-task-icon">${task.icon}</span>`
+}                <div class="social-task-content">
+                    <div class="social-task-name">${task.name}</div>
+                    <div class="social-task-reward">
+                        <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                        +${task.reward.toLocaleString()}
                     </div>
-                    <div class="social-task-status">
-                        <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                             alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                             class="${task.completed ? 'status-icon' : 'chevron-icon'}">
-                    </div>
-                `;
-                socialTasksContainer.appendChild(taskElement);
-                console.log(`Added task: ${task.name} for ${category}`);
+                </div>
+                <div class="social-task-status">
+                    <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                         alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                         class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+                </div>
+            `;
+            socialTasksContainer.appendChild(taskElement);
 
-                if (!task.noPopup) {
-                    taskElement.addEventListener('click', () => handleTaskClick(task));
-                }
-            });
-        } else {
-            console.log(`No tasks found for ${category}`);
-            socialTasksContainer.innerHTML = `<p>No tasks available for ${category}.</p>`;
-        }
-    } else {
-        console.error('socialTasksContainer not found');
+            if (!task.noPopup) {
+                taskElement.addEventListener('click', () => handleTaskClick(task));
+            }
+        });
     }
 }
 
@@ -422,20 +408,30 @@ function showRewardPopup(reward) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded and parsed");
+    
     const navButtons = document.querySelectorAll('.nav-btn');
-    navButtons.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            navButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const pageId = btn.id.replace('-btn', '-page');
-            navigateToPage(pageId);
-        });
-    });
+    const pages = document.querySelectorAll('.page');
 
-    // Initialize the first page (assuming it's the gym page)
-    navigateToPage('gym-page');
-});
+    navButtons.forEach((btn, index) => {
+      btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          console.log("Nav button clicked:", btn.id);
+          navButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          pages.forEach(page => page.style.display = 'none');
+          pages[index].style.display = 'flex';
+          if (btn.id === 'boosts-btn') {
+              initializeBoostsPage();
+          } else if (btn.id === 'top-pumpers-btn') {
+              updateLeaderboard();
+          } else if (btn.id === 'profile-btn') {
+              updateProfilePage();
+          } else if (btn.id === 'social-btn') {
+              updateSocialPage();
+          }
+      });
+  });
 
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');

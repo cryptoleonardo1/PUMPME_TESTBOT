@@ -31,53 +31,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const boostItems = document.getElementById('boost-items');
     const categoryButtons = document.querySelectorAll('.category-btn');
 
-    function displayBoostItems(category) {
-        console.log("Displaying boost items for category:", category);
-        const boostItems = document.getElementById('boost-items');
+    function displayBoosts(category) {
+        console.log("Displaying boosts for category:", category);
         if (boostItems) {
             boostItems.innerHTML = '';
             window.boosts[category].forEach(boost => {
+                console.log("Creating boost item:", boost.name);
                 const boostElement = document.createElement('div');
                 boostElement.className = 'boost-item';
                 boostElement.innerHTML = `
                     <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-content">
-                        <div class="boost-name">${boost.name}</div>
-                        <div class="boost-description">${boost.description}</div>
-                    </div>
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-description">${boost.description}</div>
                     <div class="boost-price">
-                        <img src="/public/images/bicep-icon-yellow.png" alt="Price" class="price-icon">
-                        ${boost.price}
+                        <span class="flex-icon"></span>
+                        <span>${boost.price}</span>
                     </div>
                 `;
                 boostItems.appendChild(boostElement);
             });
+            console.log("Finished creating boost items");
+        } else {
+            console.error("boostItems element not found");
         }
-    }
-    
-    function initializeBoostsPage() {
-        console.log("Initializing Boosts page");
-        const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                displayBoostItems(button.dataset.category);
-            });
-        });
-    
-        // Display initial category
-        displayBoostItems('nutrition');
     }
 
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            displayBoostsItems(button.dataset.category);
+            displayBoosts(button.dataset.category);
         });
     });
 
     // Initially display nutrition boosts
-    displayBoostsItems('nutrition');
+    displayBoosts('nutrition');
 });
