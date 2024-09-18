@@ -226,10 +226,16 @@ main {
   background-color: #2a2a2a;
   border-radius: 10px;
   padding: 15px;
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  cursor: pointer; /* Indicates the item is clickable */
 }
 
 .boost-item:hover {
-  transform: translateY(-10px);
+  background-color: #3a3a3a; /* Slightly lighter background on hover */
+}
+
+.boost-item:active {
+  background-color: #444444; /* Even lighter background when clicked */
 }
 
 .boost-icon {
