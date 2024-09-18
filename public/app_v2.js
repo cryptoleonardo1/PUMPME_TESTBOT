@@ -270,8 +270,9 @@ function updateSocialPage() {
     const taskCategories = document.querySelectorAll('.task-categories .category-btn');
     taskCategories.forEach(button => {
         button.addEventListener('click', () => {
-            displayTasks(button.dataset.category);
-            updateTaskCategoryButtons(button.dataset.category);
+            const category = button.dataset.category;
+            displayTasks(category);
+            updateTaskCategoryButtons(category);
         });
     });
 
@@ -312,36 +313,42 @@ function updateTaskCategoryButtons(activeCategory) {
 function displayTasks(category) {
     const socialTasksContainer = document.getElementById('social-tasks-container');
     if (socialTasksContainer) {
+        // Clear previous content
         socialTasksContainer.innerHTML = '';
-        socialTasks[category].forEach(task => {
-            const taskElement = document.createElement('div');
-            taskElement.className = 'social-task';
-            taskElement.innerHTML = `
-                ${task.icon.includes('.png') 
-    ? `${task.icon.includes('.png') 
-    ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
-    : `<span class="social-task-icon">${task.icon}</span>`
-}`
-    : `<span class="social-task-icon">${task.icon}</span>`
-}                <div class="social-task-content">
-                    <div class="social-task-name">${task.name}</div>
-                    <div class="social-task-reward">
-                        <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
-                        +${task.reward.toLocaleString()}
+        
+        // Check if the category exists and has tasks
+        if (socialTasks[category] && socialTasks[category].length > 0) {
+            socialTasks[category].forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'social-task';
+                taskElement.innerHTML = `
+                    ${task.icon.includes('.png') 
+                        ? `<img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">`
+                        : `<span class="social-task-icon">${task.icon}</span>`
+                    }
+                    <div class="social-task-content">
+                        <div class="social-task-name">${task.name}</div>
+                        <div class="social-task-reward">
+                            <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                            +${task.reward.toLocaleString()}
+                        </div>
                     </div>
-                </div>
-                <div class="social-task-status">
-                    <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                         alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                         class="${task.completed ? 'status-icon' : 'chevron-icon'}">
-                </div>
-            `;
-            socialTasksContainer.appendChild(taskElement);
+                    <div class="social-task-status">
+                        <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                             alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                             class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+                    </div>
+                `;
+                socialTasksContainer.appendChild(taskElement);
 
-            if (!task.noPopup) {
-                taskElement.addEventListener('click', () => handleTaskClick(task));
-            }
-        });
+                if (!task.noPopup) {
+                    taskElement.addEventListener('click', () => handleTaskClick(task));
+                }
+            });
+        } else {
+            // Display a message if there are no tasks for this category
+            socialTasksContainer.innerHTML = '<p>No tasks available in this category.</p>';
+        }
     }
 }
 
