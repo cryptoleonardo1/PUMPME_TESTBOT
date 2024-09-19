@@ -229,10 +229,7 @@ main {
 }
 
 #boost-items {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
+  padding: 0 20px;
 }
 
 .boost-item {
@@ -241,8 +238,9 @@ main {
   background-color: #2a2a2a;
   border-radius: 10px;
   padding: 15px;
-  transition: background-color 0.3s ease; /* Smooth transition for background color */
-  cursor: pointer; /* Indicates the item is clickable */
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .boost-item:hover {
@@ -430,11 +428,11 @@ main {
 }
 
 .social-task {
+  display: flex;
+  align-items: center;
   background-color: #2a2a2a;
   border-radius: 10px;
   padding: 15px;
-  display: flex;
-  align-items: center;
   margin-bottom: 15px;
   cursor: pointer;
   transition: background-color 0.3s ease;
