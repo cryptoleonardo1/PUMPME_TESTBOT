@@ -61,6 +61,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 10px; /* Add space between icon and gains */
 }
 
 #bicep-icon {
@@ -70,16 +71,16 @@ header {
 }
 
 #gains-display {
-  flex-grow: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
+  flex-grow: 1;
 }
 
 #gains-value {
   font-size: 24px;
   font-weight: bold;
   color: #ffffff;
+  padding-left: 40px; /* Ensure space for the bicep icon */
 }
 
 #level-display {
