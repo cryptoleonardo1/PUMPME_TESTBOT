@@ -64,8 +64,6 @@ header {
   width: 24px;
   height: 24px;
   margin-right: 8px;
-  display: inline-block;
-  background-color: red; /* Temporary, remove after testing */
 }
 
 #gains-value {
