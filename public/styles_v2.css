@@ -271,7 +271,7 @@ main {
   align-items: center;
   background-color: #2a2a2a;
   border-radius: 10px;
-  padding: 20px 10px;
+  padding: 20px 20px;
   margin-bottom: 15px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -322,6 +322,7 @@ main {
 
 .boost-price:hover, .boost-price:active {
   background-color: #2ecc40; /* Green background on hover/active */
+  border-radius: 5px;
 }
 
 .boost-price .flex-icon {
