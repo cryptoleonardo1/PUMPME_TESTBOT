@@ -486,6 +486,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Bicep icon debugging
+    const bicepIcon = document.getElementById('bicep-icon');
+    if (bicepIcon) {
+        bicepIcon.onload = function() {
+            console.log('Bicep icon loaded successfully');
+        };
+        bicepIcon.onerror = function() {
+            console.error('Failed to load bicep icon');
+            // Fallback to a text representation if the image fails to load
+            bicepIcon.style.display = 'none';
+            bicepIcon.parentElement.textContent = '💪';
+        };
+    } else {
+        console.error('Bicep icon element not found');
+    }
+
     // Initialize the gym page
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
