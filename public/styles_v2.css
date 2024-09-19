@@ -78,7 +78,7 @@ header {
 }
 
 #gains-value {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
   color: #ffffff;
   padding-left: 40px; /* Ensure space for the bicep icon */
@@ -89,7 +89,7 @@ header {
 }
 
 #level-name {
-  font-size: 16px;
+  font-size: 30px;
   font-weight: bold;
   color: #ffffff;
 }
@@ -181,7 +181,7 @@ main {
 }
 
 #pump-me-image {
-  width: 100px;
+  width: 120px;
   height: auto;
   cursor: pointer;
   user-select: none;
