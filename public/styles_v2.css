@@ -53,7 +53,6 @@ header {
   background-color: #2a2a2a;
   padding: 10px;
   border-radius: 0 0 15px 15px;
-  margin-bottom: 10px;
 }
 
 #gains-display {
@@ -62,19 +61,21 @@ header {
 }
 
 #bicep-icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-  display: inline-block; /* Ensure the icon is displayed */
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  display: inline-block;
 }
 
 #gains-value {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #ffffff;
 }
 
 #level-display {
+  font-size: 14px;
+  color: #ffffff;
   text-align: right;
 }
 
