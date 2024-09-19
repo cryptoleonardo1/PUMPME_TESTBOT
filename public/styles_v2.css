@@ -229,7 +229,7 @@ main {
 .boost-categories {
   display: flex;
   justify-content: space-around;
-  margin: 0 10px 5px;
+  margin: 0 10px 10px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
   padding: 3px;
