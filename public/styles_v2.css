@@ -53,6 +53,7 @@ header {
   background-color: #2a2a2a;
   padding: 10px;
   border-radius: 0 0 15px 15px;
+  margin-bottom: 20px; /* Add this line */
 }
 
 #bicep-icon-container {
@@ -101,7 +102,7 @@ header {
 #status-bar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-top: 0px; /* Add this line if not already present */
 }
 
 .status-item {
