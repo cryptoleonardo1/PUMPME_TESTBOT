@@ -51,7 +51,7 @@ header {
   justify-content: space-between;
   align-items: center;
   background-color: #2a2a2a;
-  padding: 10px;
+  padding: 12px 15px; /* Slightly increased padding */
   border-radius: 0 0 15px 15px;
   margin-bottom: 20px; /* Add this line */
 }
@@ -78,7 +78,7 @@ header {
 }
 
 #gains-value {
-  font-size: 30px;
+  font-size: 18px;
   font-weight: bold;
   color: #ffffff;
   padding-left: 40px; /* Ensure space for the bicep icon */
@@ -89,13 +89,13 @@ header {
 }
 
 #level-name {
-  font-size: 30px;
+  font-size: 18px;
   font-weight: bold;
   color: #ffffff;
 }
 
 #level-number {
-  font-size: 14px;
+  font-size: 16px;
   color: #cccccc;
 }
 
