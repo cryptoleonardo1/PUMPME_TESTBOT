@@ -111,7 +111,7 @@ header {
   border-radius: 10px;
   text-align: center;
   flex: 1;
-  margin: 0 20px;
+  margin: 0 10px;
 }
 
 .status-label {
@@ -137,6 +137,7 @@ header {
 #energy-container {
   background-color: transparent;
   padding: 10px;
+  margin-top: 10px;
 }
 
 #energy-status-bar {
@@ -643,8 +644,8 @@ nav {
 }
 
 .nav-icon {
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
