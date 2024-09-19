@@ -229,10 +229,11 @@ main {
 .boost-categories {
   display: flex;
   justify-content: space-around;
-  margin: 0 10px 10px;
+  margin: 0 10px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
   padding: 3px;
+  margin-bottom: 20px; /* Increase this value to add more space below */
 }
 
 .category-menu {
@@ -430,10 +431,11 @@ main {
 .task-categories {
   display: flex;
   justify-content: space-around;
-  margin: 0 10px 10px;
+  margin: 0 10px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
   padding: 3px;
+  margin-bottom: 20px; /* Increase this value to add more space below */
 }
 
 .task-categories .category-btn {
