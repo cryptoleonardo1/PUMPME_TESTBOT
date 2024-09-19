@@ -43,6 +43,7 @@ header {
 #gym-page header {
   padding: 0;
   background-color: transparent;
+  border-radius: 0;
 }
 
 #gains-container {
@@ -51,7 +52,7 @@ header {
   align-items: center;
   background-color: #2a2a2a;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
 }
 
@@ -64,6 +65,7 @@ header {
   width: 30px;
   height: 30px;
   margin-right: 10px;
+  display: inline-block; /* Ensure the icon is displayed */
 }
 
 #gains-value {
