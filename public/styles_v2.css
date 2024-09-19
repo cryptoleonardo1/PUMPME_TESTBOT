@@ -107,11 +107,11 @@ header {
 
 .status-item {
   background-color: #2a2a2a;
-  padding: 5px 8px;
+  padding: 5px 10px;
   border-radius: 8px;
   text-align: center;
   flex: 1;
-  margin: 0 5px;
+  margin: 0 10px;
 }
 
 .status-label {
@@ -121,7 +121,7 @@ header {
 }
 
 .status-value {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -129,8 +129,8 @@ header {
 }
 
 .gains-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   margin-right: 5px;
 }
 
