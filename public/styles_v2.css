@@ -68,22 +68,20 @@ header {
 }
 
 #bicep-icon {
-  max-width: 100%;
-  max-height: 100%;
-  display: block;
+  width: 1.5em; /* Relative to the base font size */
+  height: 1.5em;
+  margin-right: 0.5em;
 }
 
 #gains-display {
   display: flex;
   align-items: center;
-  flex-grow: 1;
 }
 
 #gains-value {
-  font-size: 16px;
+  font-size: 1.75em; /* 28px if base is 16px */
   font-weight: bold;
   color: #ffffff;
-  padding-left: 40px; /* Ensure space for the bicep icon */
 }
 
 #level-display {
@@ -91,13 +89,13 @@ header {
 }
 
 #level-name {
-  font-size: 16px;
+  font-size: 1.125em; /* 18px if base is 16px */
   font-weight: bold;
   color: #ffffff;
 }
 
 #level-number {
-  font-size: 16px;
+  font-size: 1em; /* 16px if base is 16px */
   color: #cccccc;
 }
 
