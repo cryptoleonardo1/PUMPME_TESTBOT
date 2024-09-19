@@ -175,13 +175,13 @@ main {
 }
 
 #pump-me-container {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   text-align: center;
 }
 
 #pump-me-image {
-  width: 150px;
+  width: 100px;
   height: auto;
   cursor: pointer;
   user-select: none;
@@ -199,7 +199,7 @@ main {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 #character {
