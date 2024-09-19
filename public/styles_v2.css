@@ -46,13 +46,18 @@ header {
 }
 
 #gains-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #2a2a2a;
   padding: 10px;
-  border-radius: 0 0 15px 15px;
+  border-radius: 10px;
   margin-bottom: 10px;
+}
+
+#gains-display {
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 #bicep-icon {
@@ -61,27 +66,40 @@ header {
   margin-right: 10px;
 }
 
-#gains-display {
+#gains-value {
   font-size: 24px;
   font-weight: bold;
   color: #ffffff;
+}
+
+#level-display {
+  text-align: right;
+}
+
+#level-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+#level-number {
+  font-size: 14px;
+  color: #cccccc;
 }
 
 #status-bar {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-  background-color: transparent;
-  padding: 0;
 }
 
 .status-item {
-  background-color: #2a2a2a;  /* rgba(74, 85, 104, 0.8); Slightly transparent gray */ 
+  background-color: #2a2a2a;
   padding: 8px;
   border-radius: 10px;
   text-align: center;
   flex: 1;
-  margin: 0 5px;  /* Add space between frames */
+  margin: 0 5px;
 }
 
 .status-label {
@@ -115,7 +133,7 @@ header {
   margin-bottom: 5px;
 }
 
-#energy-status, #level-display {
+#energy-status {
   font-size: 14px;
 }
 
