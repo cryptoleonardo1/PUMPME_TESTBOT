@@ -55,25 +55,26 @@ header {
   border-radius: 0 0 15px 15px;
 }
 
-#gains-display {
-  display: flex;
-  align-items: center;
-}
-
 #bicep-icon-container {
   width: 30px;
   height: 30px;
-  margin-right: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.1); /* Temporary background to see the container */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 #bicep-icon {
   max-width: 100%;
   max-height: 100%;
   display: block;
+}
+
+#gains-display {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #gains-value {
