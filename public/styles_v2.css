@@ -78,7 +78,7 @@ header {
 }
 
 #gains-value {
-  font-size: 10px;
+  font-size: 5px;
   font-weight: bold;
   color: #ffffff;
   padding-left: 40px; /* Ensure space for the bicep icon */
@@ -89,13 +89,13 @@ header {
 }
 
 #level-name {
-  font-size: 10px;
+  font-size: 5px;
   font-weight: bold;
   color: #ffffff;
 }
 
 #level-number {
-  font-size: 10px;
+  font-size: 5px;
   color: #cccccc;
 }
 
