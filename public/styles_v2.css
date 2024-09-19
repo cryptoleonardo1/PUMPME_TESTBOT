@@ -29,7 +29,7 @@ body, html {
 .page h2 {
   text-align: center;
   color: #ffffff;
-  font-size: 24px;
+  font-size: 18px;
   margin: 20px 0 20px 20px;
   font-weight: bold;
 }
@@ -48,7 +48,6 @@ header {
 
 #gains-container {
   display: flex;
-  font-size: 30px;
   justify-content: space-between;
   align-items: center;
   background-color: #2a2a2a;
