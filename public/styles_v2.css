@@ -311,6 +311,7 @@ main {
   display: flex;
   align-items: center;
   color: #ffd700;
+  font-size: 20px;
   font-weight: bold;
 }
 
