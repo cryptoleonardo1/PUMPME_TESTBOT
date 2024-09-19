@@ -57,8 +57,8 @@ header {
 }
 
 #bicep-icon-container {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -78,7 +78,7 @@ header {
 }
 
 #gains-value {
-  font-size: 5px;
+  font-size: 16px;
   font-weight: bold;
   color: #ffffff;
   padding-left: 40px; /* Ensure space for the bicep icon */
@@ -89,13 +89,13 @@ header {
 }
 
 #level-name {
-  font-size: 5px;
+  font-size: 16px;
   font-weight: bold;
   color: #ffffff;
 }
 
 #level-number {
-  font-size: 5px;
+  font-size: 16px;
   color: #cccccc;
 }
 
