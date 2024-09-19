@@ -196,7 +196,10 @@ main {
 .boost-categories {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 20px;
+  margin: 0 20px 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 3px;
 }
 
 .category-menu {
@@ -392,15 +395,44 @@ main {
 }
 
 /* Social page styles */
+
+.task-categories {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 20px 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 3px;
+}
+
+.task-categories .category-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.task-categories .category-btn.active {
+  background-color: #ffffff;
+  color: #000000;
+}
+
 #social-page h2 {
-  margin: 20px 20px;
   text-align: center;
+  margin: 20px 0;
+  font-size: 24px;
+  color: #ffffff;
 }
 
 .social-task {
   background-color: #2a2a2a;
   border-radius: 10px;
-  padding: 15px 20px;
+  padding: 15px;
   display: flex;
   align-items: center;
   margin-bottom: 15px;
