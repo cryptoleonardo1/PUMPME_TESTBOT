@@ -137,7 +137,7 @@ header {
 #energy-container {
   background-color: transparent;
   padding: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 #energy-status-bar {
@@ -547,8 +547,8 @@ main {
 }
 
 .character-image {
-  width: 200px; /* Doubled from 100px */
-  height: 200px; /* Doubled from 100px */
+  width: 250px; /* Doubled from 100px */
+  height: 250px; /* Doubled from 100px */
   object-fit: contain;
   margin-bottom: 20px;
 }
