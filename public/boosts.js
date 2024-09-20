@@ -1,29 +1,48 @@
 window.boosts = {
     nutrition: [
-        { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 500 },
-        { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 750 },
-        { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 300 },
-        { name: "Steak", icon: "🥩", description: "High protein meal", price: 1000 },
+        { name: "Protein Shake", icon: "🥤", description: "Boost muscle recovery", price: 250 },
+        { name: "Pre-workout", icon: "⚡", description: "Increase energy for workouts", price: 300 },
+        { name: "Creatine", icon: "💊", description: "Enhance strength and muscle mass", price: 400 },
+        { name: "BCAA", icon: "🧪", description: "Support muscle growth and recovery", price: 350 },
+        { name: "Coffee", icon: "☕", description: "Quick energy boost", price: 200 },
+        { name: "Energy drink", icon: "🥫", description: "Sustained energy boost", price: 250 },
+        { name: "Steak", icon: "🥩", description: "High protein meal", price: 500 },
         { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 200 },
+        { name: "Chicken", icon: "🍗", description: "Lean protein source", price: 350 },
+        { name: "Hot-dog", icon: "🌭", description: "Quick protein fix", price: 250 }
     ],
-    equipment: [
-        { name: "Gym Entry", icon: "💳", description: "Access to gym facilities", price: 1500 },
-        { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 20000 },
-        { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 10000 },
+    workout: [
+        { name: "Chest Day", icon: "🏋️", description: "Focus on chest muscles", price: 600 },
+        { name: "Back Day", icon: "🏋️", description: "Strengthen your back", price: 600 },
+        { name: "Leg Day", icon: "🦵", description: "Build lower body strength", price: 650 },
+        { name: "Abs Workout", icon: "🦂", description: "Core strength training", price: 500 },
+        { name: "Shoulder Day", icon: "🦾", description: "Develop shoulder muscles", price: 550 },
+        { name: "Biceps Workout", icon: "💪", description: "Focus on biceps", price: 500 },
+        { name: "Triceps Workout", icon: "🦾", description: "Strengthen triceps", price: 500 },
+        { name: "HIIT", icon: "🏃‍♂️", description: "High-intensity interval training", price: 700 },
+        { name: "Endurance Cardio", icon: "🏃", description: "Boost cardiovascular endurance", price: 600 },
+        { name: "Calisthenics", icon: "🤸", description: "Bodyweight exercises", price: 550 },
+        { name: "Street Workout", icon: "🏞️", description: "Outdoor fitness training", price: 500 }
     ],
     activities: [
-        { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 800 },
-        { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 1000 },
-        { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 900 },
-        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 1200 },
-        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 2000 },
+        { name: "Yoga", icon: "🧘", description: "Improve flexibility and mindfulness", price: 400 },
+        { name: "Dance Class", icon: "💃", description: "Fun cardio workout", price: 450 },
+        { name: "Muay Thai", icon: "🥊", description: "Thai boxing training", price: 600 },
+        { name: "Karate", icon: "🥋", description: "Martial arts practice", price: 550 },
+        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 500 },
+        { name: "Jogging", icon: "🏃‍♀️", description: "Outdoor cardio session", price: 300 },
+        { name: "Cycling", icon: "🚴", description: "Low-impact cardio workout", price: 400 }
     ],
-    training: [
-        { name: "Chest Day", icon: "🏋️", description: "10x reps for chest", price: 1000 },
-        { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 1000 },
-        { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 1000 },
-        { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 1000 },
-        { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 1000 },
+    resting: [
+        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 350 },
+        { name: "Massage", icon: "💆", description: "Muscle relaxation therapy", price: 600 },
+        { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400 },
+        { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200 },
+        { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250 },
+        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800 },
+        { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300 },
+        { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250 },
+        { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350 }
     ]
 };
 
