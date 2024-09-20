@@ -1,29 +1,29 @@
 window.boosts = {
     nutrition: [
-        { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 50 },
-        { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 75 },
-        { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 30 },
-        { name: "Steak", icon: "🥩", description: "High protein meal", price: 100 },
-        { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 20 },
+        { name: "Protein Shake", icon: "🥤", description: "Increase muscle growth", price: 500 },
+        { name: "Pre-workout", icon: "⚡", description: "Boost energy for workouts", price: 750 },
+        { name: "Energy Drink", icon: "🍹", description: "Quick energy boost", price: 300 },
+        { name: "Steak", icon: "🥩", description: "High protein meal", price: 1000 },
+        { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 200 },
     ],
     equipment: [
-        { name: "Gym Entry", icon: "💳", description: "Access to gym facilities", price: 150 },
-        { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 500 },
-        { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 200 },
+        { name: "Gym Entry", icon: "💳", description: "Access to gym facilities", price: 1500 },
+        { name: "Gym Membership", icon: "💳", description: "Monthly gym access", price: 20000 },
+        { name: "Dumbbells", icon: "🏋️‍♂️", description: "For home workouts", price: 10000 },
     ],
     activities: [
-        { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 80 },
-        { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 100 },
-        { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 90 },
-        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 120 },
-        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 70 },
+        { name: "Yoga", icon: "🧘", description: "Improve flexibility", price: 800 },
+        { name: "Hip-hop Dance", icon: "💃", description: "Cardio workout", price: 1000 },
+        { name: "Salsa", icon: "💃", description: "Fun cardio exercise", price: 900 },
+        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 1200 },
+        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 2000 },
     ],
     training: [
-        { name: "Chest Day", icon: "🏋️", description: "10x reps for chest", price: 300 },
-        { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 300 },
-        { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 300 },
-        { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 300 },
-        { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 300 },
+        { name: "Chest Day", icon: "🏋️", description: "10x reps for chest", price: 1000 },
+        { name: "Leg Day", icon: "🦵", description: "10x reps for legs", price: 1000 },
+        { name: "Back Day", icon: "🏋️‍♀️", description: "10x reps for back", price: 1000 },
+        { name: "Arm Day", icon: "💪", description: "10x reps for arms", price: 1000 },
+        { name: "Cardio", icon: "🏃", description: "10x reps for cardio", price: 1000 },
     ]
 };
 
