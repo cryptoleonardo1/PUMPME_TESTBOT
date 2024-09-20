@@ -19,6 +19,7 @@ function updateLevel() {
 
 function updateUI() {
     const gainsDisplay = document.getElementById('gains-display');
+    if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
     const energyBar = document.getElementById('energy-bar');
     const energyStatus = document.getElementById('energy-status');
     const levelDisplay = document.getElementById('level-display');
@@ -125,6 +126,33 @@ function displayBoosts(category) {
     }
 }
 
+function setupBoosts() {
+    const boostItems = document.querySelectorAll('.boost-item');
+    boostItems.forEach(item => {
+        item.addEventListener('click', handleBoostActivation);
+    });
+}
+
+function handleBoostActivation(event) {
+    const boostElement = event.currentTarget;
+    const boostName = boostElement.querySelector('.boost-name').textContent;
+    const boostValue = parseInt(boostElement.querySelector('.boost-price span:last-child').textContent);
+
+    gains += boostValue;
+    updateUI();
+    showBoostEffect(boostName, boostValue);
+}
+
+function showBoostEffect(boostName, boostValue) {
+    console.log(`${boostName} activated! Added ${boostValue} gains.`);
+    // You can implement a visual effect here, like a popup or animation
+    const popup = document.createElement('div');
+    popup.className = 'boost-popup';
+    popup.textContent = `+${boostValue} gains!`;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 2000); // Remove popup after 2 seconds
+}
+
 function setupBoostsCategoryButtons() {
     console.log("Setting up boost category buttons");
     const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
@@ -152,6 +180,7 @@ function initializeBoostsPage() {
     }
     displayBoosts(defaultCategory);
     setupBoostsCategoryButtons();
+    setupBoosts(); 
 }
 
 function updateProfilePage() {
