@@ -286,8 +286,8 @@ main {
 }
 
 .boost-icon {
-  font-size: 40px;
-  margin-right: 15px;
+  font-size: 30px;
+  margin-right: 20px;
   width: 40px;
   text-align: center;
 }
@@ -318,7 +318,7 @@ main {
 .price-icon {
   width: 30px;
   height: 30px;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .boost-price:hover, .boost-price:active {
