@@ -165,22 +165,22 @@ function updateProfilePage() {
         { name: "Risk of Injury", value: 25 }
     ];
 
-    const attributesContainer = document.getElementById('attributes-container');
-    if (attributesContainer) {
-        attributesContainer.innerHTML = '';
-        attributes.forEach(attr => {
-            const attrElement = document.createElement('div');
-            attrElement.className = 'attribute-item';
-            attrElement.innerHTML = `
-                <div class="attribute-name">${attr.name}</div>
-                <div class="attribute-bar-container">
-                    <div class="attribute-bar" style="width: ${(attr.value / 30) * 100}%"></div>
-                </div>
-                <div class="attribute-value">${attr.value}</div>
-            `;
-            attributesContainer.appendChild(attrElement);
-        });
-    }
+  const attributesContainer = document.getElementById('attributes-container');
+  if (attributesContainer) {
+      attributesContainer.innerHTML = '';
+      attributes.forEach(attr => {
+          const attrElement = document.createElement('div');
+          attrElement.className = 'attribute-item';
+          attrElement.innerHTML = `
+              <div class="attribute-name">${attr.name}</div>
+              <div class="attribute-bar-container">
+                  <div class="attribute-bar" style="width: ${attr.value}%"></div>
+              </div>
+              <div class="attribute-value">${attr.value}</div>
+          `;
+          attributesContainer.appendChild(attrElement);
+      });
+  }
 
   // This is a placeholder for active boosts. In a real application, 
   // you would fetch this data from your backend or local storage.
