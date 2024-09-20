@@ -155,30 +155,32 @@ function initializeBoostsPage() {
 }
 
 function updateProfilePage() {
-  const attributes = [
-      { name: "Strength", value: 10 },
-      { name: "Endurance", value: 15 },
-      { name: "Agility", value: 10 },
-      { name: "Flexibility", value: 30 },
-      { name: "Recovery", value: 20 }
-  ];
+    const attributes = [
+        { name: "Strength", value: 20 },
+        { name: "Endurance", value: 18 },
+        { name: "Recovery", value: 22 },
+        { name: "Technique", value: 15 },
+        { name: "Motivation", value: 25 },
+        { name: "Charisma", value: 17 },
+        { name: "Risk of Injury", value: 25 }
+    ];
 
-  const attributesContainer = document.getElementById('attributes-container');
-  if (attributesContainer) {
-      attributesContainer.innerHTML = '';
-      attributes.forEach(attr => {
-          const attrElement = document.createElement('div');
-          attrElement.className = 'attribute-item';
-          attrElement.innerHTML = `
-              <div class="attribute-name">${attr.name}</div>
-              <div class="attribute-bar-container">
-                  <div class="attribute-bar" style="width: ${attr.value}%"></div>
-              </div>
-              <div class="attribute-value">${attr.value}</div>
-          `;
-          attributesContainer.appendChild(attrElement);
-      });
-  }
+    const attributesContainer = document.getElementById('attributes-container');
+    if (attributesContainer) {
+        attributesContainer.innerHTML = '';
+        attributes.forEach(attr => {
+            const attrElement = document.createElement('div');
+            attrElement.className = 'attribute-item';
+            attrElement.innerHTML = `
+                <div class="attribute-name">${attr.name}</div>
+                <div class="attribute-bar-container">
+                    <div class="attribute-bar" style="width: ${(attr.value / 30) * 100}%"></div>
+                </div>
+                <div class="attribute-value">${attr.value}</div>
+            `;
+            attributesContainer.appendChild(attrElement);
+        });
+    }
 
   // This is a placeholder for active boosts. In a real application, 
   // you would fetch this data from your backend or local storage.
