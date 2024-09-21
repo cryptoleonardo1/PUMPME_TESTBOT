@@ -18,11 +18,11 @@ function updateLevel() {
 }
 
 function updateUI() {
-    const gainsDisplay = document.getElementById('gains-display');
-    if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
     const energyBar = document.getElementById('energy-bar');
     const energyStatus = document.getElementById('energy-status');
     const levelDisplay = document.getElementById('level-display');
+    const gainsDisplay = document.getElementById('gains-value');
+    if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
     const gainsPerRepDisplay = document.querySelector('.status-item:nth-child(1) .status-value');
     const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
 
@@ -138,9 +138,53 @@ function handleBoostActivation(event) {
     const boostName = boostElement.querySelector('.boost-name').textContent;
     const boostValue = parseInt(boostElement.querySelector('.boost-price span:last-child').textContent);
 
+    showBoostConfirmation(boostName, boostValue);
+}
+
+function showBoostConfirmation(boostName, boostValue) {
+    const popupContent = `
+        <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
+        <p>Activate ${boostName}?</p>
+        <div class="button-container">
+            <button onclick="confirmBoost('${boostName}', ${boostValue})" class="popup-button primary-button">PUMP ME</button>
+            <button onclick="closePopup()" class="popup-button secondary-button">Cancel</button>
+        </div>
+    `;
+    showPopup(popupContent);
+}
+
+function confirmBoost(boostName, boostValue) {
     gains += boostValue;
     updateUI();
-    showBoostEffect(boostName, boostValue);
+    closePopup();
+    showBoostCompletionPopup(boostValue);
+}
+
+function showBoostCompletionPopup(boostValue) {
+    const popupContent = `
+        <h2>Boost Activated!</h2>
+        <p>You've earned ${boostValue.toLocaleString()} gains!</p>
+        <button onclick="closePopup()" class="popup-button ok-button">OK</button>
+    `;
+    showPopup(popupContent);
+}
+
+function showPopup(content) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.innerHTML = `
+        <div class="popup-content">
+            ${content}
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
+
+function closePopup() {
+    const popup = document.querySelector('.popup');
+    if (popup) {
+        popup.remove();
+    }
 }
 
 function showBoostEffect(boostName, boostValue) {
