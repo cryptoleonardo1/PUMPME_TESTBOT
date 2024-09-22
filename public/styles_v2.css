@@ -51,7 +51,7 @@ header {
   justify-content: space-between;
   font-size: 18px;
   font-weight: bold;
-  align-items: center;
+  align-items: left;
   background-color: #2a2a2a;
   padding: 12px 15px; /* Slightly increased padding */
   border-radius: 0 0 15px 15px;
