@@ -75,7 +75,7 @@ header {
 
 #gains-display {
   display: flex;
-  align-items: center;
+  align-items: left;
   flex-grow: 1;
 }
 
