@@ -31,7 +31,7 @@ function updateUI() {
     if (energyStatus) energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
     if (levelDisplay) {
         const currentLevel = fitnessLevels[level - 1];
-        levelDisplay.textContent = `${currentLevel.name} (Level ${level}/10)`;
+        levelDisplay.textContent = `${currentLevel.name} (Level ${level})`;
     }
     if (gainsPerRepDisplay) gainsPerRepDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep * boostMultiplier}`;
     if (gainsPerDayDisplay) gainsPerDayDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;

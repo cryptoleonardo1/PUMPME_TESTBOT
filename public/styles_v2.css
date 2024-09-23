@@ -247,12 +247,12 @@ main {
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 14px; /* Reduced from 16px */
+  font-size: 14px;
   cursor: pointer;
-  padding: 8px 12px; /* Reduced from 10px 20px */
+  padding: 8px 12px;
   border-radius: 20px;
   transition: all 0.3s ease;
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap;
 }
 
 .category-btn.active {
@@ -261,7 +261,7 @@ main {
 }
 
 #boost-items {
-  padding: 15 10px;
+  padding: 15px 10px;
   margin-bottom: 60px;
 }
 
@@ -270,18 +270,20 @@ main {
   align-items: center;
   background-color: #2a2a2a;
   border-radius: 10px;
-  padding: 20px 20px;
+  padding: 20px;
   margin-bottom: 15px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .boost-item:hover {
-  background-color: #3a3a3a; /* Slightly lighter background on hover */
+  background-color: #3a3a3a;
+  transform: scale(1.05); /* Slight scaling on hover */
 }
 
 .boost-item:active {
-  background-color: #444444; /* Even lighter background when clicked */
+  background-color: #444444;
+  transform: scale(1.02); /* Less scaling when clicked */
 }
 
 .boost-icon {
@@ -312,28 +314,101 @@ main {
   color: #ffd700;
   font-size: 20px;
   font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.price-icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-}
-
-.boost-price:hover, .boost-price:active {
-  background-color: #2ecc40; /* Green background on hover/active */
+.boost-price:hover {
+  background-color: #2ecc40;
   border-radius: 5px;
+  transform: scale(1.05); /* Add slight scaling for hover effect */
 }
 
-.boost-price .flex-icon {
+.boost-price .price-icon {
   width: 30px;
   height: 30px;
   margin-right: 10px;
-  vertical-align: middle;
 }
 
-.boost-price span {
-  vertical-align: middle;
+.boost-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1000;
+}
+
+.popup-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.primary-button {
+  background-color: #2ecc40;
+  color: #fff;
+  border: none;
+}
+
+.primary-button:hover {
+  background-color: #27ae60;
+}
+
+.secondary-button {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+}
+
+.secondary-button:hover {
+  background-color: #c0392b;
+}
+
+/* Confirmation Popup Styling */
+.confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #444;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+  z-index: 1000;
+}
+
+.confirmation-popup p {
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.confirmation-popup img {
+  max-width: 80px;
+  margin-bottom: 20px;
+}
+
+/* Close button for popup */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #fff;
 }
 
 /* Top Pumpers page styles */
