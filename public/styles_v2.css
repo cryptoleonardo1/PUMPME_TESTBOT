@@ -49,18 +49,15 @@ header {
 #gains-container {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
-  font-weight: bold;
   align-items: center;
   background-color: #2a2a2a;
-  padding: 12px 15px; /* Slightly increased padding */
+  padding: 10px;
   border-radius: 0 0 15px 15px;
-  margin-bottom: 20px; /* Add this line */
 }
 
 #bicep-icon-container {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +77,7 @@ header {
 }
 
 #gains-value {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
   color: #ffffff;
   padding-left: 40px; /* Ensure space for the bicep icon */
@@ -97,7 +94,7 @@ header {
 }
 
 #level-number {
-  font-size: 16px;
+  font-size: 14px;
   color: #cccccc;
 }
 
