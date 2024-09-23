@@ -103,10 +103,40 @@ function updateLeaderboard() {
     .catch(error => console.error('Error updating leaderboard:', error));
 }
 
+function setupBoostsCategoryButtons() {
+    console.log("Setting up boost category buttons");
+    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+    console.log("Found", categoryButtons.length, "category buttons");
+    
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Category button clicked:", button.dataset.category);
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayBoosts(button.dataset.category);
+        });
+    });
+}
+
+function initializeBoostsPage() {
+    console.log("Initializing Boosts page");
+    const defaultCategory = 'nutrition';
+    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+    categoryButtons.forEach(btn => btn.classList.remove('active'));
+    const defaultButton = document.querySelector(`#boosts-page .category-btn[data-category="${defaultCategory}"]`);
+    if (defaultButton) {
+        defaultButton.classList.add('active');
+    }
+    displayBoosts(defaultCategory);
+    setupBoostsCategoryButtons();
+    setupBoosts(); 
+}
+
 function displayBoosts(category) {
     const boostItems = document.getElementById('boost-items');
     if (boostItems && window.boosts) {
-        boostItems.innerHTML = '';
+        boostItems.innerHTML = '';  // Clear current boosts
         window.boosts[category].forEach(boost => {
             const boostElement = document.createElement('div');
             boostElement.className = 'boost-item';
@@ -121,8 +151,11 @@ function displayBoosts(category) {
                     ${boost.price}
                 </div>
             `;
-            boostItems.appendChild(boostElement);
+            boostItems.appendChild(boostElement); // Add boost to the page
         });
+        
+        // Now that the boosts have been appended to the DOM, call setupBoosts
+        setupBoosts();  // Ensure this is after the boost items are created
     }
 }
 
@@ -195,36 +228,6 @@ function showBoostEffect(boostName, boostValue) {
     popup.textContent = `+${boostValue} gains!`;
     document.body.appendChild(popup);
     setTimeout(() => popup.remove(), 2000); // Remove popup after 2 seconds
-}
-
-function setupBoostsCategoryButtons() {
-    console.log("Setting up boost category buttons");
-    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-    console.log("Found", categoryButtons.length, "category buttons");
-    
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("Category button clicked:", button.dataset.category);
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            displayBoosts(button.dataset.category);
-        });
-    });
-}
-
-function initializeBoostsPage() {
-    console.log("Initializing Boosts page");
-    const defaultCategory = 'nutrition';
-    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-    categoryButtons.forEach(btn => btn.classList.remove('active'));
-    const defaultButton = document.querySelector(`#boosts-page .category-btn[data-category="${defaultCategory}"]`);
-    if (defaultButton) {
-        defaultButton.classList.add('active');
-    }
-    displayBoosts(defaultCategory);
-    setupBoostsCategoryButtons();
-    setupBoosts(); 
 }
 
 function updateProfilePage() {
