@@ -639,7 +639,7 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: transparent;
+  background-color: grey;
   border: none;
   cursor: pointer;
   color: white;
@@ -660,7 +660,7 @@ nav {
 }
 
 .nav-btn:active {
-  opacity: 0.9;
+  opacity: 0.7;
 }
 
 #gym-btn .nav-icon { background-image: url('/public/images/gym-icon.png'); }
