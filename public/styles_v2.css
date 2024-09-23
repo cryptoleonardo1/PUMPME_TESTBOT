@@ -639,14 +639,14 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: grey;
+  background-color: transparent;
   border: none;
   cursor: pointer;
   color: white;
   font-size: 14px;
   padding: 5px;
   touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: grey;
 }
 
 .nav-icon {
