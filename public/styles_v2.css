@@ -80,7 +80,7 @@ header {
   font-size: 24px;
   font-weight: bold;
   color: #ffffff;
-  padding-left: 40px; /* Ensure space for the bicep icon */
+  padding-left: 20px; /* Ensure space for the bicep icon */
 }
 
 #level-display {
