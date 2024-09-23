@@ -193,27 +193,38 @@ function confirmBoost(boostName, boostValue) {
     showBoostCompletionPopup(boostValue);
 }
 
-function showBoostCompletionPopup(boostValue) {
+function showBoostConfirmation(boostName, boostValue) {
     const popupContent = `
-        <h2>Boost Activated!</h2>
-        <p>You've earned ${boostValue.toLocaleString()} gains!</p>
-        <button onclick="closePopup()" class="popup-button ok-button">OK</button>
+ <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
+        <p>Activate ${boostName}?</p>
+        <div class="button-container">
+            <button onclick="confirmBoost('${boostName}', ${boostValue})" class="popup-button primary-button">PUMP ME</button>
+            <button onclick="closePopup()" class="popup-button secondary-button">Cancel</button>
+        </div>
     `;
     showPopup(popupContent);
 }
 
-function showPopup(content) {
-    const popup = document.createElement('div');
-    popup.className = 'popup';
-    popup.innerHTML = `
-        <div class="popup-content">
-            ${content}
-        </div>
-    `;
-    document.body.appendChild(popup);
-}
+function showBoostPopUp(boostId) {
+    // Display the boost popup with specific boost details
+    document.getElementById('boostPopUp').style.display = 'block';
+  
+    // Find the button for confirmation and attach event listener
+    document.getElementById('confirmBoostButton').addEventListener('click', function() {
+      // Apply Gains (use a function to calculate the Gains based on boost)
+      applyGains(boostId);
+  
+      // Close the popup after confirmation
+      document.getElementById('boostPopUp').style.display = 'none';
+    });
+  
+    // Add close event if the user decides not to purchase the boost
+    document.getElementById('closeBoostButton').addEventListener('click', function() {
+      document.getElementById('boostPopUp').style.display = 'none';
+    });
+  }
 
-function closePopup() {
+function closeBoostPopup() {
     const popup = document.querySelector('.popup');
     if (popup) {
         popup.remove();
