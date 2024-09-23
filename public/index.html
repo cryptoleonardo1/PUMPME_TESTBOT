@@ -21,30 +21,30 @@
                     </div>
                     <div id="level-display">
                         <div id="level-name">Couch Potato</div>
-                        <div id="level-number">Level 1</div>
+                        <div id="level-number">Level 1/10</div>
                     </div>
                 </div>
-                  <div id="status-bar">
+                <div id="status-bar">
                     <div class="status-item">
-                      <div class="status-label">Gains Rate</div>
-                      <div class="status-value"><img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +1</div>
+                        <div class="status-label">Gains Rate</div>
+                        <div class="status-value"><img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +1</div>
                     </div>
                     <div class="status-item">
-                      <div class="status-label">State</div>
-                      <div class="status-value">Rested</div>
+                        <div class="status-label">State</div>
+                        <div class="status-value">Rested</div>
                     </div>
                     <div class="status-item">
-                      <div class="status-label">Daily Gains</div>
-                      <div class="status-value"><img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +0</div>
+                        <div class="status-label">Daily Gains</div>
+                        <div class="status-value"><img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +0</div>
                     </div>
-                  </div>
-                  
-                  <div id="energy-container">
+                </div>
+                <div id="energy-container">
                     <div id="energy-bar-container">
-                      <div id="energy-bar"></div>
+                        <div id="energy-bar"></div>
                     </div>
+                </div>
             </header>
-            
+
             <main>
                 <div id="pump-me-container">
                     <img src="/public/images/pump_me.png" alt="PUMP ME" id="pump-me-image">
@@ -54,7 +54,8 @@
                 </div>
             </main>
         </div>
-        
+
+        <!-- Boosts Page -->
         <div id="boosts-page" class="page">
             <h2>Let's Get Pumped</h2>
             <div class="boost-categories">
@@ -63,9 +64,24 @@
                 <button class="category-btn" data-category="activities">Activities</button>
                 <button class="category-btn" data-category="resting">Resting</button>
             </div>
-            <div id="boost-items"></div>
+            <div id="boost-items">
+                <!-- Boost items will be dynamically populated here -->
+            </div>
         </div>
 
+        <!-- Popup for Boost Confirmation -->
+        <div id="boost-popup" class="boost-popup">
+            <div id="popup-content">
+                <p>Are you sure you want to activate this boost?</p>
+                <div class="button-container">
+                    <button class="popup-button primary-button" id="confirm-boost">Yes</button>
+                    <button class="popup-button secondary-button" id="cancel-boost">No</button>
+                </div>
+                <span class="popup-close" id="close-popup">&times;</span>
+            </div>
+        </div>
+
+        <!-- Task Page -->
         <div id="task-page" class="page">
             <h2>Challenges</h2>
             <div class="category-menu task-categories">
@@ -73,9 +89,12 @@
                 <button class="category-btn" data-category="referrals">Referrals</button>
                 <button class="category-btn" data-category="in-game">In-Game</button>
             </div>
-            <div id="social-tasks-container"></div>
+            <div id="social-tasks-container">
+                <!-- Tasks will be dynamically added here -->
+            </div>
         </div>
 
+        <!-- Top Pumpers Page -->
         <div id="top-pumpers-page" class="page" style="display: none;">
             <h2>Top Pumpers</h2>
             <table id="leaderboard-table">
@@ -92,6 +111,7 @@
             </table>
         </div>
 
+        <!-- Profile Page -->
         <div id="profile-page" class="page" style="display: none;">
             <h2>My Statistics</h2>
             <div class="profile-section">
@@ -107,6 +127,7 @@
             </div>
         </div>
 
+        <!-- Navigation -->
         <nav>
             <button class="nav-btn active" id="gym-btn">
                 <div class="nav-icon"></div>
@@ -130,7 +151,7 @@
             </button>
         </nav>
     </div>
-    
+
     <script src="/fitnessLevels.js"></script>
     <script src="/boosts.js"></script>
     <script src="/app_v2.js"></script>
