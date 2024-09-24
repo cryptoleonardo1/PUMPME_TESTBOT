@@ -121,8 +121,8 @@ function loadUserData() {
                 gains = data.gains || 0;
                 level = data.level || 1;
                 activeBoosts = data.activeBoosts || [];
-                applyLoadedBoosts(); // Apply boosts after loading
                 console.log('Loaded user data:', { gains, level, activeBoosts });
+                applyLoadedBoosts(); // Apply boosts after loading
                 updateUI();
             })
             .catch(error => console.error('Error loading user data:', error));
@@ -137,18 +137,18 @@ function applyLoadedBoosts() {
             if (boost.effect.type === "multiplier") {
                 boostMultiplier *= boost.effect.value;
 
-                // Update the UI to reflect the boost
-                updateUI();
-
                 // Set a timeout to remove the boost effect after the remaining duration
                 setTimeout(() => {
-                    console.log(`Boost ${boost.name} has expired at ${new Date().toISOString()}`);
+                    console.log(`Boost ${boost.name} has expired.`);
                     boostMultiplier /= boost.effect.value;
                     activeBoosts = activeBoosts.filter(b => b !== boost);
                     console.log('After expiring boost, activeBoosts:', activeBoosts);
                     updateUI();
                     saveUserData(); // Save data after boost expires
                 }, remainingDuration);
+
+                // Update the UI to reflect the boost
+                updateUI();
             }
         } else {
             // Boost has expired
@@ -159,7 +159,6 @@ function applyLoadedBoosts() {
 
 function pump(e) {
     e.preventDefault();
-    console.log('Pump function called. activeBoosts before pumping:', activeBoosts);
     e.stopPropagation();
     if (energy > 0) {
         gains += gainsPerRep * boostMultiplier;
@@ -167,8 +166,6 @@ function pump(e) {
         updateLevel();
         updateUI();
         saveUserData();
-
-        console.log('Pump function completed. activeBoosts after pumping:', activeBoosts);
 
         const character = document.getElementById('character');
         if (character) {
@@ -709,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
     
     const navButtons = document.querySelectorAll('.nav-btn');
-    const pages = documentSelectorAll('.page');
+    const pages = document.querySelectorAll('.page');
 
     // Hide all pages except the gym page on initial load
     pages.forEach(page => {
@@ -729,12 +726,11 @@ document.addEventListener('DOMContentLoaded', () => {
     navButtons.forEach((btn, index) => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log(`Navigating to ${btn.id}. activeBoosts before navigation:`, activeBoosts);
+            console.log("Nav button clicked:", btn.id);
             navButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             pages.forEach(page => page.style.display = 'none');
             pages[index].style.display = 'flex';
-
             if (btn.id === 'boosts-btn') {
                 initializeBoostsPage();
             } else if (btn.id === 'top-pumpers-btn') {
@@ -743,10 +739,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateProfilePage();
             } else if (btn.id === 'tasks-btn') {
                 initializeTasksPage();
-            } else if (btn.id === 'gym-btn') {
-                // Add this block to check activeBoosts when navigating to the gym page
-                console.log(`Navigated to ${btn.id}. activeBoosts after navigation:`, activeBoosts);
-                // You can add additional code here if needed
             }
         });
     });
