@@ -1,4 +1,43 @@
 const tg = window.Telegram.WebApp;
+const boostEffects = {
+    "Protein Shake": { type: "multiplier", value: 1.5, duration: 3600 }, // Duration in seconds (1 hour)
+    "Pre-workout": { type: "multiplier", value: 1.5, duration: 3600 }, 
+    "Creatine": { type: "multiplier", value: 1.5, duration: 3600 },
+    "BCAA": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Coffee": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Energy drink": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Steak": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Eggs": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Chicken": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Hot-dog": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Chest Day": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Back Day": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Leg Day": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Abs Workout": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Shoulder Day": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Biceps Workout": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Triceps Workout": { type: "multiplier", value: 1.5, duration: 3600 },
+    "HIIT": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Endurance Cardio": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Calisthenics": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Street Workout": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Yoga": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Dance Class": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Muay Thai": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Karate": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Swimming": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Jogging": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Cycling": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Sauna": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Massage": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Ice Bath": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Cold Shower": { type: "multiplier", value: 1.5, duration: 3600 },
+    "20 Min Nap": { type: "multiplier", value: 1.5, duration: 3600 },
+    "7 Hour Sleep": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Walk a Dog": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Breathing Exercise": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Meditation": { type: "multiplier", value: 5, duration: 20 },
+};
 
 let gains = 0;
 let energy = 1000;
@@ -35,11 +74,12 @@ function updateUI() {
         levelDisplay.textContent = `${currentLevel.name} (Level ${level})`;
     }
     if (gainsPerRepDisplay) {
-        const boostedGainsPerRep = gainsPerRep * boostMultiplier;
-        gainsPerRepDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${boostedGainsPerRep.toFixed(2)}`;
+        gainsPerRepDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${(gainsPerRep * boostMultiplier).toFixed(1)}`;
     }
-    if (gainsPerDayDisplay) gainsPerDayDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
-    
+    // Update gains per day display
+     if (gainsPerDayDisplay) {
+         gainsPerDayDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${(gainsPerDay * boostMultiplier).toFixed(1)}`;
+     }
     // Update active boosts display
     updateActiveBoostsDisplay();
 }
@@ -47,10 +87,12 @@ function updateUI() {
 function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id;
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
+
+    // Include active boosts
     fetch('/api/saveUserData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level }),
+        body: JSON.stringify({ userId, username, gains, level, activeBoosts }),
     })
     .then(response => response.json())
     .then(data => console.log('User data saved:', data))
@@ -65,10 +107,28 @@ function loadUserData() {
         .then(data => {
             gains = data.gains || 0;
             level = data.level || 1;
+            activeBoosts = data.activeBoosts || [];
+            applyLoadedBoosts();
             updateUI();
         })
         .catch(error => console.error('Error loading user data:', error));
     }
+}
+
+function applyLoadedBoosts() {
+    activeBoosts.forEach(boost => {
+        const remainingDuration = boost.expirationTime - Date.now();
+        if (remainingDuration > 0) {
+            boostMultiplier *= boost.effect.value;
+            setTimeout(() => {
+                boostMultiplier /= boost.effect.value;
+                updateUI();
+            }, remainingDuration);
+        } else {
+            // Boost has expired
+            activeBoosts = activeBoosts.filter(b => b !== boost);
+        }
+    });
 }
 
 function pump(e) {
@@ -176,17 +236,26 @@ function setupBoosts() {
 function handleBoostActivation(event) {
     const boostElement = event.currentTarget;
     const boostName = boostElement.querySelector('.boost-name').textContent;
-    const boostValue = parseInt(boostElement.querySelector('.boost-price').textContent);
+    const boostPrice = parseInt(boostElement.querySelector('.boost-price').textContent);
 
-    showBoostPopUp(boostName, boostValue);
-}
+    const boostEffect = boostEffects[boostName];
 
-function showBoostPopUp(boostName, boostValue) {
-    const popupContent = document.querySelector('#boost-popup p');
-    if (popupContent) {
-        popupContent.textContent = `Activate ${boostName} for ${boostValue} gains?`;
+    if (!boostEffect) {
+        console.error(`No effect data found for boost: ${boostName}`);
+        return;
     }
 
+    showBoostPopUp(boostName, boostPrice, boostEffect);
+}
+
+function showBoostPopUp(boostName, boostPrice, boostEffect) {
+    // Update popup content
+    const popupContent = document.querySelector('#boost-popup p');
+    if (popupContent) {
+        popupContent.textContent = `Activate ${boostName} for ${boostPrice} gains?`;
+    }
+
+    // Show the popup
     document.getElementById('boost-popup').style.display = 'block';
 
     // Clean up existing event listeners
@@ -201,7 +270,7 @@ function showBoostPopUp(boostName, boostValue) {
     const newCloseButton = document.getElementById('cancel-boost');
 
     newConfirmButton.addEventListener('click', function () {
-        confirmBoost(boostName, boostValue);
+        confirmBoost(boostName, boostPrice, boostEffect);
     });
 
     newCloseButton.addEventListener('click', function () {
@@ -209,17 +278,23 @@ function showBoostPopUp(boostName, boostValue) {
     });
 }
 
-function confirmBoost(boostName, boostValue) {
-    gains += boostValue;
-    updateUI();
-    closeBoostPopup();
-    showBoostActivationMessage(boostName);
+function confirmBoost(boostName, boostPrice, boostEffect) {
+    if (gains >= boostPrice) {
+        gains -= boostPrice;
+        applyBoostEffect(boostEffect);
+        updateUI();
+        closeBoostPopup();
+        showBoostActivationMessage(boostName);
+    } else {
+        closeBoostPopup();
+        showInsufficientGainsMessage();
+    }
 }
 
 function showBoostActivationMessage(boostName) {
     const popupContent = `
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>You activated the boost: ${boostName}!</p>
+        <p>You activated the boost: "${boostName}"!</p>
         <div class="button-container">
             <button onclick="closePopup()" class="popup-button primary-button">OK</button>
         </div>
@@ -249,26 +324,21 @@ function closePopup() {
     }
 }
 
-function applyBoostEffect(boostName) {
-    const boost = boostEffects[boostName];
-    if (boost) {
-        if (boost.type === "multiplier") {
-            // Increase the boostMultiplier
-            boostMultiplier *= boost.value;
+function applyBoostEffect(boostEffect) {
+    if (boostEffect.type === "multiplier") {
+        boostMultiplier *= boostEffect.value;
 
-            // Set a timer to reset the multiplier after the boost duration
-            setTimeout(() => {
-                boostMultiplier /= boost.value;
-                updateUI();
-            }, boost.duration * 1000);
+        const expirationTime = Date.now() + boostEffect.duration * 1000;
 
-            // Add the boost to active boosts
-            activeBoosts.push({
-                name: boostName,
-                expiresAt: Date.now() + boost.duration * 1000
-            });
-        }
-        // Handle other types of boosts if necessary
+        // Add to active boosts
+        activeBoosts.push({ effect: boostEffect, expirationTime });
+
+        // Set a timeout to remove the effect
+        setTimeout(() => {
+            boostMultiplier /= boostEffect.value;
+            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
+            updateUI();
+        }, boostEffect.duration * 1000);
     }
 }
 
@@ -375,49 +445,6 @@ function updateProfilePage() {
       }
   }
 }
-/*
-const socialTasks = [
-    {
-      id: 'telegram',
-      name: "PUMPME.APP on Telegram",
-      icon: "telegram-icon.png",
-      reward: 5000,
-      completed: false,
-      link: "https://t.me/pumpme_me"
-    },
-    {
-      id: 'twitter',
-      name: "PUMPME.APP on X",
-      icon: "twitter-icon.png",
-      reward: 5000,
-      completed: false,
-      link: "https://x.com/Pumpme_me"
-    },
-    { 
-      id: 'instagram',
-      name: "PUMPME.APP on Instagram", 
-      icon: "instagram-icon.png", 
-      reward: 5000, 
-      completed: false,
-      link: "https://www.instagram.com/pumpme.me/"
-    },
-    {
-      id: 'twitter-like-retweet',
-      name: "Like & Retweet",
-      icon: "twitter-icon.png",
-      reward: 5000,
-      completed: false,
-      link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" // You may want to update this to a specific tweet URL
-    },
-    {
-      id: 'refer',
-      name: "Refer a friend",
-      icon: "refer-friend-icon.png",
-      reward: 5000,
-      completed: true,
-      noPopup: true
-    }
-  ]; */
 
   const socialTasks = {
     socials: [
