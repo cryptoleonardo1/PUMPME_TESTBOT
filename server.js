@@ -38,8 +38,6 @@ app.post('/api/saveUserData', async (req, res) => {
   }
 });
 
-app.get('/api/leaderboard', require('./api/leaderboard'));
-
 app.get('/api/getUserData', async (req, res) => {
   try {
     const { userId } = req.query;
