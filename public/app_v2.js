@@ -6,6 +6,7 @@ let level = 1;
 let gainsPerRep = 1;
 let gainsPerDay = 0;
 let boostMultiplier = 1;
+let activeBoosts = [];
 
 function updateLevel() {
     const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
@@ -33,8 +34,14 @@ function updateUI() {
         const currentLevel = fitnessLevels[level - 1];
         levelDisplay.textContent = `${currentLevel.name} (Level ${level})`;
     }
-    if (gainsPerRepDisplay) gainsPerRepDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerRep * boostMultiplier}`;
+    if (gainsPerRepDisplay) {
+        const boostedGainsPerRep = gainsPerRep * boostMultiplier;
+        gainsPerRepDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${boostedGainsPerRep.toFixed(2)}`;
+    }
     if (gainsPerDayDisplay) gainsPerDayDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${gainsPerDay * boostMultiplier}`;
+    
+    // Update active boosts display
+    updateActiveBoostsDisplay();
 }
 
 function saveUserData() {
@@ -212,7 +219,7 @@ function confirmBoost(boostName, boostValue) {
 function showBoostActivationMessage(boostName) {
     const popupContent = `
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>You activated the boost: "${boostName}"!</p>
+        <p>You activated the boost: ${boostName}!</p>
         <div class="button-container">
             <button onclick="closePopup()" class="popup-button primary-button">OK</button>
         </div>
@@ -242,17 +249,78 @@ function closePopup() {
     }
 }
 
-/*
-function showBoostEffect(boostName, boostValue) {
-    console.log(`${boostName} activated! Added ${boostValue} gains.`);
-    // You can implement a visual effect here, like a popup or animation
-    const popup = document.createElement('div');
-    popup.className = 'boost-popup';
-    popup.textContent = `+${boostValue} gains!`;
-    document.body.appendChild(popup);
-    setTimeout(() => popup.remove(), 2000); // Remove popup after 2 seconds
+function applyBoostEffect(boostName) {
+    const boost = boostEffects[boostName];
+    if (boost) {
+        if (boost.type === "multiplier") {
+            // Increase the boostMultiplier
+            boostMultiplier *= boost.value;
+
+            // Set a timer to reset the multiplier after the boost duration
+            setTimeout(() => {
+                boostMultiplier /= boost.value;
+                updateUI();
+            }, boost.duration * 1000);
+
+            // Add the boost to active boosts
+            activeBoosts.push({
+                name: boostName,
+                expiresAt: Date.now() + boost.duration * 1000
+            });
+        }
+        // Handle other types of boosts if necessary
+    }
 }
-*/
+
+function updateActiveBoostsDisplay() {
+    const activeBoostsContainer = document.getElementById('active-boosts-container');
+    if (activeBoostsContainer) {
+        activeBoostsContainer.innerHTML = '';
+        const now = Date.now();
+
+        // Remove expired boosts
+        activeBoosts = activeBoosts.filter(boost => boost.expiresAt > now);
+
+        if (activeBoosts.length > 0) {
+            activeBoosts.forEach(boost => {
+                const timeRemaining = Math.ceil((boost.expiresAt - now) / 1000); // in seconds
+                const boostElement = document.createElement('div');
+                boostElement.className = 'active-boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-duration">${formatTime(timeRemaining)}</div>
+                `;
+                activeBoostsContainer.appendChild(boostElement);
+            });
+        } else {
+            activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+        }
+    }
+}
+
+function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    if (h > 0) {
+        return `${h}h ${m}m ${s}s`;
+    } else if (m > 0) {
+        return `${m}m ${s}s`;
+    } else {
+        return `${s}s`;
+    }
+}
+
+function showInsufficientGainsMessage(boostName) {
+    const popupContent = `
+        <p>You do not have enough Gains to activate "${boostName}".</p>
+        <div class="button-container">
+            <button onclick="closePopup()" class="popup-button primary-button">OK</button>
+        </div>
+    `;
+    showPopup(popupContent);
+}
 
 function updateProfilePage() {
     const attributes = [
