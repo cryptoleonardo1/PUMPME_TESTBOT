@@ -89,6 +89,9 @@ function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id;
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
 
+    // Log the data being sent
+    console.log('Saving user data:', { userId, username, gains, level, activeBoosts });
+
     fetch('/api/saveUserData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,6 +111,7 @@ function loadUserData() {
             gains = data.gains || 0;
             level = data.level || 1;
             activeBoosts = data.activeBoosts || [];
+            console.log('Loaded activeBoosts:', activeBoosts);
             applyLoadedBoosts(); // Apply boosts after loading
             updateUI();
         })
@@ -127,15 +131,17 @@ function applyLoadedBoosts() {
                     boostMultiplier /= boost.effect.value;
                     activeBoosts = activeBoosts.filter(b => b !== boost);
                     updateUI();
+                    saveUserData(); // Save data after boost expires
                 }, remainingDuration);
+
+                // Update the UI to reflect the boost
+                updateUI();
             }
-            // Handle other effect types if needed
         } else {
             // Boost has expired
             activeBoosts = activeBoosts.filter(b => b !== boost);
         }
     });
-    updateUI();
 }
 
 function pump(e) {
@@ -336,7 +342,7 @@ function applyBoostEffect(boostName, boostEffect) {
     if (boostEffect.type === "multiplier") {
         boostMultiplier *= boostEffect.value;
 
-        const expirationTime = Date.now() + boostEffect.duration * 1000; // Calculate expiration time
+        const expirationTime = Date.now() + boostEffect.duration * 1000;
 
         // Add boost to activeBoosts array
         activeBoosts.push({
@@ -345,14 +351,17 @@ function applyBoostEffect(boostName, boostEffect) {
             expirationTime: expirationTime
         });
 
+        // Save user data after updating activeBoosts
+        saveUserData();
+
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
-            boostMultiplier /= boostEffect.value; // Revert the multiplier
-            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime); // Remove expired boost
-            updateUI(); // Update UI to reflect changes
-        }, boostEffect.duration * 1000); // Duration is in milliseconds
+            boostMultiplier /= boostEffect.value;
+            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
+            updateUI();
+            saveUserData(); // Save user data after boost expires
+        }, boostEffect.duration * 1000);
     }
-    // Handle other effect types if needed
 }
 
 function updateActiveBoostsDisplay() {
@@ -439,15 +448,17 @@ function updateProfilePage() {
       if (activeBoosts.length > 0) {
           activeBoosts.forEach(boost => {
               const remainingTime = boost.expirationTime - Date.now();
-              const durationString = formatDuration(remainingTime);
+              if (remainingTime > 0) {
+                  const durationString = formatDuration(remainingTime);
 
-              const boostElement = document.createElement('div');
-              boostElement.className = 'active-boost-item';
-              boostElement.innerHTML = `
-                  <div class="boost-name">${boost.name}</div>
-                  <div class="boost-duration">${durationString}</div>
-              `;
-              activeBoostsContainer.appendChild(boostElement);
+                  const boostElement = document.createElement('div');
+                  boostElement.className = 'active-boost-item';
+                  boostElement.innerHTML = `
+                      <div class="boost-name">${boost.name}</div>
+                      <div class="boost-duration">${durationString}</div>
+                  `;
+                  activeBoostsContainer.appendChild(boostElement);
+              }
           });
       } else {
           activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
