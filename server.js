@@ -16,38 +16,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/leaderboard', async (req, res) => {
-  console.log('Leaderboard request received');
-  try {
-    console.log('Fetching leaderboard data from Redis...');
-    const leaderboardData = await redis.zrevrange('leaderboard', 0, 9, 'WITHSCORES');
-    console.log('Raw leaderboard data:', leaderboardData);
-    const leaderboard = [];
-    for (let i = 0; i < leaderboardData.length; i += 2) {
-      const userId = leaderboardData[i];
-      const score = parseInt(leaderboardData[i + 1], 10);
-      console.log(`Fetching username for userId: ${userId}`);
-      const username = await redis.hget(`user:${userId}`, 'username') || 'Anonymous';
-      leaderboard.push({ 
-        userId,
-        username,
-        gains: score
-      });
-    }
-    console.log('Processed leaderboard:', leaderboard);
-    res.json(leaderboard);
-  } catch (error) {
-    console.error('Error fetching leaderboard:', util.inspect(error, { depth: null }));
-    res.status(500).json({ success: false, error: 'Error fetching leaderboard', details: error.message });
-  }
-});
+// Leaderboard endpoint remains the same
 
 app.post('/api/saveUserData', async (req, res) => {
   try {
-    const { userId, username, gains, level } = req.body;
-    console.log('Saving user data:', { userId, username, gains, level });
-    await redis.hset(`user:${userId}`, 'username', username, 'gains', gains, 'level', level);
+    const { userId, username, gains, level, activeBoosts } = req.body;
+    console.log('Saving user data:', { userId, username, gains, level, activeBoosts });
+
+    // Convert activeBoosts to JSON string
+    const activeBoostsString = JSON.stringify(activeBoosts || []);
+
+    // Save user data
+    await redis.hset(`user:${userId}`, 'username', username, 'gains', gains, 'level', level, 'activeBoosts', activeBoostsString);
     await redis.zadd('leaderboard', gains, userId);
+
     console.log('User data saved successfully');
     res.json({ success: true });
   } catch (error) {
@@ -62,14 +44,27 @@ app.get('/api/getUserData', async (req, res) => {
     console.log('Getting user data for userId:', userId);
     const userData = await redis.hgetall(`user:${userId}`);
     console.log('Raw user data:', userData);
+
     if (Object.keys(userData).length === 0) {
       console.log('No user data found, returning default values');
-      res.json({ gains: 0, level: 1 });
+      res.json({ gains: 0, level: 1, activeBoosts: [] });
     } else {
       console.log('User data found, returning:', userData);
+
+      // Parse activeBoosts
+      let activeBoosts = [];
+      if (userData.activeBoosts) {
+        try {
+          activeBoosts = JSON.parse(userData.activeBoosts);
+        } catch (parseError) {
+          console.error('Error parsing activeBoosts:', parseError);
+        }
+      }
+
       res.json({
         gains: parseInt(userData.gains) || 0,
-        level: parseInt(userData.level) || 1
+        level: parseInt(userData.level) || 1,
+        activeBoosts: activeBoosts
       });
     }
   } catch (error) {

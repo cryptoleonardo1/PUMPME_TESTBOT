@@ -1,5 +1,14 @@
 const tg = window.Telegram.WebApp;
 
+let userId = tg.initDataUnsafe?.user?.id;
+let username = tg.initDataUnsafe?.user?.username || 'Anonymous';
+
+// Fallback for testing outside of Telegram
+if (!userId) {
+  userId = 'test-user-id'; // Replace with a unique identifier for testing
+  username = 'TestUser';
+}
+
 let gains = 0;
 let energy = 1000;
 let level = 1;
@@ -48,6 +57,8 @@ const boostEffects = {
     "Meditation": { type: "multiplier", value: 5, duration: 20 },
 };
 
+const userIdFallback = 'test-user-id'; // Replace with a unique identifier for testing
+
 function updateLevel() {
     const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
     if (currentLevel && currentLevel.level !== level) {
@@ -86,63 +97,63 @@ function updateUI() {
 }
 
 function saveUserData() {
-    const userId = tg.initDataUnsafe?.user?.id;
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback; // Ensure userId is defined
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-
-    // Log the data being sent
+  
     console.log('Saving user data:', { userId, username, gains, level, activeBoosts });
-
+  
     fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level, activeBoosts }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, username, gains, level, activeBoosts }),
     })
     .then(response => response.json())
     .then(data => console.log('User data saved:', data))
     .catch(error => console.error('Error saving user data:', error));
-}
+  }
 
-function loadUserData() {
-    const userId = tg.initDataUnsafe?.user?.id;
+  function loadUserData() {
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
-        .then(response => response.json())
-        .then(data => {
-            gains = data.gains || 0;
-            level = data.level || 1;
-            activeBoosts = data.activeBoosts || [];
-            console.log('Loaded activeBoosts:', activeBoosts);
-            applyLoadedBoosts(); // Apply boosts after loading
-            updateUI();
-        })
-        .catch(error => console.error('Error loading user data:', error));
+      fetch(`/api/getUserData?userId=${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        gains = data.gains || 0;
+        level = data.level || 1;
+        activeBoosts = data.activeBoosts || [];
+        console.log('Loaded user data:', { gains, level, activeBoosts });
+        applyLoadedBoosts(); // Apply boosts after loading
+        console.log('Applying loaded boosts:', activeBoosts);
+        updateUI();
+      })
+      .catch(error => console.error('Error loading user data:', error));
     }
-}
+  }
 
-function applyLoadedBoosts() {
+  function applyLoadedBoosts() {
     activeBoosts.forEach(boost => {
-        const remainingDuration = boost.expirationTime - Date.now();
-        if (remainingDuration > 0) {
-            if (boost.effect.type === "multiplier") {
-                boostMultiplier *= boost.effect.value;
-
-                // Set a timeout to remove the boost effect after the remaining duration
-                setTimeout(() => {
-                    boostMultiplier /= boost.effect.value;
-                    activeBoosts = activeBoosts.filter(b => b !== boost);
-                    updateUI();
-                    saveUserData(); // Save data after boost expires
-                }, remainingDuration);
-
-                // Update the UI to reflect the boost
-                updateUI();
-            }
-        } else {
-            // Boost has expired
+      const remainingDuration = boost.expirationTime - Date.now();
+      if (remainingDuration > 0) {
+        if (boost.effect.type === "multiplier") {
+          boostMultiplier *= boost.effect.value;
+  
+          // Set a timeout to remove the boost effect after the remaining duration
+          setTimeout(() => {
+            boostMultiplier /= boost.effect.value;
             activeBoosts = activeBoosts.filter(b => b !== boost);
+            updateUI();
+            saveUserData(); // Save data after boost expires
+          }, remainingDuration);
+  
+          // Update the UI to reflect the boost
+          updateUI();
         }
+      } else {
+        // Boost has expired
+        activeBoosts = activeBoosts.filter(b => b !== boost);
+      }
     });
-}
+  }
 
 function pump(e) {
     e.preventDefault();
@@ -444,25 +455,25 @@ function updateProfilePage() {
 
   const activeBoostsContainer = document.getElementById('active-boosts-container');
   if (activeBoostsContainer) {
-      activeBoostsContainer.innerHTML = '';
-      if (activeBoosts.length > 0) {
-          activeBoosts.forEach(boost => {
-              const remainingTime = boost.expirationTime - Date.now();
-              if (remainingTime > 0) {
-                  const durationString = formatDuration(remainingTime);
+    activeBoostsContainer.innerHTML = '';
+    if (activeBoosts.length > 0) {
+      activeBoosts.forEach(boost => {
+        const remainingTime = boost.expirationTime - Date.now();
+        if (remainingTime > 0) {
+          const durationString = formatDuration(remainingTime);
 
-                  const boostElement = document.createElement('div');
-                  boostElement.className = 'active-boost-item';
-                  boostElement.innerHTML = `
-                      <div class="boost-name">${boost.name}</div>
-                      <div class="boost-duration">${durationString}</div>
-                  `;
-                  activeBoostsContainer.appendChild(boostElement);
-              }
-          });
-      } else {
-          activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
-      }
+          const boostElement = document.createElement('div');
+          boostElement.className = 'active-boost-item';
+          boostElement.innerHTML = `
+            <div class="boost-name">${boost.name}</div>
+            <div class="boost-duration">${durationString}</div>
+          `;
+          activeBoostsContainer.appendChild(boostElement);
+        }
+      });
+    } else {
+      activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+    }
   }
 }
 
