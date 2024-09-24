@@ -367,6 +367,7 @@ function applyBoostEffect(boostName, boostEffect) {
 
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
+            console.log(`Boost ${boostName} has expired.`);
             boostMultiplier /= boostEffect.value;
             activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
             updateUI();
