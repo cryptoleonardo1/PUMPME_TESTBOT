@@ -153,9 +153,9 @@ function displayBoosts(category) {
             `;
             boostItems.appendChild(boostElement); // Add boost to the page
         });
-        
+
         // Now that the boosts have been appended to the DOM, call setupBoosts
-        setupBoosts();  // Ensure this is after the boost items are created
+        setupBoosts();
     }
 }
 
@@ -168,9 +168,53 @@ function setupBoosts() {
 
 function handleBoostActivation(event) {
     const boostElement = event.currentTarget;
-    const boostName = boostElement.querySelector('.boost-name').textContent;
-    const boostValue = parseInt(boostElement.querySelector('.boost-price span:last-child').textContent);
+    const boostName = boostElement.querySelector('.boost-name').textContent; // Get the boost name
+    const boostValue = parseInt(boostElement.querySelector('.boost-price').textContent); // Get the boost price
 
+    showBoostPopUp(boostName, boostValue);  // Trigger the popup with the boost's name and price
+}
+
+// Function to display the boost pop-up with specific boost details
+function showBoostPopUp(boostName, boostValue) {
+    // Update popup content
+    const popupContent = document.querySelector('#boost-popup p');
+    if (popupContent) {
+        popupContent.textContent = `Activate ${boostName} for ${boostValue} gains?`;
+    }
+
+    // Show the popup
+    document.getElementById('boost-popup').style.display = 'block';
+
+  // Clean up any existing event listeners to prevent duplication
+    const confirmButton = document.getElementById('confirm-boost');
+    const closeButton = document.getElementById('cancel-boost');
+
+    confirmButton.replaceWith(confirmButton.cloneNode(true)); // Remove old event listener
+    closeButton.replaceWith(closeButton.cloneNode(true)); // Remove old event listener
+
+    // Re-select the buttons after cloning
+    const newConfirmButton = document.getElementById('confirm-boost');
+    const newCloseButton = document.getElementById('cancel-boost');
+
+    // Attach event listener for confirmation
+    newConfirmButton.addEventListener('click', function () {
+    // Apply Gains using boostValue
+    confirmBoost(boostName, boostValue);
+
+    // Close the popup after confirmation
+    closeBoostPopup();
+    });
+
+    // Add close event if the user decides not to purchase the boost
+    newCloseButton.addEventListener('click', function () {
+    closeBoostPopup();
+    });
+}
+
+function confirmBoost(boostName, boostValue) {
+    gains += boostValue;
+    updateUI(); // Assuming updateUI is a function that updates the Gains display
+    closeBoostPopup();
     showBoostConfirmation(boostName, boostValue);
 }
 
@@ -186,51 +230,12 @@ function showBoostConfirmation(boostName, boostValue) {
     showPopup(popupContent);
 }
 
-function confirmBoost(boostName, boostValue) {
-    gains += boostValue;
-    updateUI();
-    closePopup();
-    showBoostCompletionPopup(boostValue);
-}
-
-function showBoostConfirmation(boostName, boostValue) {
-    const popupContent = `
- <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>Activate ${boostName}?</p>
-        <div class="button-container">
-            <button onclick="confirmBoost('${boostName}', ${boostValue})" class="popup-button primary-button">PUMP ME</button>
-            <button onclick="closePopup()" class="popup-button secondary-button">Cancel</button>
-        </div>
-    `;
-    showPopup(popupContent);
-}
-
-function showBoostPopUp(boostId) {
-    // Display the boost popup with specific boost details
-    document.getElementById('boostPopUp').style.display = 'block';
-  
-    // Find the button for confirmation and attach event listener
-    document.getElementById('confirmBoostButton').addEventListener('click', function() {
-      // Apply Gains (use a function to calculate the Gains based on boost)
-      applyGains(boostId);
-  
-      // Close the popup after confirmation
-      document.getElementById('boostPopUp').style.display = 'none';
-    });
-  
-    // Add close event if the user decides not to purchase the boost
-    document.getElementById('closeBoostButton').addEventListener('click', function() {
-      document.getElementById('boostPopUp').style.display = 'none';
-    });
-  }
-
 function closeBoostPopup() {
-    const popup = document.querySelector('.popup');
-    if (popup) {
-        popup.remove();
-    }
+    document.getElementById('boost-popup').style.display = 'none';
 }
 
+
+/*
 function showBoostEffect(boostName, boostValue) {
     console.log(`${boostName} activated! Added ${boostValue} gains.`);
     // You can implement a visual effect here, like a popup or animation
@@ -240,6 +245,7 @@ function showBoostEffect(boostName, boostValue) {
     document.body.appendChild(popup);
     setTimeout(() => popup.remove(), 2000); // Remove popup after 2 seconds
 }
+*/
 
 function updateProfilePage() {
     const attributes = [
