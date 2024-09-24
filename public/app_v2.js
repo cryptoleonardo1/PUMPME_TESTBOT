@@ -357,7 +357,7 @@ function applyBoostEffect(boostName, boostEffect) {
 
         const expirationTime = Date.now() + boostEffect.duration * 1000;
         console.log('Applying boost effect:', boostName, boostEffect);
-        
+
         // Add boost to activeBoosts array
         activeBoosts.push({
             name: boostName,
@@ -372,7 +372,7 @@ function applyBoostEffect(boostName, boostEffect) {
 
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
-            console.log(`Boost ${boostName} expired at ${new Date().toLocaleTimeString()}`);
+            console.log(`Boost ${boostName} has expired.`);
             boostMultiplier /= boostEffect.value;
             activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
             console.log('After expiring boost, activeBoosts:', activeBoosts);
@@ -463,30 +463,30 @@ function updateProfilePage() {
       });
   }
 
-  console.log('Updating profile page with activeBoosts:', activeBoosts);
+    console.log('Updating profile page with activeBoosts:', activeBoosts);
 
-  const activeBoostsContainer = document.getElementById('active-boosts-container');
-  if (activeBoostsContainer) {
-      activeBoostsContainer.innerHTML = '';
-      if (activeBoosts.length > 0) {
-          activeBoosts.forEach(boost => {
-              const remainingTime = boost.expirationTime - Date.now();
-              if (remainingTime > 0) {
-                  const durationString = formatDuration(remainingTime);
+    const activeBoostsContainer = document.getElementById('active-boosts-container');
+    if (activeBoostsContainer) {
+        activeBoostsContainer.innerHTML = '';
+        if (activeBoosts.length > 0) {
+            activeBoosts.forEach(boost => {
+                const remainingTime = boost.expirationTime - Date.now();
+                if (remainingTime > 0) {
+                    const durationString = formatDuration(remainingTime);
 
-                  const boostElement = document.createElement('div');
-                  boostElement.className = 'active-boost-item';
-                  boostElement.innerHTML = `
-                      <div class="boost-name">${boost.name}</div>
-                      <div class="boost-duration">${durationString}</div>
-                  `;
-                  activeBoostsContainer.appendChild(boostElement);
-              }
-          });
-      } else {
-          activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
-      }
-  }
+                    const boostElement = document.createElement('div');
+                    boostElement.className = 'active-boost-item';
+                    boostElement.innerHTML = `
+                        <div class="boost-name">${boost.name}</div>
+                        <div class="boost-duration">${durationString}</div>
+                    `;
+                    activeBoostsContainer.appendChild(boostElement);
+                }
+            });
+        } else {
+            activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+        }
+    }
 }
 
 function formatDuration(durationInMillis) {
