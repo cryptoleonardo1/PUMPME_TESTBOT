@@ -1,4 +1,13 @@
 const tg = window.Telegram.WebApp;
+
+let gains = 0;
+let energy = 1000;
+let level = 1;
+let gainsPerRep = 1;
+let gainsPerDay = 0;
+let boostMultiplier = 1;
+let activeBoosts = [];
+
 const boostEffects = {
     "Protein Shake": { type: "multiplier", value: 1.5, duration: 3600 }, // Duration in seconds (1 hour)
     "Pre-workout": { type: "multiplier", value: 1.5, duration: 3600 }, 
@@ -38,14 +47,6 @@ const boostEffects = {
     "Breathing Exercise": { type: "multiplier", value: 1.5, duration: 3600 },
     "Meditation": { type: "multiplier", value: 5, duration: 20 },
 };
-
-let gains = 0;
-let energy = 1000;
-let level = 1;
-let gainsPerRep = 1;
-let gainsPerDay = 0;
-let boostMultiplier = 1;
-let activeBoosts = [];
 
 function updateLevel() {
     const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
@@ -88,7 +89,6 @@ function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id;
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
 
-    // Include active boosts
     fetch('/api/saveUserData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +108,7 @@ function loadUserData() {
             gains = data.gains || 0;
             level = data.level || 1;
             activeBoosts = data.activeBoosts || [];
-            applyLoadedBoosts();
+            applyLoadedBoosts(); // Apply boosts after loading
             updateUI();
         })
         .catch(error => console.error('Error loading user data:', error));
@@ -119,16 +119,23 @@ function applyLoadedBoosts() {
     activeBoosts.forEach(boost => {
         const remainingDuration = boost.expirationTime - Date.now();
         if (remainingDuration > 0) {
-            boostMultiplier *= boost.effect.value;
-            setTimeout(() => {
-                boostMultiplier /= boost.effect.value;
-                updateUI();
-            }, remainingDuration);
+            if (boost.effect.type === "multiplier") {
+                boostMultiplier *= boost.effect.value;
+
+                // Set a timeout to remove the boost effect after the remaining duration
+                setTimeout(() => {
+                    boostMultiplier /= boost.effect.value;
+                    activeBoosts = activeBoosts.filter(b => b !== boost);
+                    updateUI();
+                }, remainingDuration);
+            }
+            // Handle other effect types if needed
         } else {
             // Boost has expired
             activeBoosts = activeBoosts.filter(b => b !== boost);
         }
     });
+    updateUI();
 }
 
 function pump(e) {
@@ -280,14 +287,15 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
 function confirmBoost(boostName, boostPrice, boostEffect) {
     if (gains >= boostPrice) {
-        gains -= boostPrice;
-        applyBoostEffect(boostEffect);
-        updateUI();
-        closeBoostPopup();
-        showBoostActivationMessage(boostName);
+        gains -= boostPrice; // Deduct the boost price from gains
+        applyBoostEffect(boostName, boostEffect); // Apply the boost effect
+        updateUI(); // Update the Gains display
+        saveUserData(); // Save user data including active boosts
+        closeBoostPopup(); // Close the confirmation popup
+        showBoostActivationMessage(boostName); // Show success message
     } else {
         closeBoostPopup();
-        showInsufficientGainsMessage();
+        showInsufficientGainsMessage(); // Inform the user they don't have enough gains
     }
 }
 
@@ -324,22 +332,27 @@ function closePopup() {
     }
 }
 
-function applyBoostEffect(boostEffect) {
+function applyBoostEffect(boostName, boostEffect) {
     if (boostEffect.type === "multiplier") {
         boostMultiplier *= boostEffect.value;
 
-        const expirationTime = Date.now() + boostEffect.duration * 1000;
+        const expirationTime = Date.now() + boostEffect.duration * 1000; // Calculate expiration time
 
-        // Add to active boosts
-        activeBoosts.push({ effect: boostEffect, expirationTime });
+        // Add boost to activeBoosts array
+        activeBoosts.push({
+            name: boostName,
+            effect: boostEffect,
+            expirationTime: expirationTime
+        });
 
-        // Set a timeout to remove the effect
+        // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
-            boostMultiplier /= boostEffect.value;
-            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
-            updateUI();
-        }, boostEffect.duration * 1000);
+            boostMultiplier /= boostEffect.value; // Revert the multiplier
+            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime); // Remove expired boost
+            updateUI(); // Update UI to reflect changes
+        }, boostEffect.duration * 1000); // Duration is in milliseconds
     }
+    // Handle other effect types if needed
 }
 
 function updateActiveBoostsDisplay() {
@@ -420,23 +433,19 @@ function updateProfilePage() {
       });
   }
 
-  // This is a placeholder for active boosts. In a real application, 
-  // you would fetch this data from your backend or local storage.
-  const activeBoosts = [
-      { name: "Protein Shake", duration: "2h 30m" },
-      { name: "Pre-workout", duration: "45m" }
-  ];
-
   const activeBoostsContainer = document.getElementById('active-boosts-container');
   if (activeBoostsContainer) {
       activeBoostsContainer.innerHTML = '';
       if (activeBoosts.length > 0) {
           activeBoosts.forEach(boost => {
+              const remainingTime = boost.expirationTime - Date.now();
+              const durationString = formatDuration(remainingTime);
+
               const boostElement = document.createElement('div');
               boostElement.className = 'active-boost-item';
               boostElement.innerHTML = `
                   <div class="boost-name">${boost.name}</div>
-                  <div class="boost-duration">${boost.duration}</div>
+                  <div class="boost-duration">${durationString}</div>
               `;
               activeBoostsContainer.appendChild(boostElement);
           });
@@ -446,7 +455,21 @@ function updateProfilePage() {
   }
 }
 
-  const socialTasks = {
+function formatDuration(durationInMillis) {
+    const totalSeconds = Math.floor(durationInMillis / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let durationString = '';
+    if (hours > 0) durationString += `${hours}h `;
+    if (minutes > 0) durationString += `${minutes}m `;
+    if (seconds > 0 || durationString === '') durationString += `${seconds}s`;
+
+    return durationString.trim();
+}
+
+const socialTasks = {
     socials: [
         { id: 'telegram', name: "PUMPME.APP on Telegram", icon: "telegram-icon.png", reward: 5000, completed: false, link: "https://t.me/pumpme_me" },
         { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
