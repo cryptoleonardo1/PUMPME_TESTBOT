@@ -338,7 +338,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(to bottom, #1e3a8a 0%, #3b82f6 100%);
+  background: #1e3a8a;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -366,7 +366,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(to bottom, #1e3a8a 0%, #3b82f6 100%);
+  background: #1e3a8a;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
@@ -613,7 +613,7 @@ main {
 }
 
 .popup-content {
-  background: linear-gradient(to bottom, #1e3a8a 0%, #3b82f6 100%);
+  background: #1e3a8a;
   padding: 30px;
   border-radius: 25px;
   text-align: center;
