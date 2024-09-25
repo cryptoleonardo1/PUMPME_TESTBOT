@@ -549,6 +549,9 @@ main {
   border-radius: 10px;
   padding: 16px 20px;
   margin-bottom: 15px;
+  background: linear-gradient(to right, #000000 0%, #808080 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
