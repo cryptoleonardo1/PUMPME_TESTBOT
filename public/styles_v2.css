@@ -355,28 +355,8 @@ main {
   transition: background-color 0.3s ease;
 }
 
-.primary-button {
-  background-color: #e4d126;
-  color: #fff;
-  border: none;
-}
-
-.primary-button:hover {
-  background-color: #21920b;
-}
-
-.secondary-button {
-  background-color: #e73cd9;
-  color: #fff;
-  border: none;
-}
-
-.secondary-button:hover {
-  background-color: #c0392b;
-}
-
 .popup-button.secondary-button {
-  background-color: #8a1414; /* Red color */
+  background-color: #76148a; /* Red color */
   color: #ffffff;
 }
 
