@@ -645,8 +645,7 @@ function handleTaskClick(task) {
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
         <p>${actionText}</p>
         <div class="button-container">
-            <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${platformName}</a>
-            <button onclick="closePopup()" class="popup-button secondary-button">Close</button>
+            <a href="${task.link}" target="_blank" class="popup-button primary-button">Pump Me</a>
         </div>
     `;
 

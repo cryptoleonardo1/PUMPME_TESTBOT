@@ -338,7 +338,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #3596e6;
+  background: #120257;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -352,7 +352,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #3596e6;
+  background: #120257;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
@@ -398,12 +398,12 @@ main {
   background: transparent;
   border: none;
   font-size: 24px;
-  color: #999999;
+  color: #ffffff;
   cursor: pointer;
 }
 
 .popup-close:hover {
-  color: #333333;
+  color: #979595;
 }
 
 /* Top Pumpers page styles */
@@ -632,7 +632,7 @@ main {
 
 /* Popup content container */
 .popup-content {
-  background: #3596e6;
+  background: #120257;
   padding: 30px;
   border-radius: 15px;
   text-align: center;
@@ -685,17 +685,17 @@ main {
 }
 
 .primary-button {
-  background-color: #007bff;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #120257;
 }
 
 .primary-button:hover {
-  background-color: #0056b3;
+  background-color: #c0c1c2;
 }
 
 .secondary-button {
   background-color: #6c757d;
-  color: #ffffff;
+  color: #120257;
 }
 
 .secondary-button:hover, .ok-button:hover {
@@ -716,7 +716,7 @@ main {
 
 .ok-button {
   margin-top: 20px;
-  background-color: #3498db;
+  background-color: #065a92;
 }
 
 /* Navigation styles */
