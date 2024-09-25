@@ -642,7 +642,7 @@ function handleTaskClick(task) {
 
     const popupContent = `
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>${actionText}:</p>
+        <p>${actionText}</p>
         <div class="button-container">
             <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${platformName}</a>
             <button onclick="closePopup()" class="popup-button secondary-button">Close</button>
@@ -676,22 +676,39 @@ function completeTask(taskId) {
 */
 
 function showPopup(content) {
-    const popup = document.createElement('div');
-    popup.className = 'popup';
-    popup.innerHTML = `
-        <div class="popup-content">
-            ${content}
-        </div>
-    `;
-    document.body.appendChild(popup);
-}
+    // Create the overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+  
+    // Create the popup content container
+    const popupContent = document.createElement('div');
+    popupContent.className = 'popup-content';
+  
+    // Add the close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'popup-close';
+    closeButton.innerHTML = '&times;';
+    closeButton.onclick = closePopup;
+    popupContent.appendChild(closeButton);
+  
+    // Insert the content
+    const contentContainer = document.createElement('div');
+    contentContainer.innerHTML = content;
+    popupContent.appendChild(contentContainer);
+  
+    // Append the popup content to the overlay
+    overlay.appendChild(popupContent);
+  
+    // Append the overlay to the body
+    document.body.appendChild(overlay);
+  }
 
-function closePopup() {
-    const popup = document.querySelector('.popup');
-    if (popup) {
-        popup.remove();
+  function closePopup() {
+    const overlay = document.querySelector('.popup-overlay');
+    if (overlay) {
+      overlay.remove();
     }
-}
+  }
 
 function showRewardPopup(reward) {
     const rewardPopupContent = `
