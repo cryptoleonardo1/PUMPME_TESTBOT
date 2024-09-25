@@ -3,7 +3,7 @@ body, html {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: none;
   color: #ffffff;
   user-select: none;
   -webkit-user-select: none;
@@ -17,6 +17,11 @@ body, html {
   height: 100%;
   max-width: 100%;
   margin: 0 auto;
+  min-height: 100vh; /* Ensure the container takes at least the full viewport height */
+  background: linear-gradient(to bottom, #3b5998, #8b9dc3); /* Replace with your gradient colors */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* This makes the background fixed while content scrolls */
+  background-size: cover;
 }
 
 .page {
