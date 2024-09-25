@@ -320,12 +320,13 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
 
 function showBoostActivationMessage(boostName) {
     const popupContent = `
-        <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p>You activated the boost: "${boostName}"!</p>
-        <div class="button-container">
-            <button onclick="closePopup()" class="popup-button primary-button">OK</button>
-        </div>
-    `;
+    <h2>Activate Boost</h2>
+    <p>Are you sure you want to activate the <strong>${boost.name}</strong> boost?</p>
+    <div class="button-container">
+      <button onclick="activateBoost('${boost.id}')" class="popup-button primary-button">Activate</button>
+      <button onclick="closePopup()" class="popup-button secondary-button">Close</button>
+    </div>
+  `;
     showPopup(popupContent);
 }
 
