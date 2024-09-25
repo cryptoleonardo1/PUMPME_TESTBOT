@@ -275,28 +275,36 @@ function handleBoostActivation(event) {
 }
 
 function showBoostPopUp(boostName, boostPrice, boostEffect) {
-    // Update popup content
-    const popupContent = document.querySelector('#boost-popup p');
-    if (popupContent) {
-        popupContent.textContent = `Activate ${boostName} for ${boostPrice} gains?`;
+    // Update popup message
+    const popupMessage = document.getElementById('boost-popup-message');
+    if (popupMessage) {
+        popupMessage.textContent = `Activate ${boostName} for ${boostPrice} gains?`;
     }
 
     // Show the popup
-    document.getElementById('boost-popup').style.display = 'block';
+    document.getElementById('boost-popup').style.display = 'flex';
 
     // Clean up existing event listeners
     const confirmButton = document.getElementById('confirm-boost');
-    const closeButton = document.getElementById('cancel-boost');
+    const cancelButton = document.getElementById('cancel-boost');
+    const closeButton = document.getElementById('close-popup');
 
     confirmButton.replaceWith(confirmButton.cloneNode(true));
+    cancelButton.replaceWith(cancelButton.cloneNode(true));
     closeButton.replaceWith(closeButton.cloneNode(true));
 
     // Re-select the buttons after cloning
     const newConfirmButton = document.getElementById('confirm-boost');
-    const newCloseButton = document.getElementById('cancel-boost');
+    const newCancelButton = document.getElementById('cancel-boost');
+    const newCloseButton = document.getElementById('close-popup');
 
+    // Attach event listeners
     newConfirmButton.addEventListener('click', function () {
         confirmBoost(boostName, boostPrice, boostEffect);
+    });
+
+    newCancelButton.addEventListener('click', function () {
+        closeBoostPopup();
     });
 
     newCloseButton.addEventListener('click', function () {
@@ -309,15 +317,16 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         gains -= boostPrice;
         applyBoostEffect(boostName, boostEffect);
         updateUI();
-        // Removed saveUserData() from here to prevent duplicate calls
         closeBoostPopup();
-        showBoostActivationMessage(boostName);
+        // Optionally, display a confirmation message
+        alert(`You have activated the ${boostName} boost!`);
     } else {
         closeBoostPopup();
         showInsufficientGainsMessage();
     }
 }
 
+/*
 function showBoostActivationMessage(boostName) {
     const popupContent = `
     <h2>Activate Boost</h2>
@@ -329,6 +338,7 @@ function showBoostActivationMessage(boostName) {
   `;
     showPopup(popupContent);
 }
+*/
 
 function closeBoostPopup() {
     document.getElementById('boost-popup').style.display = 'none';
