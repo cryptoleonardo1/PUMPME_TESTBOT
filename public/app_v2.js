@@ -282,13 +282,26 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
     }
 
     // Show the popup
-    document.getElementById('boost-popup').style.display = 'flex';
+    const boostPopup = document.getElementById('boost-popup');
+    if (boostPopup) {
+        boostPopup.style.display = 'flex';
+    } else {
+        console.error('Boost popup element not found');
+        return;
+    }
 
     // Clean up existing event listeners
     const confirmButton = document.getElementById('confirm-boost');
     const cancelButton = document.getElementById('cancel-boost');
     const closeButton = document.getElementById('close-popup');
 
+    // Check if buttons are found
+    if (!confirmButton || !cancelButton || !closeButton) {
+        console.error('One or more buttons not found in the boost popup');
+        return;
+    }
+
+    // Remove existing event listeners by cloning the buttons
     confirmButton.replaceWith(confirmButton.cloneNode(true));
     cancelButton.replaceWith(cancelButton.cloneNode(true));
     closeButton.replaceWith(closeButton.cloneNode(true));
@@ -311,6 +324,7 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
         closeBoostPopup();
     });
 }
+
 
 function confirmBoost(boostName, boostPrice, boostEffect) {
     if (gains >= boostPrice) {
