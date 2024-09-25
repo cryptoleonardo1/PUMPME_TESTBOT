@@ -82,15 +82,16 @@
         </div>
 
         <!-- Task Page -->
-        <div id="task-page" class="page">
-            <h2>Challenges</h2>
-            <div class="category-menu task-categories">
-                <button class="category-btn active" data-category="socials">Socials</button>
-                <button class="category-btn" data-category="referrals">Referrals</button>
-                <button class="category-btn" data-category="in-game">In-Game</button>
+        <div id="tasks-page" class="page" style="display: none;">
+            <h2>Tasks</h2>
+            <div class="task-categories">
+                <button class="task-category-btn" data-category="socials">Socials</button>
+                <button class="task-category-btn" data-category="in-game">In-game</button>
+                <button class="task-category-btn" data-category="referrals">Referrals</button>
+                <button class="task-category-btn" data-category="completed">Completed</button>
             </div>
-            <div id="social-tasks-container">
-                <!-- Tasks will be dynamically added here -->
+            <div id="tasks-container">
+                <!-- Task items will be dynamically added here -->
             </div>
         </div>
 

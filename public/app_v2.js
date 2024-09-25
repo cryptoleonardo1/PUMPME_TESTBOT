@@ -503,15 +503,13 @@ function formatDuration(durationInMillis) {
     return durationString.trim();
 }
 
+//Tasks Page
 const socialTasks = {
     socials: [
         { id: 'telegram', name: "PUMPME.APP on Telegram", icon: "telegram-icon.png", reward: 5000, completed: false, link: "https://t.me/pumpme_me" },
         { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
         { id: 'instagram', name: "PUMPME.APP on Insta", icon: "instagram-icon.png", reward: 5000, completed: false, link: "https://www.instagram.com/pumpme.me/" },
         { id: 'twitter-like-retweet', name: "Like & Retweet", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" }
-    ],
-    referrals: [
-        { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
     ],
     'in-game': [
         { id: 'reps', name: "Make 50,000 reps", icon: "reps-icon.png", reward: 50000, completed: false, noPopup: true },
@@ -521,29 +519,23 @@ const socialTasks = {
         { id: 'level', name: "Achieve Level 10", icon: "level-icon.png", reward: 1000000, completed: false, noPopup: true },
         { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 5000, completed: false, noPopup: true }
     ]
+    referrals: [
+        { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
+    ],
+    completed: [] // New completed tasks array
 };
 
+// Update Tasks Page
 function updateTasksPage() {
     console.log("Updating Tasks page");
-    
-    // Set up category buttons
-    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            displayTasks(button.dataset.category);
-        });
-    });
-
-    // Initialize the page
     initializeTasksPage();
 }
 
 function initializeTasksPage() {
     console.log("Initializing Tasks page");
     const defaultCategory = 'socials';
-    setupTaskCategoryButtons(); // Add this line
+
+    setupTaskCategoryButtons();
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(btn => btn.classList.remove('active'));
     const defaultButton = document.querySelector(`.task-categories .category-btn[data-category="${defaultCategory}"]`);
@@ -557,7 +549,7 @@ function setupTaskCategoryButtons() {
     console.log("Setting up task category buttons");
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     console.log("Found", categoryButtons.length, "category buttons");
-    
+
     categoryButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -576,7 +568,7 @@ function displayTasks(category) {
         console.error("Tasks container not found");
         return;
     }
-    
+
     if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
         console.error("Invalid category or tasks not found for category:", category);
         tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
@@ -592,6 +584,12 @@ function displayTasks(category) {
 
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
+
+        // Add a class for completed tasks
+        if (category === 'completed') {
+            taskElement.classList.add('completed-task');
+        }
+
         taskElement.innerHTML = `
             <img src="/public/images/${task.icon || 'default-icon.png'}" alt="${task.name || 'Task'}" class="social-task-icon">
             <div class="social-task-content">
@@ -602,14 +600,13 @@ function displayTasks(category) {
                 </div>
             </div>
             <div class="social-task-status">
-                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+                ${category === 'completed' ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' : '<img src="/public/images/chevron-right-icon.png" alt="Incomplete" class="chevron-icon">'}
             </div>
         `;
         tasksContainer.appendChild(taskElement);
 
-        if (!task.noPopup) {
+        // Only add click event if the task is not in the "Completed" category
+        if (!task.noPopup && category !== 'completed') {
             taskElement.addEventListener('click', () => handleTaskClick(task));
         }
     });
@@ -623,19 +620,19 @@ function handleTaskClick(task) {
     switch(task.id) {
         case 'instagram':
             platformName = 'Instagram';
-            actionText = 'Follow us on Instagram';
+            actionText = 'Follow Us on Instagram';
             break;
         case 'telegram':
             platformName = 'Telegram';
-            actionText = 'Join our Telegram channel';
+            actionText = 'Join Our Telegram Chat';
             break;
         case 'twitter':
             platformName = 'X';
-            actionText = 'Follow us on X';
+            actionText = 'Follow Us on X';
             break;
         case 'twitter-like-retweet':
             platformName = 'X';
-            actionText = 'Like & Retweet our post on X';
+            actionText = 'Like & Retweet Our Post';
             break;
         default:
             platformName = task.id;
@@ -658,20 +655,29 @@ function completeTask(taskId) {
     const category = Object.keys(socialTasks).find(key => 
         socialTasks[key].some(task => task.id === taskId)
     );
-    
+
     if (!category) {
         console.error('Task category not found');
         return;
     }
 
-    const task = socialTasks[category].find(t => t.id === taskId);
-    if (task && !task.completed) {
+    const taskIndex = socialTasks[category].findIndex(t => t.id === taskId);
+    if (taskIndex > -1) {
+        // Remove the task from its original category
+        const [task] = socialTasks[category].splice(taskIndex, 1);
         task.completed = true;
+
+        // Add the task to the "Completed" category
+        socialTasks.completed.push(task);
+        console.log(`Task "${task.name}" moved to Completed tasks.`);
+
         gains += task.reward;
         updateUI();
         closePopup();
         showRewardPopup(task.reward);
-        updateSocialPage(); // Refresh the social page to show updated task status
+
+        // Refresh the task list for the current category
+        displayTasks(category);
     }
 }
 
