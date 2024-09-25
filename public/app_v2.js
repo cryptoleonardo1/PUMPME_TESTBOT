@@ -332,8 +332,6 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         applyBoostEffect(boostName, boostEffect);
         updateUI();
         closeBoostPopup();
-        // Optionally, display a confirmation message
-        alert(`You have activated the ${boostName} boost!`);
     } else {
         closeBoostPopup();
         showInsufficientGainsMessage();
