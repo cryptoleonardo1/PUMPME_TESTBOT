@@ -292,6 +292,7 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
     // Clean up existing event listeners
     const confirmButton = document.getElementById('confirm-boost');
+    confirmButton.textContent = `Activate ${boostName}`;
     const cancelButton = document.getElementById('cancel-boost');
     const closeButton = document.getElementById('close-popup');
 
@@ -308,6 +309,7 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
     // Re-select the buttons after cloning
     const newConfirmButton = document.getElementById('confirm-boost');
+    confirmButton.textContent = `Activate ${boostName}`;
     const newCancelButton = document.getElementById('cancel-boost');
     const newCloseButton = document.getElementById('close-popup');
 
@@ -337,20 +339,6 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         showInsufficientGainsMessage();
     }
 }
-
-/*
-function showBoostActivationMessage(boostName) {
-    const popupContent = `
-    <h2>Activate Boost</h2>
-    <p>Are you sure you want to activate the <strong>${boost.name}</strong> boost?</p>
-    <div class="button-container">
-      <button onclick="activateBoost('${boost.id}')" class="popup-button primary-button">Activate</button>
-      <button onclick="closePopup()" class="popup-button secondary-button">Close</button>
-    </div>
-  `;
-    showPopup(popupContent);
-}
-*/
 
 function closeBoostPopup() {
     document.getElementById('boost-popup').style.display = 'none';
@@ -452,7 +440,7 @@ function showInsufficientGainsMessage(boostName) {
     const popupContent = `
         <p>You do not have enough Gains to activate "${boostName}".</p>
         <div class="button-container">
-            <button onclick="closePopup()" class="popup-button primary-button">OK</button>
+            <button onclick="closePopup()" class="popup-button secondary-button">OK</button>
         </div>
     `;
     showPopup(popupContent);
