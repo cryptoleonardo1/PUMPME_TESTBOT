@@ -526,25 +526,15 @@ const socialTasks = {
 
 function updateTasksPage() {
     console.log("Updating Tasks page");
-    
-    // Set up category buttons
-    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            displayTasks(button.dataset.category);
-        });
-    });
-
-    // Initialize the page
     initializeTasksPage();
 }
 
 function initializeTasksPage() {
     console.log("Initializing Tasks page");
+    setupTaskCategoryButtons();
+
+    // Set default active category to "socials"
     const defaultCategory = 'socials';
-    setupTaskCategoryButtons(); // Add this line
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(btn => btn.classList.remove('active'));
     const defaultButton = document.querySelector(`.task-categories .category-btn[data-category="${defaultCategory}"]`);
@@ -558,7 +548,7 @@ function setupTaskCategoryButtons() {
     console.log("Setting up task category buttons");
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     console.log("Found", categoryButtons.length, "category buttons");
-    
+
     categoryButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -579,20 +569,19 @@ function displayTasks(category) {
     }
 
     tasksContainer.innerHTML = ''; // Clear existing tasks
-    
+
     if (category === 'completed') {
         // Display the title for the Completed sub-page
         tasksContainer.innerHTML = '<h2>Completed Tasks</h2><p>No completed tasks yet.</p>';
         return;
     }
-    
+
     if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
         console.error("Invalid category or tasks not found for category:", category);
         tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
         return;
     }
 
-    tasksContainer.innerHTML = '';
     socialTasks[category].forEach(task => {
         if (!task || typeof task !== 'object') {
             console.error("Invalid task object:", task);
@@ -663,6 +652,7 @@ function handleTaskClick(task) {
     showPopup(popupContent);
 }
 
+/*
 function completeTask(taskId) {
     const category = Object.keys(socialTasks).find(key => 
         socialTasks[key].some(task => task.id === taskId)
@@ -683,6 +673,7 @@ function completeTask(taskId) {
         updateSocialPage(); // Refresh the social page to show updated task status
     }
 }
+*/
 
 function showPopup(content) {
     const popup = document.createElement('div');
