@@ -525,17 +525,27 @@ const socialTasks = {
     completed: [] // New completed tasks array
 };
 
-// Update Tasks Page
 function updateTasksPage() {
     console.log("Updating Tasks page");
+    
+    // Set up category buttons
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayTasks(button.dataset.category);
+        });
+    });
+
+    // Initialize the page
     initializeTasksPage();
 }
 
 function initializeTasksPage() {
     console.log("Initializing Tasks page");
     const defaultCategory = 'socials';
-
-    setupTaskCategoryButtons();
+    setupTaskCategoryButtons(); // Add this line
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(btn => btn.classList.remove('active'));
     const defaultButton = document.querySelector(`.task-categories .category-btn[data-category="${defaultCategory}"]`);
@@ -549,7 +559,7 @@ function setupTaskCategoryButtons() {
     console.log("Setting up task category buttons");
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     console.log("Found", categoryButtons.length, "category buttons");
-
+    
     categoryButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -568,7 +578,7 @@ function displayTasks(category) {
         console.error("Tasks container not found");
         return;
     }
-
+    
     if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
         console.error("Invalid category or tasks not found for category:", category);
         tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
@@ -584,12 +594,6 @@ function displayTasks(category) {
 
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
-
-        // Add a class for completed tasks
-        if (category === 'completed') {
-            taskElement.classList.add('completed-task');
-        }
-
         taskElement.innerHTML = `
             <img src="/public/images/${task.icon || 'default-icon.png'}" alt="${task.name || 'Task'}" class="social-task-icon">
             <div class="social-task-content">
@@ -600,13 +604,14 @@ function displayTasks(category) {
                 </div>
             </div>
             <div class="social-task-status">
-                ${category === 'completed' ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' : '<img src="/public/images/chevron-right-icon.png" alt="Incomplete" class="chevron-icon">'}
+                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
             </div>
         `;
         tasksContainer.appendChild(taskElement);
 
-        // Only add click event if the task is not in the "Completed" category
-        if (!task.noPopup && category !== 'completed') {
+        if (!task.noPopup) {
             taskElement.addEventListener('click', () => handleTaskClick(task));
         }
     });
@@ -620,19 +625,19 @@ function handleTaskClick(task) {
     switch(task.id) {
         case 'instagram':
             platformName = 'Instagram';
-            actionText = 'Follow Us on Instagram';
+            actionText = 'Follow us on Instagram';
             break;
         case 'telegram':
             platformName = 'Telegram';
-            actionText = 'Join Our Telegram Chat';
+            actionText = 'Join our Telegram channel';
             break;
         case 'twitter':
             platformName = 'X';
-            actionText = 'Follow Us on X';
+            actionText = 'Follow us on X';
             break;
         case 'twitter-like-retweet':
             platformName = 'X';
-            actionText = 'Like & Retweet Our Post';
+            actionText = 'Like & Retweet our post on X';
             break;
         default:
             platformName = task.id;
@@ -655,29 +660,20 @@ function completeTask(taskId) {
     const category = Object.keys(socialTasks).find(key => 
         socialTasks[key].some(task => task.id === taskId)
     );
-
+    
     if (!category) {
         console.error('Task category not found');
         return;
     }
 
-    const taskIndex = socialTasks[category].findIndex(t => t.id === taskId);
-    if (taskIndex > -1) {
-        // Remove the task from its original category
-        const [task] = socialTasks[category].splice(taskIndex, 1);
+    const task = socialTasks[category].find(t => t.id === taskId);
+    if (task && !task.completed) {
         task.completed = true;
-
-        // Add the task to the "Completed" category
-        socialTasks.completed.push(task);
-        console.log(`Task "${task.name}" moved to Completed tasks.`);
-
         gains += task.reward;
         updateUI();
         closePopup();
         showRewardPopup(task.reward);
-
-        // Refresh the task list for the current category
-        displayTasks(category);
+        updateSocialPage(); // Refresh the social page to show updated task status
     }
 }
 
