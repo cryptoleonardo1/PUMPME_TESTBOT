@@ -517,7 +517,7 @@ const socialTasks = {
         { id: 'level', name: "Achieve Level 7", icon: "level-icon.png", reward: 70000, completed: false, noPopup: true },
         { id: 'level', name: "Achieve Level 10", icon: "level-icon.png", reward: 1000000, completed: false, noPopup: true },
         { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 5000, completed: false, noPopup: true }
-    ]
+    ],
     referrals: [
         { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
     ],
