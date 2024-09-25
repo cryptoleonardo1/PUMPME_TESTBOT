@@ -543,7 +543,7 @@ main {
   align-items: center;
   background-color: #2a2a2a;
   border-radius: 10px;
-  padding: 16px 30px;
+  padding: 16px 20px;
   margin-bottom: 15px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -563,7 +563,7 @@ main {
   color: #ffffff;
 }
 
-#social-tasks-container {
+#tasks-container {
   padding: 0 20px;
   margin-bottom: 60px;
 }
