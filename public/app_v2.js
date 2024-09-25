@@ -503,13 +503,15 @@ function formatDuration(durationInMillis) {
     return durationString.trim();
 }
 
-//Tasks Page
 const socialTasks = {
     socials: [
         { id: 'telegram', name: "PUMPME.APP on Telegram", icon: "telegram-icon.png", reward: 5000, completed: false, link: "https://t.me/pumpme_me" },
         { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
         { id: 'instagram', name: "PUMPME.APP on Insta", icon: "instagram-icon.png", reward: 5000, completed: false, link: "https://www.instagram.com/pumpme.me/" },
         { id: 'twitter-like-retweet', name: "Like & Retweet", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" }
+    ],
+    referrals: [
+        { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
     ],
     'in-game': [
         { id: 'reps', name: "Make 50,000 reps", icon: "reps-icon.png", reward: 50000, completed: false, noPopup: true },
@@ -519,10 +521,6 @@ const socialTasks = {
         { id: 'level', name: "Achieve Level 10", icon: "level-icon.png", reward: 1000000, completed: false, noPopup: true },
         { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 5000, completed: false, noPopup: true }
     ]
-    referrals: [
-        { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
-    ],
-    completed: [] // New completed tasks array
 };
 
 function updateTasksPage() {
