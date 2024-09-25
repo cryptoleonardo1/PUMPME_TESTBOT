@@ -375,6 +375,11 @@ main {
   background-color: #c0392b;
 }
 
+.popup-button.secondary-button {
+  background-color: #ff4d4d; /* Red color */
+  color: #ffffff;
+}
+
 /* Confirmation Popup Styling */
 .confirmation-popup {
   position: fixed;

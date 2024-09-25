@@ -506,8 +506,8 @@ function formatDuration(durationInMillis) {
 const socialTasks = {
     socials: [
         { id: 'telegram', name: "PUMPME.APP on Telegram", icon: "telegram-icon.png", reward: 5000, completed: false, link: "https://t.me/pumpme_me" },
-        { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
         { id: 'instagram', name: "PUMPME.APP on Insta", icon: "instagram-icon.png", reward: 5000, completed: false, link: "https://www.instagram.com/pumpme.me/" },
+        { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
         { id: 'twitter-like-retweet', name: "Like & Retweet", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" }
     ],
     'in-game': [
@@ -645,7 +645,7 @@ function handleTaskClick(task) {
         <p>${actionText}:</p>
         <div class="button-container">
             <a href="${task.link}" target="_blank" class="popup-button primary-button">PUMP ME on ${platformName}</a>
-            <button onclick="completeTask('${task.id}')" class="popup-button secondary-button">Done</button>
+            <button onclick="closePopup()" class="popup-button secondary-button">Close</button>
         </div>
     `;
 
