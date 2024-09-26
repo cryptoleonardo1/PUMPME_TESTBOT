@@ -754,7 +754,8 @@ main {
 
 .ok-button {
   margin-top: 20px;
-  background-color: #065a92;
+  background-color: #ffffff;
+  color: #120257;
 }
 
 /* Navigation styles */
