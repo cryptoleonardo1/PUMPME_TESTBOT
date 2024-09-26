@@ -341,8 +341,12 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
 }
 
 function closeBoostPopup() {
-    document.getElementById('boost-popup').style.display = 'none';
+    const boostPopup = document.getElementById('boost-popup');
+    if (boostPopup) {
+        boostPopup.style.display = 'none';
+    }
 }
+
 
 function showPopup(content) {
     const popup = document.createElement('div');
@@ -354,6 +358,7 @@ function showPopup(content) {
     `;
     document.body.appendChild(popup);
 }
+
 
 function closePopup() {
     const popup = document.querySelector('.popup');
@@ -659,7 +664,7 @@ function handleTaskClick(task) {
         </div>
     `;
 
-    showPopup(popupContent);
+    showTaskPopup(popupContent);
 }
 
 /*
@@ -685,40 +690,40 @@ function completeTask(taskId) {
 }
 */
 
-function showPopup(content) {
+function showTaskPopup(content) {
     // Create the overlay
     const overlay = document.createElement('div');
-    overlay.className = 'popup-overlay';
-  
+    overlay.className = 'popup-overlay task-popup-overlay';
+
     // Create the popup content container
     const popupContent = document.createElement('div');
-    popupContent.className = 'popup-content';
-  
+    popupContent.className = 'popup-content task-popup-content';
+
     // Add the close button
     const closeButton = document.createElement('button');
-    closeButton.className = 'popup-close';
+    closeButton.className = 'popup-close task-popup-close';
     closeButton.innerHTML = '&times;';
-    closeButton.onclick = closePopup;
+    closeButton.onclick = closeTaskPopup;
     popupContent.appendChild(closeButton);
-  
+
     // Insert the content
     const contentContainer = document.createElement('div');
     contentContainer.innerHTML = content;
     popupContent.appendChild(contentContainer);
-  
+
     // Append the popup content to the overlay
     overlay.appendChild(popupContent);
-  
+
     // Append the overlay to the body
     document.body.appendChild(overlay);
-  }
+}
 
-  function closePopup() {
-    const overlay = document.querySelector('.popup-overlay');
+function closeTaskPopup() {
+    const overlay = document.querySelector('.task-popup-overlay');
     if (overlay) {
-      overlay.remove();
+        overlay.remove();
     }
-  }
+}
 
 function showRewardPopup(reward) {
     const rewardPopupContent = `
