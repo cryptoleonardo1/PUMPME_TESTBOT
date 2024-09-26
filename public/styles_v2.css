@@ -768,7 +768,7 @@ nav {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(13, 9, 59, 0.8); /* Semi-transparent background */
+  background-color: rgba(28, 19, 131, 0.712); /* Semi-transparent background */
   backdrop-filter: blur(10px); /* Apply blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari support */
   z-index: 1000; /* Ensure it stays on top */
@@ -787,13 +787,16 @@ nav {
   flex: 1;
   text-align: center;
   padding: 10px 0;
-  color: #000; /* Adjust color for visibility */
   background: none;
   border: none;
   outline: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   margin-bottom: 5px;
+}
+
+.nav-btn span {
+  color: #FFFFFF; /* Ensure the text label is white */
 }
 
 .nav-icon {
