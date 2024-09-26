@@ -294,41 +294,35 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
     // Clean up existing event listeners
     const confirmButton = document.getElementById('confirm-boost');
-    const cancelButton = document.getElementById('cancel-boost');
     const closeButton = document.getElementById('close-boost-popup');
 
     // Check if buttons are found
-    if (!confirmButton || !cancelButton || !closeButton) {
+    if (!confirmButton || !closeButton) {
         console.error('One or more buttons not found in the boost popup');
         return;
     }
 
     // Remove existing event listeners by cloning the buttons
     confirmButton.replaceWith(confirmButton.cloneNode(true));
-    cancelButton.replaceWith(cancelButton.cloneNode(true));
     closeButton.replaceWith(closeButton.cloneNode(true));
 
     // Re-select the buttons after cloning
     const newConfirmButton = document.getElementById('confirm-boost');
-    const newCancelButton = document.getElementById('cancel-boost');
     const newCloseButton = document.getElementById('close-boost-popup');
 
     // Update the button text
-    newConfirmButton.textContent = 'Activate';
+    newConfirmButton.textContent = 'Pump Me';
 
     // Attach event listeners
     newConfirmButton.addEventListener('click', function () {
         confirmBoost(boostName, boostPrice, boostEffect);
     });
 
-    newCancelButton.addEventListener('click', function () {
-        closeBoostPopup();
-    });
-
     newCloseButton.addEventListener('click', function () {
         closeBoostPopup();
     });
 }
+
 
 function confirmBoost(boostName, boostPrice, boostEffect) {
     if (gains >= boostPrice) {
