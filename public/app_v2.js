@@ -348,7 +348,7 @@ function closeBoostPopup() {
 }
 
 
-function showPopup(content) {
+function showTaskPopup(content) {
     const popup = document.createElement('div');
     popup.className = 'popup';
     popup.innerHTML = `
@@ -360,7 +360,7 @@ function showPopup(content) {
 }
 
 
-function closePopup() {
+function closeTaskPopup() {
     const popup = document.querySelector('.popup');
     if (popup) {
         popup.remove();
@@ -445,10 +445,10 @@ function showInsufficientGainsMessage(boostName) {
     const popupContent = `
         <p>You do not have enough Gains to activate "${boostName}".</p>
         <div class="button-container">
-            <button onclick="closePopup()" class="popup-button secondary-button">OK</button>
+            <button onclick="closeTaskPopup()" class="popup-button secondary-button">OK</button>
         </div>
     `;
-    showPopup(popupContent);
+    showTaskPopup(popupContent);
 }
 
 function updateProfilePage() {
@@ -683,7 +683,7 @@ function completeTask(taskId) {
         task.completed = true;
         gains += task.reward;
         updateUI();
-        closePopup();
+        closeTaskPopup();
         showRewardPopup(task.reward);
         updateSocialPage(); // Refresh the social page to show updated task status
     }
@@ -729,9 +729,9 @@ function showRewardPopup(reward) {
     const rewardPopupContent = `
         <h2>Task Completed!</h2>
         <p>You've earned ${reward.toLocaleString()} gains!</p>
-        <button onclick="closePopup()" class="popup-button ok-button">OK</button>
+        <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
     `;
-    showPopup(rewardPopupContent);
+    showTaskPopup(rewardPopupContent);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
