@@ -657,7 +657,7 @@ main {
 }
 
 /* Popup content container */
-.boost.popup-content {
+.boost-popup-content {
   background: #120257;
   padding: 30px;
   border-radius: 15px;
@@ -669,7 +669,7 @@ main {
   animation: popupFadeIn 0.3s ease-in-out;
 }
 
-.task.popup-content {
+.task-popup-content {
   background: #120257;
   padding: 30px;
   border-radius: 15px;
