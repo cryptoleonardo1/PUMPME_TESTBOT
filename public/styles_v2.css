@@ -393,6 +393,19 @@ main {
   z-index: 1000;
 }
 
+.boost-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
 .button-container {
   display: flex;
   justify-content: center;
@@ -644,7 +657,19 @@ main {
 }
 
 /* Popup content container */
-.popup-content {
+.boost.popup-content {
+  background: #120257;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  position: relative; /* For positioning the close button */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: popupFadeIn 0.3s ease-in-out;
+}
+
+.task.popup-content {
   background: #120257;
   padding: 30px;
   border-radius: 15px;
