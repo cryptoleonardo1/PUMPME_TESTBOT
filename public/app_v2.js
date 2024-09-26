@@ -582,14 +582,13 @@ function displayTasks(category) {
 
     tasksContainer.innerHTML = ''; // Clear existing tasks
 
-    if (category === 'completed') {
-        // Display the title for the Completed sub-page
-        tasksContainer.innerHTML = '<h2>Completed Tasks</h2><p>No completed tasks yet.</p>';
+    if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
+        console.error("Invalid category or tasks not found for category:", category);
+        tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
         return;
     }
 
-    if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
-        console.error("Invalid category or tasks not found for category:", category);
+    if (socialTasks[category].length === 0) {
         tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
         return;
     }
@@ -612,15 +611,19 @@ function displayTasks(category) {
                 </div>
             </div>
             <div class="social-task-status">
-                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+                ${task.completed ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' : '<img src="/public/images/chevron-right-icon.png" alt="Incomplete" class="chevron-icon">'}
             </div>
         `;
         tasksContainer.appendChild(taskElement);
 
-        if (!task.noPopup) {
-            taskElement.addEventListener('click', () => handleTaskClick(task));
+        // Make tasks in the "completed" category or completed tasks non-clickable
+        if (!task.completed && category !== 'completed') {
+            if (!task.noPopup) {
+                taskElement.addEventListener('click', () => handleTaskClick(task));
+            }
+        } else {
+            // Optionally add a class to style completed tasks differently
+            taskElement.classList.add('completed-task');
         }
     });
 }
@@ -656,35 +659,68 @@ function handleTaskClick(task) {
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
         <p>${actionText}</p>
         <div class="button-container">
-            <a href="${task.link}" target="_blank" class="popup-button primary-button">Pump Me</a>
+            <button class="popup-button primary-button" id="pump-me-button">Pump Me</button>
         </div>
     `;
 
     showTaskPopup(popupContent);
+
+    // Attach event listener to the "Pump Me" button after the popup is shown
+    setTimeout(() => {
+        const pumpMeButton = document.getElementById('pump-me-button');
+        if (pumpMeButton) {
+            pumpMeButton.addEventListener('click', () => completeTask(task));
+        } else {
+            console.error('Pump Me button not found');
+        }
+    }, 0);
 }
 
-/*
-function completeTask(taskId) {
-    const category = Object.keys(socialTasks).find(key => 
-        socialTasks[key].some(task => task.id === taskId)
-    );
-    
-    if (!category) {
-        console.error('Task category not found');
-        return;
+
+function completeTask(task) {
+    // Open the desired website
+    window.open(task.link, '_blank');
+
+    // Mark the task as completed
+    task.completed = true;
+
+    // Add the task's reward to the user's gains
+    gains += task.reward;
+    updateUI();
+
+    // Move the task to the "completed" category
+    moveTaskToCompleted(task);
+
+    // Close the task popup
+    closeTaskPopup();
+
+    // Show a reward popup (optional)
+    showRewardPopup(task.reward);
+
+    // Save user data
+    saveUserData();
+}
+
+function moveTaskToCompleted(task) {
+    // Find the category the task is in
+    const category = Object.keys(socialTasks).find(cat => {
+        return socialTasks[cat].includes(task);
+    });
+
+    if (category && category !== 'completed') {
+        // Remove the task from its current category
+        socialTasks[category] = socialTasks[category].filter(t => t !== task);
+
+        // Add the task to the "completed" category
+        if (!socialTasks['completed']) {
+            socialTasks['completed'] = [];
+        }
+        socialTasks['completed'].push(task);
     }
 
-    const task = socialTasks[category].find(t => t.id === taskId);
-    if (task && !task.completed) {
-        task.completed = true;
-        gains += task.reward;
-        updateUI();
-        closeTaskPopup();
-        showRewardPopup(task.reward);
-        updateSocialPage(); // Refresh the social page to show updated task status
-    }
+    // Update the tasks display
+    displayTasks(category);
 }
-*/
 
 function showTaskPopup(content) {
     // Create the overlay
