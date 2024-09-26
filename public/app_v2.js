@@ -279,6 +279,8 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
     const popupMessage = document.getElementById('boost-popup-message');
     if (popupMessage) {
         popupMessage.textContent = `Activate ${boostName} for ${boostPrice} gains?`;
+    } else {
+        console.error('Popup message element not found');
     }
 
     // Show the popup
@@ -292,9 +294,8 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
     // Clean up existing event listeners
     const confirmButton = document.getElementById('confirm-boost');
-    confirmButton.textContent = `Activate ${boostName}`;
     const cancelButton = document.getElementById('cancel-boost');
-    const closeButton = document.getElementById('close-popup');
+    const closeButton = document.getElementById('close-boost-popup');
 
     // Check if buttons are found
     if (!confirmButton || !cancelButton || !closeButton) {
@@ -309,9 +310,11 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
     // Re-select the buttons after cloning
     const newConfirmButton = document.getElementById('confirm-boost');
-    confirmButton.textContent = `Activate ${boostName}`;
     const newCancelButton = document.getElementById('cancel-boost');
-    const newCloseButton = document.getElementById('close-popup');
+    const newCloseButton = document.getElementById('close-boost-popup');
+
+    // Update the button text
+    newConfirmButton.textContent = 'Activate';
 
     // Attach event listeners
     newConfirmButton.addEventListener('click', function () {
@@ -327,7 +330,6 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
     });
 }
 
-
 function confirmBoost(boostName, boostPrice, boostEffect) {
     if (gains >= boostPrice) {
         gains -= boostPrice;
@@ -336,7 +338,7 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         closeBoostPopup();
     } else {
         closeBoostPopup();
-        showInsufficientGainsMessage();
+        showInsufficientGainsMessage(boostName);
     }
 }
 
