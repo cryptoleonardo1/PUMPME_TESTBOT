@@ -763,7 +763,7 @@ nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 5px;
+  padding: 3px;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -772,7 +772,6 @@ nav {
   backdrop-filter: blur(10px); /* Apply blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari support */
   z-index: 1000; /* Ensure it stays on top */
-  padding: 5px 0; /* Adjust padding as needed */
 }
 
 .nav-btn {
@@ -792,7 +791,7 @@ nav {
   outline: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .nav-btn span {
