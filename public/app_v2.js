@@ -99,40 +99,37 @@ function updateUI() {
 function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || 'test-user-id';
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-  
-    // Prepare boosts data to be saved
+
+    // Save boosts data
     const boostsData = window.boosts;
-  
-    console.log('Saving user data:', { userId, username, gains, level, boostsData });
-  
+
     fetch('/api/saveUserData', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, username, gains, level, boostsData }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, username, gains, level, boostsData }),
     })
-      .then(response => response.json())
-      .then(data => console.log('User data saved:', data))
-      .catch(error => console.error('Error saving user data:', error));
-  }  
+    .then(response => response.json())
+    .then(data => console.log('User data saved:', data))
+    .catch(error => console.error('Error saving user data:', error));
+}
 
 function loadUserData() {
-  const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-  if (userId) {
-    fetch(`/api/getUserData?userId=${userId}`)
-      .then(response => response.json())
-      .then(data => {
-        gains = data.gains || 0;
-        level = data.level || 1;
-        window.boosts = data.boostsData || window.boosts;
-        console.log('Loaded user data:', { gains, level, boosts: window.boosts });
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+    if (userId) {
+        fetch(`/api/getUserData?userId=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                gains = data.gains || 0;
+                level = data.level || 1;
+                window.boosts = data.boostsData || window.boosts;
 
-        // Re-apply active boosts
-        applyLoadedBoosts();
+                // Apply active boosts
+                applyLoadedBoosts();
 
-        updateUI();
-      })
-      .catch(error => console.error('Error loading user data:', error));
-  }
+                updateUI();
+            })
+            .catch(error => console.error('Error loading user data:', error));
+    }
 }
 
 function applyLoadedBoosts() {
@@ -402,38 +399,36 @@ function closeTaskPopup() {
 function applyBoostEffect(boost) {
     const boostEffect = boostEffects[boost.name];
     if (boostEffect.type === "multiplier") {
-      boostMultiplier *= boostEffect.value;
-  
-      const expirationTime = Date.now() + boostEffect.duration * 1000;
-      boost.active = true;
-      boost.expirationTime = expirationTime;
-  
-      console.log('Applying boost effect:', boost.name, boostEffect);
-  
-      // Save user data after updating active boosts
-      saveUserData();
-  
-      // Set a timeout to remove the boost effect after its duration
-      setTimeout(() => {
-        console.log(`Boost ${boost.name} has expired at ${new Date().toISOString()}`);
-        boostMultiplier /= boostEffect.value;
-        boost.active = false;
-        boost.expirationTime = null;
-  
-        // Move the boost back to the Boosts page
-        // Since we already update the boosts based on the `active` property, we just need to refresh the pages
-        updateUI();
-        // Update both the Boosts and Profile pages to reflect changes
-        initializeBoostsPage();
-        updateProfilePage();
+        boostMultiplier *= boostEffect.value;
+
+        const expirationTime = Date.now() + boostEffect.duration * 1000;
+        boost.active = true;
+        boost.expirationTime = expirationTime;
+
+        console.log('Applying boost effect:', boost.name, boostEffect);
+
+        // Save user data after updating active boosts
         saveUserData();
-      }, boostEffect.duration * 1000);
-  
-      // Update the UI to reflect the boost
-      updateUI();
-      updateProfilePage();
+
+        // Set a timeout to remove the boost effect after its duration
+        setTimeout(() => {
+            console.log(`Boost ${boost.name} has expired at ${new Date().toISOString()}`);
+            boostMultiplier /= boostEffect.value;
+            boost.active = false;
+            boost.expirationTime = null;
+
+            // Update the UI after boost expires
+            updateUI();
+            initializeBoostsPage();
+            updateProfilePage();
+            saveUserData();
+        }, boostEffect.duration * 1000);
+
+        // Immediately update the UI to reflect the activated boost
+        updateUI();
+        updateProfilePage();
     }
-  }
+}
 
 function updateActiveBoostsDisplay() {
     const activeBoostsContainer = document.getElementById('active-boosts-container');
@@ -495,7 +490,7 @@ function updateProfilePage() {
         { name: "Charisma", value: 17 },
         { name: "Risk of Injury", value: 25 }
     ];
-/*
+
   const attributesContainer = document.getElementById('attributes-container');
   if (attributesContainer) {
       attributesContainer.innerHTML = '';
@@ -512,41 +507,41 @@ function updateProfilePage() {
           attributesContainer.appendChild(attrElement);
       });
   }
-*/
+
     console.log('Updating profile page with activeBoosts:', activeBoosts);
 
     const activeBoostsContainer = document.getElementById('active-boosts-container');
     if (activeBoostsContainer) {
-      activeBoostsContainer.innerHTML = '';
-  
-      // Collect all active boosts from all categories
-      const activeBoostsList = [];
-      Object.keys(window.boosts).forEach(category => {
-        window.boosts[category].forEach(boost => {
-          if (boost.active) {
-            activeBoostsList.push(boost);
-          }
+        activeBoostsContainer.innerHTML = '';
+
+        // Collect all active boosts from all categories
+        const activeBoostsList = [];
+        Object.keys(window.boosts).forEach(category => {
+            window.boosts[category].forEach(boost => {
+                if (boost.active) {
+                    activeBoostsList.push(boost);
+                }
+            });
         });
-      });
-  
-      if (activeBoostsList.length > 0) {
-        activeBoostsList.forEach(boost => {
-          const remainingTime = Math.ceil((boost.expirationTime - Date.now()) / 1000); // in seconds
-          const durationString = formatDuration(remainingTime);
-  
-          const boostElement = document.createElement('div');
-          boostElement.className = 'active-boost-item';
-          boostElement.innerHTML = `
-            <div class="boost-name">${boost.name}</div>
-            <div class="boost-duration">${durationString}</div>
-          `;
-          activeBoostsContainer.appendChild(boostElement);
-        });
-      } else {
-        activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
-      }
+
+        if (activeBoostsList.length > 0) {
+            activeBoostsList.forEach(boost => {
+                const remainingTime = Math.ceil((boost.expirationTime - Date.now()) / 1000); // in seconds
+                const durationString = formatDuration(remainingTime);
+
+                const boostElement = document.createElement('div');
+                boostElement.className = 'active-boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-duration">${durationString}</div>
+                `;
+                activeBoostsContainer.appendChild(boostElement);
+            });
+        } else {
+            activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+        }
     }
-  }
+}
 
 function formatDuration(durationInMillis) {
     const totalSeconds = Math.floor(durationInMillis / 1000);
