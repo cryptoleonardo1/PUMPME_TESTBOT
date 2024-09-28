@@ -344,31 +344,21 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
 
 function confirmBoost(boostName, boostPrice, boostEffect) {
-    if (gains >= boostPrice) {
-      gains -= boostPrice;
-  
-      // Find the boost object
-      let boost = null;
-      Object.keys(window.boosts).some(category => {
-        boost = window.boosts[category].find(b => b.name === boostName);
-        return !!boost;
-      });
-  
-      if (boost) {
-        applyBoostEffect(boost);
-      }
-  
-      updateUI();
-      closeBoostPopup();
-      // Refresh the Boosts page to update the list
-      initializeBoostsPage();
-    } else {
-      closeBoostPopup();
-      showInsufficientGainsMessage(boostName);
-    }
-  }
-  
+    console.log('Confirming boost:', { boostName, boostPrice, boostEffect }); // Debugging log
 
+    if (gains >= boostPrice) {
+        gains -= boostPrice;
+
+        console.log('Applying boost with effect:', boostEffect); // Debugging log
+        applyBoostEffect(boostName, boostEffect);  // Apply boost effect
+        updateUI();
+        closeBoostPopup(); // Close the popup after confirmation
+    } else {
+        closeBoostPopup();
+        showInsufficientGainsMessage();
+    }
+}
+  
 function closeBoostPopup() {
     const boostPopup = document.getElementById('boost-popup');
     if (boostPopup) {
@@ -397,37 +387,47 @@ function closeTaskPopup() {
 }
 
 function applyBoostEffect(boostName, boostEffect) {
+    if (!boostEffect) {
+        console.error(`Boost effect is undefined for boost: ${boostName}`);
+        return;
+    }
+
+    console.log('Applying boost effect:', { boostName, boostEffect }); // Debugging log
+
     if (boostEffect.type === "multiplier") {
         boostMultiplier *= boostEffect.value;
 
         // Set the expiration time to the current time plus the boost duration in milliseconds
         const expirationTime = Date.now() + boostEffect.duration * 1000;
-        console.log('Applying boost effect:', boostName, boostEffect);
+
+        console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`); // Debugging log
 
         // Add boost to activeBoosts array
         activeBoosts.push({
             name: boostName,
             effect: boostEffect,
-            expirationTime: expirationTime // Set expiration time here
+            expirationTime: expirationTime
         });
 
-        console.log('After adding boost, activeBoosts:', activeBoosts);
+        console.log('Active boosts after applying:', activeBoosts); // Debugging log
 
         // Save user data after updating activeBoosts
         saveUserData();
 
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
-            console.log(`Boost ${boostName} has expired at ${new Date().toISOString()}`);
+            console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
             boostMultiplier /= boostEffect.value;
             activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
-            console.log('After expiring boost, activeBoosts:', activeBoosts);
+            console.log('Active boosts after expiring:', activeBoosts); // Debugging log
             updateUI();
             saveUserData(); // Save data after boost expires
         }, boostEffect.duration * 1000);
 
         // Update the UI to reflect the boost
         updateUI();
+    } else {
+        console.error(`Unsupported boost effect type: ${boostEffect.type}`);
     }
 }
 
@@ -458,17 +458,23 @@ function updateActiveBoostsDisplay() {
 }
 
 function formatTime(seconds) {
+    console.log('Formatting time for:', seconds);  // Debugging log
+
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
 
+    let formattedTime;
     if (h > 0) {
-        return `${h}h ${m}m ${s}s`;
+        formattedTime = `${h}h ${m}m ${s}s`;
     } else if (m > 0) {
-        return `${m}m ${s}s`;
+        formattedTime = `${m}m ${s}s`;
     } else {
-        return `${s}s`;
+        formattedTime = `${s}s`;
     }
+
+    console.log('Formatted time:', formattedTime);  // Debugging log
+    return formattedTime;
 }
 
 function showInsufficientGainsMessage(boostName) {
@@ -516,14 +522,18 @@ function updateProfilePage() {
         activeBoostsContainer.innerHTML = '';
 
         const now = Date.now();  // Current time in milliseconds
+        console.log('Current time:', new Date(now).toISOString());  // Debugging log
 
         const activeBoostsList = activeBoosts.filter(boost => boost.expirationTime > now);
+
+        console.log('Active boosts for profile page:', activeBoostsList);  // Debugging log
 
         if (activeBoostsList.length > 0) {
             activeBoostsList.forEach(boost => {
                 const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
-
                 const durationString = formatTime(remainingTime); // Format the remaining time
+
+                console.log(`Boost: ${boost.name}, Remaining time: ${durationString}`);  // Debugging log
 
                 const boostElement = document.createElement('div');
                 boostElement.className = 'active-boost-item';
