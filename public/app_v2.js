@@ -491,22 +491,22 @@ function updateProfilePage() {
         { name: "Risk of Injury", value: 25 }
     ];
 
-  const attributesContainer = document.getElementById('attributes-container');
-  if (attributesContainer) {
-      attributesContainer.innerHTML = '';
-      attributes.forEach(attr => {
-          const attrElement = document.createElement('div');
-          attrElement.className = 'attribute-item';
-          attrElement.innerHTML = `
-              <div class="attribute-name">${attr.name}</div>
-              <div class="attribute-bar-container">
-                  <div class="attribute-bar" style="width: ${attr.value}%"></div>
-              </div>
-              <div class="attribute-value">${attr.value}</div>
-          `;
-          attributesContainer.appendChild(attrElement);
-      });
-  }
+    const attributesContainer = document.getElementById('attributes-container');
+    if (attributesContainer) {
+        attributesContainer.innerHTML = '';
+        attributes.forEach(attr => {
+            const attrElement = document.createElement('div');
+            attrElement.className = 'attribute-item';
+            attrElement.innerHTML = `
+                <div class="attribute-name">${attr.name}</div>
+                <div class="attribute-bar-container">
+                    <div class="attribute-bar" style="width: ${attr.value}%"></div>
+                </div>
+                <div class="attribute-value">${attr.value}</div>
+            `;
+            attributesContainer.appendChild(attrElement);
+        });
+    }
 
     console.log('Updating profile page with activeBoosts:', activeBoosts);
 
@@ -514,7 +514,7 @@ function updateProfilePage() {
     if (activeBoostsContainer) {
         activeBoostsContainer.innerHTML = '';
 
-        // Collect all active boosts from all categories
+        // Rest of the code for handling active boosts
         const activeBoostsList = [];
         Object.keys(window.boosts).forEach(category => {
             window.boosts[category].forEach(boost => {
