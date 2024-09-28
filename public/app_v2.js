@@ -396,37 +396,38 @@ function closeTaskPopup() {
     }
 }
 
-function applyBoostEffect(boost) {
-    const boostEffect = boostEffects[boost.name];
+function applyBoostEffect(boostName, boostEffect) {
     if (boostEffect.type === "multiplier") {
         boostMultiplier *= boostEffect.value;
 
+        // Set the expiration time to the current time plus the boost duration in milliseconds
         const expirationTime = Date.now() + boostEffect.duration * 1000;
-        boost.active = true;
-        boost.expirationTime = expirationTime;
+        console.log('Applying boost effect:', boostName, boostEffect);
 
-        console.log('Applying boost effect:', boost.name, boostEffect);
+        // Add boost to activeBoosts array
+        activeBoosts.push({
+            name: boostName,
+            effect: boostEffect,
+            expirationTime: expirationTime // Set expiration time here
+        });
 
-        // Save user data after updating active boosts
+        console.log('After adding boost, activeBoosts:', activeBoosts);
+
+        // Save user data after updating activeBoosts
         saveUserData();
 
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
-            console.log(`Boost ${boost.name} has expired at ${new Date().toISOString()}`);
+            console.log(`Boost ${boostName} has expired at ${new Date().toISOString()}`);
             boostMultiplier /= boostEffect.value;
-            boost.active = false;
-            boost.expirationTime = null;
-
-            // Update the UI after boost expires
+            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
+            console.log('After expiring boost, activeBoosts:', activeBoosts);
             updateUI();
-            initializeBoostsPage();
-            updateProfilePage();
-            saveUserData();
+            saveUserData(); // Save data after boost expires
         }, boostEffect.duration * 1000);
 
-        // Immediately update the UI to reflect the activated boost
+        // Update the UI to reflect the boost
         updateUI();
-        updateProfilePage();
     }
 }
 
@@ -514,20 +515,15 @@ function updateProfilePage() {
     if (activeBoostsContainer) {
         activeBoostsContainer.innerHTML = '';
 
-        // Rest of the code for handling active boosts
-        const activeBoostsList = [];
-        Object.keys(window.boosts).forEach(category => {
-            window.boosts[category].forEach(boost => {
-                if (boost.active) {
-                    activeBoostsList.push(boost);
-                }
-            });
-        });
+        const now = Date.now();  // Current time in milliseconds
+
+        const activeBoostsList = activeBoosts.filter(boost => boost.expirationTime > now);
 
         if (activeBoostsList.length > 0) {
             activeBoostsList.forEach(boost => {
-                const remainingTime = Math.ceil((boost.expirationTime - Date.now()) / 1000); // in seconds
-                const durationString = formatDuration(remainingTime);
+                const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
+
+                const durationString = formatTime(remainingTime); // Format the remaining time
 
                 const boostElement = document.createElement('div');
                 boostElement.className = 'active-boost-item';
