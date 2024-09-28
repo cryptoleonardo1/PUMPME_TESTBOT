@@ -495,7 +495,7 @@ function updateProfilePage() {
         { name: "Charisma", value: 17 },
         { name: "Risk of Injury", value: 25 }
     ];
-
+/*
   const attributesContainer = document.getElementById('attributes-container');
   if (attributesContainer) {
       attributesContainer.innerHTML = '';
@@ -512,7 +512,7 @@ function updateProfilePage() {
           attributesContainer.appendChild(attrElement);
       });
   }
-
+*/
     console.log('Updating profile page with activeBoosts:', activeBoosts);
 
     const activeBoostsContainer = document.getElementById('active-boosts-container');
