@@ -97,66 +97,77 @@ function updateUI() {
 }
 
 function saveUserData() {
-    const userId = tg.initDataUnsafe?.user?.id || 'test-user-id'; // Ensure userId is defined
+    const userId = tg.initDataUnsafe?.user?.id || 'test-user-id';
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-
-    console.log('Saving user data:', { userId, username, gains, level, activeBoosts });
-
+  
+    // Prepare boosts data to be saved
+    const boostsData = window.boosts;
+  
+    console.log('Saving user data:', { userId, username, gains, level, boostsData });
+  
     fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level, activeBoosts }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, username, gains, level, boostsData }),
     })
-        .then(response => response.json())
-        .then(data => console.log('User data saved:', data))
-        .catch(error => console.error('Error saving user data:', error));
-}
+      .then(response => response.json())
+      .then(data => console.log('User data saved:', data))
+      .catch(error => console.error('Error saving user data:', error));
+  }  
 
 function loadUserData() {
-    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-    if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                gains = data.gains || 0;
-                level = data.level || 1;
-                activeBoosts = data.activeBoosts || [];
-                console.log('Loaded user data:', { gains, level, activeBoosts });
-                applyLoadedBoosts(); // Apply boosts after loading
-                updateUI();
-            })
-            .catch(error => console.error('Error loading user data:', error));
-    }
+  const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+  if (userId) {
+    fetch(`/api/getUserData?userId=${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        gains = data.gains || 0;
+        level = data.level || 1;
+        window.boosts = data.boostsData || window.boosts;
+        console.log('Loaded user data:', { gains, level, boosts: window.boosts });
+
+        // Re-apply active boosts
+        applyLoadedBoosts();
+
+        updateUI();
+      })
+      .catch(error => console.error('Error loading user data:', error));
+  }
 }
 
 function applyLoadedBoosts() {
-    console.log('Applying loaded boosts:', activeBoosts);
-    activeBoosts.forEach(boost => {
-        const remainingDuration = boost.expirationTime - Date.now();
-        if (remainingDuration > 0) {
-            if (boost.effect.type === "multiplier") {
-                boostMultiplier *= boost.effect.value;
-
-                // Set a timeout to remove the boost effect after the remaining duration
-                setTimeout(() => {
-                    console.log(`Boost ${boost.name} has expired.`);
-                    boostMultiplier /= boost.effect.value;
-                    activeBoosts = activeBoosts.filter(b => b !== boost);
-                    console.log('After expiring boost, activeBoosts:', activeBoosts);
-                    updateUI();
-                    saveUserData(); // Save data after boost expires
-                }, remainingDuration);
-
-                // Update the UI to reflect the boost
+    Object.keys(window.boosts).forEach(category => {
+      window.boosts[category].forEach(boost => {
+        if (boost.active && boost.expirationTime) {
+          const remainingDuration = boost.expirationTime - Date.now();
+          if (remainingDuration > 0) {
+            const boostEffect = boostEffects[boost.name];
+            if (boostEffect.type === "multiplier") {
+              boostMultiplier *= boostEffect.value;
+  
+              // Set a timeout to remove the boost effect after the remaining duration
+              setTimeout(() => {
+                console.log(`Boost ${boost.name} has expired.`);
+                boostMultiplier /= boostEffect.value;
+                boost.active = false;
+                boost.expirationTime = null;
+  
                 updateUI();
+                initializeBoostsPage();
+                updateProfilePage();
+                saveUserData();
+              }, remainingDuration);
             }
-        } else {
+          } else {
             // Boost has expired
-            activeBoosts = activeBoosts.filter(b => b !== boost);
+            boost.active = false;
+            boost.expirationTime = null;
+          }
         }
+      });
     });
-}
-
+  }
+  
 function pump(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -213,44 +224,55 @@ function setupBoostsCategoryButtons() {
 }
 
 function initializeBoostsPage() {
-    console.log("Initializing Boosts page");
-    const defaultCategory = 'nutrition';
-    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-    categoryButtons.forEach(btn => btn.classList.remove('active'));
-    const defaultButton = document.querySelector(`#boosts-page .category-btn[data-category="${defaultCategory}"]`);
-    if (defaultButton) {
-        defaultButton.classList.add('active');
+  console.log("Initializing Boosts page");
+  const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+
+  // Set default category
+  let defaultCategory = 'nutrition';
+  categoryButtons.forEach(btn => {
+    btn.classList.remove('active');
+    if (!defaultCategory && !btn.disabled) {
+      defaultCategory = btn.dataset.category;
     }
-    displayBoosts(defaultCategory);
-    setupBoostsCategoryButtons();
-    setupBoosts(); 
+  });
+
+  const defaultButton = document.querySelector(`#boosts-page .category-btn[data-category="${defaultCategory}"]`);
+  if (defaultButton) {
+    defaultButton.classList.add('active');
+  }
+
+  displayBoosts(defaultCategory);
+  setupBoostsCategoryButtons();
 }
 
 function displayBoosts(category) {
     const boostItems = document.getElementById('boost-items');
     if (boostItems && window.boosts) {
-        boostItems.innerHTML = '';  // Clear current boosts
-        window.boosts[category].forEach(boost => {
-            const boostElement = document.createElement('div');
-            boostElement.className = 'boost-item';
-            boostElement.innerHTML = `
-                <div class="boost-icon">${boost.icon}</div>
-                <div class="boost-content">
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-description">${boost.description}</div>
-                </div>
-                <div class="boost-price">
-                    <img src="/public/images/bicep-icon-yellow.png" alt="Price" class="price-icon">
-                    ${boost.price}
-                </div>
-            `;
-            boostItems.appendChild(boostElement); // Add boost to the page
+      boostItems.innerHTML = ''; // Clear current boosts
+  
+      window.boosts[category]
+        .filter(boost => !boost.active) // Only include boosts that are not active
+        .forEach(boost => {
+          const boostElement = document.createElement('div');
+          boostElement.className = 'boost-item';
+          boostElement.innerHTML = `
+            <div class="boost-icon">${boost.icon}</div>
+            <div class="boost-content">
+              <div class="boost-name">${boost.name}</div>
+              <div class="boost-description">${boost.description}</div>
+            </div>
+            <div class="boost-price">
+              <img src="/public/images/bicep-icon-yellow.png" alt="Price" class="price-icon">
+              ${boost.price}
+            </div>
+          `;
+          boostItems.appendChild(boostElement); // Add boost to the page
+  
+          // Attach click handler
+          boostElement.addEventListener('click', handleBoostActivation);
         });
-
-        // Now that the boosts have been appended to the DOM, call setupBoosts
-        setupBoosts();
     }
-}
+  }
 
 function setupBoosts() {
     const boostItems = document.querySelectorAll('.boost-item');
@@ -326,15 +348,29 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
 function confirmBoost(boostName, boostPrice, boostEffect) {
     if (gains >= boostPrice) {
-        gains -= boostPrice;
-        applyBoostEffect(boostName, boostEffect);
-        updateUI();
-        closeBoostPopup();
+      gains -= boostPrice;
+  
+      // Find the boost object
+      let boost = null;
+      Object.keys(window.boosts).some(category => {
+        boost = window.boosts[category].find(b => b.name === boostName);
+        return !!boost;
+      });
+  
+      if (boost) {
+        applyBoostEffect(boost);
+      }
+  
+      updateUI();
+      closeBoostPopup();
+      // Refresh the Boosts page to update the list
+      initializeBoostsPage();
     } else {
-        closeBoostPopup();
-        showInsufficientGainsMessage(boostName);
+      closeBoostPopup();
+      showInsufficientGainsMessage(boostName);
     }
-}
+  }
+  
 
 function closeBoostPopup() {
     const boostPopup = document.getElementById('boost-popup');
@@ -363,39 +399,41 @@ function closeTaskPopup() {
     }
 }
 
-function applyBoostEffect(boostName, boostEffect) {
+function applyBoostEffect(boost) {
+    const boostEffect = boostEffects[boost.name];
     if (boostEffect.type === "multiplier") {
-        boostMultiplier *= boostEffect.value;
-
-        const expirationTime = Date.now() + boostEffect.duration * 1000;
-        console.log('Applying boost effect:', boostName, boostEffect);
-
-        // Add boost to activeBoosts array
-        activeBoosts.push({
-            name: boostName,
-            effect: boostEffect,
-            expirationTime: expirationTime
-        });
-
-        console.log('After adding boost, activeBoosts:', activeBoosts);
-
-        // Save user data after updating activeBoosts
-        saveUserData();
-
-        // Set a timeout to remove the boost effect after its duration
-        setTimeout(() => {
-            console.log(`Boost ${boostName} has expired at ${new Date().toISOString()}`);
-            boostMultiplier /= boostEffect.value;
-            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
-            console.log('After expiring boost, activeBoosts:', activeBoosts);
-            updateUI();
-            saveUserData(); // Save data after boost expires
-        }, boostEffect.duration * 1000);
-
-        // Update the UI to reflect the boost
+      boostMultiplier *= boostEffect.value;
+  
+      const expirationTime = Date.now() + boostEffect.duration * 1000;
+      boost.active = true;
+      boost.expirationTime = expirationTime;
+  
+      console.log('Applying boost effect:', boost.name, boostEffect);
+  
+      // Save user data after updating active boosts
+      saveUserData();
+  
+      // Set a timeout to remove the boost effect after its duration
+      setTimeout(() => {
+        console.log(`Boost ${boost.name} has expired at ${new Date().toISOString()}`);
+        boostMultiplier /= boostEffect.value;
+        boost.active = false;
+        boost.expirationTime = null;
+  
+        // Move the boost back to the Boosts page
+        // Since we already update the boosts based on the `active` property, we just need to refresh the pages
         updateUI();
+        // Update both the Boosts and Profile pages to reflect changes
+        initializeBoostsPage();
+        updateProfilePage();
+        saveUserData();
+      }, boostEffect.duration * 1000);
+  
+      // Update the UI to reflect the boost
+      updateUI();
+      updateProfilePage();
     }
-}
+  }
 
 function updateActiveBoostsDisplay() {
     const activeBoostsContainer = document.getElementById('active-boosts-container');
@@ -479,27 +517,36 @@ function updateProfilePage() {
 
     const activeBoostsContainer = document.getElementById('active-boosts-container');
     if (activeBoostsContainer) {
-        activeBoostsContainer.innerHTML = '';
-        if (activeBoosts.length > 0) {
-            activeBoosts.forEach(boost => {
-                const remainingTime = boost.expirationTime - Date.now();
-                if (remainingTime > 0) {
-                    const durationString = formatDuration(remainingTime);
-
-                    const boostElement = document.createElement('div');
-                    boostElement.className = 'active-boost-item';
-                    boostElement.innerHTML = `
-                        <div class="boost-name">${boost.name}</div>
-                        <div class="boost-duration">${durationString}</div>
-                    `;
-                    activeBoostsContainer.appendChild(boostElement);
-                }
-            });
-        } else {
-            activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
-        }
+      activeBoostsContainer.innerHTML = '';
+  
+      // Collect all active boosts from all categories
+      const activeBoostsList = [];
+      Object.keys(window.boosts).forEach(category => {
+        window.boosts[category].forEach(boost => {
+          if (boost.active) {
+            activeBoostsList.push(boost);
+          }
+        });
+      });
+  
+      if (activeBoostsList.length > 0) {
+        activeBoostsList.forEach(boost => {
+          const remainingTime = Math.ceil((boost.expirationTime - Date.now()) / 1000); // in seconds
+          const durationString = formatDuration(remainingTime);
+  
+          const boostElement = document.createElement('div');
+          boostElement.className = 'active-boost-item';
+          boostElement.innerHTML = `
+            <div class="boost-name">${boost.name}</div>
+            <div class="boost-duration">${durationString}</div>
+          `;
+          activeBoostsContainer.appendChild(boostElement);
+        });
+      } else {
+        activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+      }
     }
-}
+  }
 
 function formatDuration(durationInMillis) {
     const totalSeconds = Math.floor(durationInMillis / 1000);
