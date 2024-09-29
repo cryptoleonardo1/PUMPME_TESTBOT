@@ -2,18 +2,18 @@ const redis = require('../redis-client');
 
 module.exports = async (req, res) => {
   try {
-    const { userId, username, gains, level, activeBoosts } = req.body;
-    console.log('Saving user data:', { userId, username, gains, level, activeBoosts });
+    const { userId, username, gains, level, boostsData } = req.body;
+    console.log('Saving user data:', { userId, username, gains, level });
 
-    // Convert activeBoosts to JSON string
-    const activeBoostsString = JSON.stringify(activeBoosts || []);
+    // Convert boostsData to JSON string
+    const boostsDataString = JSON.stringify(boostsData || {});
 
     // Save user data
     await redis.hmset(`user:${userId}`, {
       username: username || 'Anonymous',
       gains: gains,
       level: level,
-      activeBoosts: activeBoostsString
+      boostsData: boostsDataString
     });
 
     // Update leaderboard

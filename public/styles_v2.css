@@ -522,7 +522,7 @@ main {
 
 .boost-duration {
   font-size: 14px;
-  color: #ffd700;
+  color: #888;
 }
 
 /* Social page styles */
@@ -711,7 +711,7 @@ main {
 
 /* Popup Content */
 .popup-content {
-  background: #fff;
+  background: #0c2ce2;
   padding: 20px;
   border-radius: 8px;
   text-align: center;

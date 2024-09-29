@@ -121,7 +121,11 @@ function loadUserData() {
             .then(data => {
                 gains = data.gains || 0;
                 level = data.level || 1;
-                window.boosts = data.boostsData || window.boosts;
+
+                // Update window.boosts with the loaded boosts data
+                if (data.boostsData && typeof data.boostsData === 'object') {
+                    window.boosts = data.boostsData;
+                }
 
                 // Apply active boosts
                 applyLoadedBoosts();
@@ -133,37 +137,41 @@ function loadUserData() {
 }
 
 function applyLoadedBoosts() {
+    const now = Date.now();
     Object.keys(window.boosts).forEach(category => {
-      window.boosts[category].forEach(boost => {
-        if (boost.active && boost.expirationTime) {
-          const remainingDuration = boost.expirationTime - Date.now();
-          if (remainingDuration > 0) {
-            const boostEffect = boostEffects[boost.name];
-            if (boostEffect.type === "multiplier") {
-              boostMultiplier *= boostEffect.value;
-  
-              // Set a timeout to remove the boost effect after the remaining duration
-              setTimeout(() => {
-                console.log(`Boost ${boost.name} has expired.`);
-                boostMultiplier /= boostEffect.value;
-                boost.active = false;
-                boost.expirationTime = null;
-  
-                updateUI();
-                initializeBoostsPage();
-                updateProfilePage();
-                saveUserData();
-              }, remainingDuration);
+        window.boosts[category].forEach(boost => {
+            if (boost.active && boost.expirationTime) {
+                const remainingDuration = boost.expirationTime - now;
+                if (remainingDuration > 0) {
+                    const boostEffect = boostEffects[boost.name];
+                    if (boostEffect && boostEffect.type === "multiplier") {
+                        boostMultiplier *= boostEffect.value;
+
+                        // Set a timeout to remove the boost effect after the remaining duration
+                        setTimeout(() => {
+                            console.log(`Boost ${boost.name} has expired.`);
+                            boostMultiplier /= boostEffect.value;
+                            boost.active = false;
+                            boost.expirationTime = null;
+
+                            updateUI();
+                            initializeBoostsPage();
+                            updateProfilePage();
+                            saveUserData();
+                        }, remainingDuration);
+
+                    } else {
+                        console.error(`No boost effect found for ${boost.name}`);
+                    }
+                } else {
+                    // Boost has expired
+                    boost.active = false;
+                    boost.expirationTime = null;
+                }
             }
-          } else {
-            // Boost has expired
-            boost.active = false;
-            boost.expirationTime = null;
-          }
-        }
-      });
+        });
     });
-  }
+}
   
 function pump(e) {
     e.preventDefault();
@@ -548,42 +556,42 @@ function updateProfilePage() {
     }
   
     const activeBoostsContainer = document.getElementById('active-boosts-container');
-  
+    
     if (activeBoostsContainer) {
-      activeBoostsContainer.innerHTML = ''; // Clear the container
-  
-      const now = Date.now(); // Get current time in milliseconds
-  
-      // Collect all active boosts from window.boosts
-      const activeBoostsList = [];
-      Object.keys(window.boosts).forEach(category => {
-        window.boosts[category].forEach(boost => {
-          if (boost.active && boost.expirationTime > now) {
-            activeBoostsList.push(boost);
-          }
+        activeBoostsContainer.innerHTML = ''; // Clear the container
+
+        const now = Date.now(); // Get current time in milliseconds
+
+        // Collect all active boosts from window.boosts
+        const activeBoostsList = [];
+        Object.keys(window.boosts).forEach(category => {
+            window.boosts[category].forEach(boost => {
+                if (boost.active && boost.expirationTime && boost.expirationTime > now) {
+                    activeBoostsList.push(boost);
+                }
+            });
         });
-      });
-  
-      if (activeBoostsList.length > 0) {
-        activeBoostsList.forEach(boost => {
-          const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
-          const durationString = formatTime(remainingTime); // Format the remaining time
-  
-          const boostElement = document.createElement('div');
-          boostElement.className = 'active-boost-item';
-          boostElement.innerHTML = `
-            <div class="boost-name">${boost.name}</div>
-            <div class="boost-duration">${durationString}</div>
-          `;
-          activeBoostsContainer.appendChild(boostElement);
-        });
-      } else {
-        activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
-      }
+
+        if (activeBoostsList.length > 0) {
+            activeBoostsList.forEach(boost => {
+                const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
+                const durationString = formatTime(remainingTime); // Format the remaining time
+
+                const boostElement = document.createElement('div');
+                boostElement.className = 'active-boost-item';
+                boostElement.innerHTML = `
+                    <div class="boost-name">${boost.name}</div>
+                    <div class="boost-duration">${durationString}</div>
+                `;
+                activeBoostsContainer.appendChild(boostElement);
+            });
+        } else {
+            activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+        }
     } else {
-      console.error('Active boosts container not found');
+        console.error('Active boosts container not found');
     }
-  }  
+}
 
 function formatDuration(durationInMillis) {
     const totalSeconds = Math.floor(durationInMillis / 1000);

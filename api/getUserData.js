@@ -11,24 +11,24 @@ module.exports = async function(req, res) {
 
       if (Object.keys(userData).length === 0) {
         console.log('No user data found, returning default values');
-        res.status(200).json({ gains: 0, level: 1, activeBoosts: [] });
+        res.status(200).json({ gains: 0, level: 1, boostsData: {} });
       } else {
         console.log('User data found, returning:', userData);
 
-        // Parse activeBoosts if it exists
-        let activeBoosts = [];
-        if (userData.activeBoosts) {
+        // Parse boostsData if it exists
+        let boostsData = {};
+        if (userData.boostsData) {
           try {
-            activeBoosts = JSON.parse(userData.activeBoosts);
+            boostsData = JSON.parse(userData.boostsData);
           } catch (parseError) {
-            console.error('Error parsing activeBoosts:', parseError);
+            console.error('Error parsing boostsData:', parseError);
           }
         }
 
         res.status(200).json({
           gains: parseInt(userData.gains) || 0,
           level: parseInt(userData.level) || 1,
-          activeBoosts: activeBoosts
+          boostsData: boostsData
         });
       }
     } catch (error) {
