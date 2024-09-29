@@ -518,22 +518,22 @@ function updateProfilePage() {
     console.log('Updating profile page with activeBoosts:', activeBoosts);
 
     const activeBoostsContainer = document.getElementById('active-boosts-container');
+    
     if (activeBoostsContainer) {
-        activeBoostsContainer.innerHTML = '';
+        activeBoostsContainer.innerHTML = ''; // Clear the container
 
-        const now = Date.now();  // Current time in milliseconds
-        console.log('Current time:', new Date(now).toISOString());  // Debugging log
+        const now = Date.now(); // Get current time in milliseconds
+        console.log('Current time:', new Date(now).toISOString()); // Log current time
 
         const activeBoostsList = activeBoosts.filter(boost => boost.expirationTime > now);
-
-        console.log('Active boosts for profile page:', activeBoostsList);  // Debugging log
+        console.log('Active boosts for profile page:', activeBoostsList); // Log active boosts
 
         if (activeBoostsList.length > 0) {
             activeBoostsList.forEach(boost => {
                 const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
                 const durationString = formatTime(remainingTime); // Format the remaining time
 
-                console.log(`Boost: ${boost.name}, Remaining time: ${durationString}`);  // Debugging log
+                console.log(`Boost: ${boost.name}, Remaining time: ${durationString}`); // Log remaining time
 
                 const boostElement = document.createElement('div');
                 boostElement.className = 'active-boost-item';
@@ -541,11 +541,14 @@ function updateProfilePage() {
                     <div class="boost-name">${boost.name}</div>
                     <div class="boost-duration">${durationString}</div>
                 `;
-                activeBoostsContainer.appendChild(boostElement);
+                activeBoostsContainer.appendChild(boostElement); // Add boost to profile page
             });
         } else {
+            console.log('No active boosts to display');
             activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
         }
+    } else {
+        console.error('Active boosts container not found');
     }
 }
 
