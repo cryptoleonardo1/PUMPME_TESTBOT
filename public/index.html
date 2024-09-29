@@ -109,10 +109,11 @@
                     <!-- Attributes will be dynamically added here -->
                 </div>
             </div>
+        <!-- Active Boosts Section -->
             <div class="profile-section">
                 <h2>Active Boosts</h2>
                 <div id="active-boosts-container">
-                    <!-- Active boosts will be dynamically added here -->
+                <p>No active boosts</p>
                 </div>
             </div>
         </div>
@@ -141,17 +142,16 @@
             </button>
         </nav>
     </div>
-<!-- Boost Popup -->
-<div id="boost-popup" class="popup-overlay boost-popup-overlay" style="display: none;">
-    <div class="popup-content boost-popup-content">
-        <button class="popup-close boost-popup-close" id="close-boost-popup">&times;</button>
-        <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-        <p id="boost-popup-message">Are you sure you want to activate this boost?</p>
-        <div class="button-container">
-            <button class="popup-button primary-button" id="confirm-boost">Pump Me</button>
-        </div>
+<!-- Boost Confirmation Popup -->
+<div id="boost-popup" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <p id="boost-popup-message"></p>
+      <div class="button-container">
+        <button id="confirm-boost" class="popup-button primary-button">Pump Me</button>
+        <button id="close-boost-popup" class="popup-button secondary-button">Cancel</button>
+      </div>
     </div>
-</div>
+  </div>
     
     <script src="/fitnessLevels.js"></script>
     <script src="/boosts.js"></script>

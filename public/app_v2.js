@@ -388,48 +388,80 @@ function closeTaskPopup() {
 
 function applyBoostEffect(boostName, boostEffect) {
     if (!boostEffect) {
-        console.error(`Boost effect is undefined for boost: ${boostName}`);
-        return;
+      console.error(`Boost effect is undefined for boost: ${boostName}`);
+      return;
     }
-
-    console.log('Applying boost effect:', { boostName, boostEffect }); // Debugging log
-
+  
+    console.log('Applying boost effect:', { boostName, boostEffect });
+  
     if (boostEffect.type === "multiplier") {
-        boostMultiplier *= boostEffect.value;
-
-        // Set the expiration time to the current time plus the boost duration in milliseconds
-        const expirationTime = Date.now() + boostEffect.duration * 1000;
-
-        console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`); // Debugging log
-
-        // Add boost to activeBoosts array
-        activeBoosts.push({
-            name: boostName,
-            effect: boostEffect,
-            expirationTime: expirationTime
-        });
-
-        console.log('Active boosts after applying:', activeBoosts); // Debugging log
-
-        // Save user data after updating activeBoosts
-        saveUserData();
-
-        // Set a timeout to remove the boost effect after its duration
-        setTimeout(() => {
-            console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
-            boostMultiplier /= boostEffect.value;
-            activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
-            console.log('Active boosts after expiring:', activeBoosts); // Debugging log
-            updateUI();
-            saveUserData(); // Save data after boost expires
-        }, boostEffect.duration * 1000);
-
-        // Update the UI to reflect the boost
+      boostMultiplier *= boostEffect.value;
+  
+      const expirationTime = Date.now() + boostEffect.duration * 1000;
+  
+      console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
+  
+      // Add boost to activeBoosts array
+      activeBoosts.push({
+        name: boostName,
+        effect: boostEffect,
+        expirationTime: expirationTime
+      });
+  
+      // Mark the boost as active in window.boosts
+      markBoostAsActive(boostName);
+  
+      console.log('Active boosts after applying:', activeBoosts);
+  
+      // Save user data after updating activeBoosts
+      saveUserData();
+  
+      // Set a timeout to remove the boost effect after its duration
+      setTimeout(() => {
+        console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
+        boostMultiplier /= boostEffect.value;
+        activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
+  
+        // Mark the boost as inactive in window.boosts
+        markBoostAsInactive(boostName);
+  
+        console.log('Active boosts after expiring:', activeBoosts);
         updateUI();
+        initializeBoostsPage(); // Refresh the Boosts page
+        updateProfilePage();    // Refresh the Profile page
+        saveUserData();
+      }, boostEffect.duration * 1000);
+  
+      // Update the UI to reflect the boost
+      updateUI();
+      initializeBoostsPage(); // Refresh the Boosts page
+      updateProfilePage();    // Refresh the Profile page
     } else {
-        console.error(`Unsupported boost effect type: ${boostEffect.type}`);
+      console.error(`Unsupported boost effect type: ${boostEffect.type}`);
     }
-}
+  }
+  
+function markBoostAsActive(boostName) {
+    Object.keys(window.boosts).forEach(category => {
+      window.boosts[category].forEach(boost => {
+        if (boost.name === boostName) {
+          boost.active = true;
+          boost.expirationTime = Date.now() + boost.effect.duration * 1000;
+        }
+      });
+    });
+  }
+  
+function markBoostAsInactive(boostName) {
+    Object.keys(window.boosts).forEach(category => {
+      window.boosts[category].forEach(boost => {
+        if (boost.name === boostName) {
+          boost.active = false;
+          delete boost.expirationTime;
+        }
+      });
+    });
+  }  
 
 function updateActiveBoostsDisplay() {
     const activeBoostsContainer = document.getElementById('active-boosts-container');
@@ -489,68 +521,69 @@ function showInsufficientGainsMessage(boostName) {
 
 function updateProfilePage() {
     const attributes = [
-        { name: "Strength", value: 20 },
-        { name: "Endurance", value: 18 },
-        { name: "Recovery", value: 22 },
-        { name: "Technique", value: 15 },
-        { name: "Motivation", value: 25 },
-        { name: "Charisma", value: 17 },
-        { name: "Risk of Injury", value: 25 }
+      { name: "Strength", value: 20 },
+      { name: "Endurance", value: 18 },
+      { name: "Recovery", value: 22 },
+      { name: "Technique", value: 15 },
+      { name: "Motivation", value: 25 },
+      { name: "Charisma", value: 17 },
+      { name: "Risk of Injury", value: 25 }
     ];
-
+  
     const attributesContainer = document.getElementById('attributes-container');
     if (attributesContainer) {
-        attributesContainer.innerHTML = '';
-        attributes.forEach(attr => {
-            const attrElement = document.createElement('div');
-            attrElement.className = 'attribute-item';
-            attrElement.innerHTML = `
-                <div class="attribute-name">${attr.name}</div>
-                <div class="attribute-bar-container">
-                    <div class="attribute-bar" style="width: ${attr.value}%"></div>
-                </div>
-                <div class="attribute-value">${attr.value}</div>
-            `;
-            attributesContainer.appendChild(attrElement);
-        });
+      attributesContainer.innerHTML = '';
+      attributes.forEach(attr => {
+        const attrElement = document.createElement('div');
+        attrElement.className = 'attribute-item';
+        attrElement.innerHTML = `
+          <div class="attribute-name">${attr.name}</div>
+          <div class="attribute-bar-container">
+            <div class="attribute-bar" style="width: ${attr.value}%"></div>
+          </div>
+          <div class="attribute-value">${attr.value}</div>
+        `;
+        attributesContainer.appendChild(attrElement);
+      });
     }
-
-    console.log('Updating profile page with activeBoosts:', activeBoosts);
-
+  
     const activeBoostsContainer = document.getElementById('active-boosts-container');
-    
+  
     if (activeBoostsContainer) {
-        activeBoostsContainer.innerHTML = ''; // Clear the container
-
-        const now = Date.now(); // Get current time in milliseconds
-        console.log('Current time:', new Date(now).toISOString()); // Log current time
-
-        const activeBoostsList = activeBoosts.filter(boost => boost.expirationTime > now);
-        console.log('Active boosts for profile page:', activeBoostsList); // Log active boosts
-
-        if (activeBoostsList.length > 0) {
-            activeBoostsList.forEach(boost => {
-                const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
-                const durationString = formatTime(remainingTime); // Format the remaining time
-
-                console.log(`Boost: ${boost.name}, Remaining time: ${durationString}`); // Log remaining time
-
-                const boostElement = document.createElement('div');
-                boostElement.className = 'active-boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-name">${boost.name}</div>
-                    <div class="boost-duration">${durationString}</div>
-                `;
-                activeBoostsContainer.appendChild(boostElement); // Add boost to profile page
-            });
-        } else {
-            console.log('No active boosts to display');
-            activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
-        }
+      activeBoostsContainer.innerHTML = ''; // Clear the container
+  
+      const now = Date.now(); // Get current time in milliseconds
+  
+      // Collect all active boosts from window.boosts
+      const activeBoostsList = [];
+      Object.keys(window.boosts).forEach(category => {
+        window.boosts[category].forEach(boost => {
+          if (boost.active && boost.expirationTime > now) {
+            activeBoostsList.push(boost);
+          }
+        });
+      });
+  
+      if (activeBoostsList.length > 0) {
+        activeBoostsList.forEach(boost => {
+          const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
+          const durationString = formatTime(remainingTime); // Format the remaining time
+  
+          const boostElement = document.createElement('div');
+          boostElement.className = 'active-boost-item';
+          boostElement.innerHTML = `
+            <div class="boost-name">${boost.name}</div>
+            <div class="boost-duration">${durationString}</div>
+          `;
+          activeBoostsContainer.appendChild(boostElement);
+        });
+      } else {
+        activeBoostsContainer.innerHTML = '<p>No active boosts</p>';
+      }
     } else {
-        console.error('Active boosts container not found');
+      console.error('Active boosts container not found');
     }
-}
+  }  
 
 function formatDuration(durationInMillis) {
     const totalSeconds = Math.floor(durationInMillis / 1000);

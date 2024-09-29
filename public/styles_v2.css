@@ -409,6 +409,7 @@ main {
 .button-container {
   display: flex;
   justify-content: center;
+  margin-top: 15px;
 }
 
 .confirmation-popup img {
@@ -468,7 +469,7 @@ main {
 }
 
 .profile-section {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .profile-section h3 {
@@ -520,6 +521,7 @@ main {
 }
 
 .boost-duration {
+  font-size: 14px;
   color: #ffd700;
 }
 
@@ -705,6 +707,16 @@ main {
   color: #ffffff;
   margin-bottom: 20px;
   font-size: 16px;
+}
+
+/* Popup Content */
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
 }
 
 .popup-button {
