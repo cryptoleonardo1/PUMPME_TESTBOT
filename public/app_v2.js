@@ -99,51 +99,51 @@ function updateUI() {
 function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || 'test-user-id';
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-
+  
     // Save boosts data
     const boostsData = window.boosts;
-
+  
     fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level, boostsData }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, username, gains, level, boostsData }),
     })
-    .then(response => response.json())
-    .then(data => console.log('User data saved:', data))
-    .catch(error => console.error('Error saving user data:', error));
-}
-
-function loadUserData() {
+      .then(response => response.json())
+      .then(data => console.log('User data saved:', data))
+      .catch(error => console.error('Error saving user data:', error));
+  }
+  
+  function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                gains = data.gains || 0;
-                level = data.level || 1;
-
-                // Update window.boosts with the loaded boosts data
-                if (data.boostsData && typeof data.boostsData === 'object') {
-                    window.boosts = data.boostsData;
-
-                    // Parse expirationTime back to numbers
-                    Object.keys(window.boosts).forEach(category => {
-                        window.boosts[category].forEach(boost => {
-                            if (boost.expirationTime) {
-                                boost.expirationTime = Number(boost.expirationTime);
-                            }
-                        });
-                    });
+      fetch(`/api/getUserData?userId=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          gains = data.gains || 0;
+          level = data.level || 1;
+  
+          // Update window.boosts with the loaded boosts data
+          if (data.boostsData && typeof data.boostsData === 'object') {
+            window.boosts = data.boostsData;
+  
+            // Parse expirationTime back to numbers
+            Object.keys(window.boosts).forEach(category => {
+              window.boosts[category].forEach(boost => {
+                if (boost.expirationTime) {
+                  boost.expirationTime = Number(boost.expirationTime);
                 }
-
-                // Apply active boosts
-                applyLoadedBoosts();
-
-                updateUI();
-            })
-            .catch(error => console.error('Error loading user data:', error));
+              });
+            });
+          }
+  
+          // Apply active boosts
+          applyLoadedBoosts();
+  
+          updateUI();
+        })
+        .catch(error => console.error('Error loading user data:', error));
     }
-}
+  }
 
 function applyLoadedBoosts() {
     const now = Date.now();
