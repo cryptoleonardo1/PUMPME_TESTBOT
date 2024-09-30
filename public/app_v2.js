@@ -125,6 +125,15 @@ function loadUserData() {
                 // Update window.boosts with the loaded boosts data
                 if (data.boostsData && typeof data.boostsData === 'object') {
                     window.boosts = data.boostsData;
+
+                    // Parse expirationTime back to numbers
+                    Object.keys(window.boosts).forEach(category => {
+                        window.boosts[category].forEach(boost => {
+                            if (boost.expirationTime) {
+                                boost.expirationTime = Number(boost.expirationTime);
+                            }
+                        });
+                    });
                 }
 
                 // Apply active boosts
@@ -141,6 +150,7 @@ function applyLoadedBoosts() {
     Object.keys(window.boosts).forEach(category => {
         window.boosts[category].forEach(boost => {
             if (boost.active && boost.expirationTime) {
+                boost.expirationTime = Number(boost.expirationTime);
                 const remainingDuration = boost.expirationTime - now;
                 if (remainingDuration > 0) {
                     const boostEffect = boostEffects[boost.name];
@@ -159,7 +169,6 @@ function applyLoadedBoosts() {
                             updateProfilePage();
                             saveUserData();
                         }, remainingDuration);
-
                     } else {
                         console.error(`No boost effect found for ${boost.name}`);
                     }
@@ -172,7 +181,7 @@ function applyLoadedBoosts() {
         });
     });
 }
-  
+
 function pump(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -449,16 +458,16 @@ function applyBoostEffect(boostName, boostEffect) {
     }
   }
   
-function markBoostAsActive(boostName) {
+  function markBoostAsActive(boostName) {
     Object.keys(window.boosts).forEach(category => {
-      window.boosts[category].forEach(boost => {
-        if (boost.name === boostName) {
-          boost.active = true;
-          boost.expirationTime = Date.now() + boost.effect.duration * 1000;
-        }
-      });
+        window.boosts[category].forEach(boost => {
+            if (boost.name === boostName) {
+                boost.active = true;
+                boost.expirationTime = Date.now() + boost.effect.duration * 1000;
+            }
+        });
     });
-  }
+}
   
 function markBoostAsInactive(boostName) {
     Object.keys(window.boosts).forEach(category => {
@@ -566,8 +575,12 @@ function updateProfilePage() {
         const activeBoostsList = [];
         Object.keys(window.boosts).forEach(category => {
             window.boosts[category].forEach(boost => {
-                if (boost.active && boost.expirationTime && boost.expirationTime > now) {
+                if (boost.active && boost.expirationTime && Number(boost.expirationTime) > now) {
                     activeBoostsList.push(boost);
+                } else if (boost.active) {
+                    // Boost has expired
+                    boost.active = false;
+                    boost.expirationTime = null;
                 }
             });
         });
