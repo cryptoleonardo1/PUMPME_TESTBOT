@@ -1,104 +1,22 @@
-// app_v2.js
+const tg = window.Telegram.WebApp;
 
-// Initialize variables
+let userId = tg.initDataUnsafe?.user?.id;
+let username = tg.initDataUnsafe?.user?.username || 'Anonymous';
+
+// Fallback for testing outside of Telegram
+if (!userId) {
+  userId = 'test-user-id'; // Replace with a unique identifier for testing
+  username = 'TestUser';
+}
+
 let gains = 0;
+let energy = 1000;
 let level = 1;
 let gainsPerRep = 1;
 let gainsPerDay = 0;
-let energy = 1000;
 let boostMultiplier = 1;
 let activeBoosts = [];
 
-const tg = window.Telegram.WebApp;
-
-// User ID fallback for testing
-const userIdFallback = 'test-user-id'; // Replace with a unique identifier for testing
-
-// Fitness levels data
-const fitnessLevels = [
-    {
-        level: 1,
-        name: "Couch Potato",
-        minGains: 0,
-        maxGains: 10000,
-        gainsPerRep: 1,
-        gainsPerDay: 0
-    },
-    {
-        level: 2,
-        name: "Weekend Warrior",
-        minGains: 10001,
-        maxGains: 30000,
-        gainsPerRep: 3,
-        gainsPerDay: 0
-    },
-    {
-        level: 3,
-        name: "Gym Rat",
-        minGains: 30001,
-        maxGains: 100000,
-        gainsPerRep: 7,
-        gainsPerDay: 0
-    },
-    {
-        level: 4,
-        name: "Iron Pumpling",
-        minGains: 100001,
-        maxGains: 300000,
-        gainsPerRep: 12,
-        gainsPerDay: 1200
-    },
-    {
-        level: 5,
-        name: "Shredded Sensation",
-        minGains: 300001,
-        maxGains: 1000000,
-        gainsPerRep: 18,
-        gainsPerDay: 1800
-    },
-    {
-        level: 6,
-        name: "Flex Master",
-        minGains: 1000001,
-        maxGains: 2500000,
-        gainsPerRep: 25,
-        gainsPerDay: 2500
-    },
-    {
-        level: 7,
-        name: "Strength Sage",
-        minGains: 2500001,
-        maxGains: 5000000,
-        gainsPerRep: 33,
-        gainsPerDay: 3300
-    },
-    {
-        level: 8,
-        name: "Fitness Phenom",
-        minGains: 5000001,
-        maxGains: 10000000,
-        gainsPerRep: 42,
-        gainsPerDay: 4200
-    },
-    {
-        level: 9,
-        name: "Olympian Aspirant",
-        minGains: 10000001,
-        maxGains: 20000000,
-        gainsPerRep: 52,
-        gainsPerDay: 5200
-    },
-    {
-        level: 10,
-        name: "Legendary Lifter",
-        minGains: 20000001,
-        maxGains: Infinity,
-        gainsPerRep: 63,
-        gainsPerDay: 6300
-    }
-];
-
-// Boost effects data
 const boostEffects = {
     "Protein Shake": { type: "multiplier", value: 1.5, duration: 3600 }, // Duration in seconds (1 hour)
     "Pre-workout": { type: "multiplier", value: 1.5, duration: 3600 }, 
@@ -139,56 +57,8 @@ const boostEffects = {
     "Meditation": { type: "multiplier", value: 5, duration: 20 },
 };
 
-// Boosts data (integrated from boosts.js)
-window.boosts = {
-    nutrition: [
-        { name: "Protein Shake", icon: "🥤", description: "Boost muscle recovery", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Pre-workout", icon: "⚡", description: "Increase energy for workouts", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Creatine", icon: "💊", description: "Enhance strength and muscle mass", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "BCAA", icon: "🧪", description: "Support muscle growth and recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Coffee", icon: "☕", description: "Quick energy boost", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Energy drink", icon: "🥫", description: "Sustained energy boost", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Steak", icon: "🥩", description: "High protein meal", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Chicken", icon: "🍗", description: "Lean protein source", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Hot-dog", icon: "🌭", description: "Quick protein fix", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
-    ],
-    workout: [
-        { name: "Chest Day", icon: "🏋️", description: "Focus on chest muscles", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Back Day", icon: "🏋️", description: "Strengthen your back", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Leg Day", icon: "🦵", description: "Build lower body strength", price: 650, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Abs Workout", icon: "🦹‍♂️", description: "Core strength training", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Shoulder Day", icon: "🦾", description: "Develop shoulder muscles", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Biceps Workout", icon: "💪", description: "Focus on biceps", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Triceps Workout", icon: "🦾", description: "Strengthen triceps", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "HIIT", icon: "🏃‍♂️", description: "High-intensity interval training", price: 700, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Endurance Cardio", icon: "🏃", description: "Boost cardiovascular endurance", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Calisthenics", icon: "🤸", description: "Bodyweight exercises", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Street Workout", icon: "🤸", description: "Outdoor fitness training", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
-    ],
-    activities: [
-        { name: "Yoga", icon: "🧘", description: "Improve flexibility and mindfulness", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Dance Class", icon: "🕺", description: "Fun cardio workout", price: 450, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Muay Thai", icon: "🥊", description: "Thai boxing training", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Karate", icon: "🥋", description: "Martial arts practice", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Jogging", icon: "🏃‍♀️", description: "Outdoor cardio session", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Cycling", icon: "🚴", description: "Low-impact cardio workout", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
-    ],
-    resting: [
-        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Massage", icon: "🧖", description: "Muscle relaxation therapy", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350, active: false, effect: { type: "multiplier", value: 5, duration: 20 } }
-    ]
-};
+const userIdFallback = 'test-user-id'; // Replace with a unique identifier for testing
 
-// Function to update fitness level based on gains
 function updateLevel() {
     const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
     if (currentLevel && currentLevel.level !== level) {
@@ -199,7 +69,6 @@ function updateLevel() {
     }
 }
 
-// Function to update the UI elements
 function updateUI() {
     const energyBar = document.getElementById('energy-bar');
     const energyStatus = document.getElementById('energy-status');
@@ -219,70 +88,31 @@ function updateUI() {
     if (gainsPerRepDisplay) {
         gainsPerRepDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${(gainsPerRep * boostMultiplier).toFixed(1)}`;
     }
-    if (gainsPerDayDisplay) {
-        gainsPerDayDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${(gainsPerDay * boostMultiplier).toFixed(1)}`;
-    }
+    // Update gains per day display
+     if (gainsPerDayDisplay) {
+         gainsPerDayDisplay.innerHTML = `<img src="/public/images/bicep-icon-yellow.png" alt="Gains Icon" class="gains-icon"> +${(gainsPerDay * boostMultiplier).toFixed(1)}`;
+     }
     // Update active boosts display
     updateActiveBoostsDisplay();
 }
 
-// Function to save user data to the server
 function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || 'test-user-id';
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-
+  
     // Save boosts data
     const boostsData = window.boosts;
-
+  
     fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level, boostsData }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, username, gains, level, boostsData }),
     })
-    .then(response => response.json())
-    .then(data => console.log('User data saved:', data))
-    .catch(error => console.error('Error saving user data:', error));
-}
-
-// Function to load user data from the server
-function loadUserData() {
-    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-    if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                gains = data.gains || 0;
-                level = data.level || 1;
-
-                // Update window.boosts with the loaded boosts data
-                if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
-                    window.boosts = data.boostsData;
-
-                    // Parse expirationTime back to numbers
-                    Object.keys(window.boosts).forEach(category => {
-                        window.boosts[category].forEach(boost => {
-                            if (boost.expirationTime) {
-                                boost.expirationTime = Number(boost.expirationTime);
-                            }
-                        });
-                    });
-                } else {
-                    // If boostsData is empty, initialize window.boosts
-                    if (!window.boosts || Object.keys(window.boosts).length === 0) {
-                        window.boosts = getDefaultBoosts();
-                    }
-                }
-
-                // Apply active boosts
-                applyLoadedBoosts();
-
-                updateUI();
-            })
-            .catch(error => console.error('Error loading user data:', error));
-    }
-}
-
-// Function to get the default boosts data
+      .then(response => response.json())
+      .then(data => console.log('User data saved:', data))
+      .catch(error => console.error('Error saving user data:', error));
+  }
+  
 function getDefaultBoosts() {
     return {
     nutrition: [
@@ -333,22 +163,52 @@ function getDefaultBoosts() {
 };
 }
 
-// Function to apply loaded boosts
+  function loadUserData() {
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+    if (userId) {
+        fetch(`/api/getUserData?userId=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                gains = data.gains || 0;
+                level = data.level || 1;
+
+                // Check if boostsData is present and not empty
+                if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
+                    window.boosts = data.boostsData;
+
+                    // Parse expirationTime back to numbers
+                    Object.keys(window.boosts).forEach(category => {
+                        window.boosts[category].forEach(boost => {
+                            if (boost.expirationTime) {
+                                boost.expirationTime = Number(boost.expirationTime);
+                            }
+                        });
+                    });
+                } else {
+                    // boostsData is empty or undefined, ensure window.boosts is initialized
+                    if (!window.boosts || Object.keys(window.boosts).length === 0) {
+                        window.boosts = getDefaultBoosts(); // Function to get default boosts
+                    }
+                }
+
+                // Apply active boosts
+                applyLoadedBoosts();
+
+                updateUI();
+            })
+            .catch(error => console.error('Error loading user data:', error));
+    }
+}
+
 function applyLoadedBoosts() {
     const now = Date.now();
     Object.keys(window.boosts).forEach(category => {
         window.boosts[category].forEach(boost => {
             if (boost.active && boost.expirationTime) {
                 boost.expirationTime = Number(boost.expirationTime);
-
-                // Debug logs
-                console.log(`boost.expirationTime: ${boost.expirationTime} (${typeof boost.expirationTime})`);
-                console.log(`now: ${now} (${typeof now})`);
-
-                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
-                    const remainingDuration = boost.expirationTime - now;
+                const remainingDuration = boost.expirationTime - now;
+                if (remainingDuration > 0) {
                     const boostEffect = boostEffects[boost.name];
-
                     if (boostEffect && boostEffect.type === "multiplier") {
                         boostMultiplier *= boostEffect.value;
 
@@ -364,11 +224,9 @@ function applyLoadedBoosts() {
                             updateProfilePage();
                             saveUserData();
                         }, remainingDuration);
-                    } else {
-                        console.error(`No boost effect found for ${boost.name}`);
                     }
                 } else {
-                    // Boost has expired or invalid expirationTime
+                    // Boost has expired
                     boost.active = false;
                     boost.expirationTime = null;
                 }
@@ -377,7 +235,6 @@ function applyLoadedBoosts() {
     });
 }
 
-// Function to handle pumping action
 function pump(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -396,7 +253,6 @@ function pump(e) {
     }
 }
 
-// Function to update the leaderboard
 function updateLeaderboard() {
     fetch('/api/leaderboard')
     .then(response => response.json())
@@ -418,65 +274,11 @@ function updateLeaderboard() {
     .catch(error => console.error('Error updating leaderboard:', error));
 }
 
-// Function to initialize the Boosts page
-function initializeBoostsPage() {
-    console.log("Initializing Boosts page");
-    const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
-
-    // Set default category
-    let defaultCategory = 'nutrition';
-    categoryButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.category === defaultCategory) {
-            btn.classList.add('active');
-        }
-    });
-
-    displayBoosts(defaultCategory);
-    setupBoostsCategoryButtons();
-}
-
-// Function to display boosts for a category
-function displayBoosts(category) {
-    const boostItems = document.getElementById('boost-items');
-    if (boostItems && window.boosts && window.boosts[category]) {
-        boostItems.innerHTML = ''; // Clear current boosts
-
-        window.boosts[category]
-            .filter(boost => !boost.active) // Only include boosts that are not active
-            .forEach(boost => {
-                const boostElement = document.createElement('div');
-                boostElement.className = 'boost-item';
-                boostElement.innerHTML = `
-                    <div class="boost-icon">${boost.icon}</div>
-                    <div class="boost-content">
-                        <div class="boost-name">${boost.name}</div>
-                        <div class="boost-description">${boost.description}</div>
-                    </div>
-                    <div class="boost-price">
-                        <img src="/public/images/bicep-icon-yellow.png" alt="Price" class="price-icon">
-                        ${boost.price}
-                    </div>
-                `;
-                boostItems.appendChild(boostElement); // Add boost to the page
-
-                // Attach click handler
-                boostElement.addEventListener('click', handleBoostActivation);
-            });
-    } else {
-        console.error('Boosts data not available for category:', category);
-        if (boostItems) {
-            boostItems.innerHTML = '<p>No boosts available.</p>';
-        }
-    }
-}
-
-// Function to set up category buttons on the Boosts page
 function setupBoostsCategoryButtons() {
     console.log("Setting up boost category buttons");
     const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
     console.log("Found", categoryButtons.length, "category buttons");
-
+    
     categoryButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -488,7 +290,64 @@ function setupBoostsCategoryButtons() {
     });
 }
 
-// Function to handle boost activation
+function initializeBoostsPage() {
+  console.log("Initializing Boosts page");
+  const categoryButtons = document.querySelectorAll('#boosts-page .category-btn');
+
+  // Set default category
+  let defaultCategory = 'nutrition';
+  categoryButtons.forEach(btn => {
+    btn.classList.remove('active');
+    if (!defaultCategory && !btn.disabled) {
+      defaultCategory = btn.dataset.category;
+    }
+  });
+
+  const defaultButton = document.querySelector(`#boosts-page .category-btn[data-category="${defaultCategory}"]`);
+  if (defaultButton) {
+    defaultButton.classList.add('active');
+  }
+
+  displayBoosts(defaultCategory);
+  setupBoostsCategoryButtons();
+}
+
+function displayBoosts(category) {
+    const boostItems = document.getElementById('boost-items');
+    if (boostItems && window.boosts) {
+      boostItems.innerHTML = ''; // Clear current boosts
+  
+      window.boosts[category]
+        .filter(boost => !boost.active) // Only include boosts that are not active
+        .forEach(boost => {
+          const boostElement = document.createElement('div');
+          boostElement.className = 'boost-item';
+          boostElement.innerHTML = `
+            <div class="boost-icon">${boost.icon}</div>
+            <div class="boost-content">
+              <div class="boost-name">${boost.name}</div>
+              <div class="boost-description">${boost.description}</div>
+            </div>
+            <div class="boost-price">
+              <img src="/public/images/bicep-icon-yellow.png" alt="Price" class="price-icon">
+              ${boost.price}
+            </div>
+          `;
+          boostItems.appendChild(boostElement); // Add boost to the page
+  
+          // Attach click handler
+          boostElement.addEventListener('click', handleBoostActivation);
+        });
+    }
+  }
+
+function setupBoosts() {
+    const boostItems = document.querySelectorAll('.boost-item');
+    boostItems.forEach(item => {
+        item.addEventListener('click', handleBoostActivation);
+    });
+}
+
 function handleBoostActivation(event) {
     const boostElement = event.currentTarget;
     const boostName = boostElement.querySelector('.boost-name').textContent;
@@ -504,7 +363,6 @@ function handleBoostActivation(event) {
     showBoostPopUp(boostName, boostPrice, boostEffect);
 }
 
-// Function to show the boost confirmation popup
 function showBoostPopUp(boostName, boostPrice, boostEffect) {
     // Update popup message
     const popupMessage = document.getElementById('boost-popup-message');
@@ -554,24 +412,23 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
     });
 }
 
-// Function to confirm boost activation
+
 function confirmBoost(boostName, boostPrice, boostEffect) {
-    console.log('Confirming boost:', { boostName, boostPrice, boostEffect });
+    console.log('Confirming boost:', { boostName, boostPrice, boostEffect }); // Debugging log
 
     if (gains >= boostPrice) {
         gains -= boostPrice;
 
-        console.log('Applying boost with effect:', boostEffect);
+        console.log('Applying boost with effect:', boostEffect); // Debugging log
         applyBoostEffect(boostName, boostEffect);  // Apply boost effect
         updateUI();
         closeBoostPopup(); // Close the popup after confirmation
     } else {
         closeBoostPopup();
-        showInsufficientGainsMessage(boostName);
+        showInsufficientGainsMessage();
     }
 }
-
-// Function to close the boost popup
+  
 function closeBoostPopup() {
     const boostPopup = document.getElementById('boost-popup');
     if (boostPopup) {
@@ -579,104 +436,120 @@ function closeBoostPopup() {
     }
 }
 
-// Function to apply the boost effect
-function applyBoostEffect(boostName, boostEffect) {
-    if (!boostEffect) {
-        console.error(`Boost effect is undefined for boost: ${boostName}`);
-        return;
-    }
 
-    console.log('Applying boost effect:', { boostName, boostEffect });
+function showTaskPopup(content) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.innerHTML = `
+        <div class="popup-content">
+            ${content}
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
 
-    if (boostEffect.type === "multiplier") {
-        boostMultiplier *= boostEffect.value;
 
-        const expirationTime = Date.now() + boostEffect.duration * 1000;
-
-        console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
-
-        // Mark the boost as active in window.boosts
-        markBoostAsActive(boostName, expirationTime);
-
-        // Save user data after updating boosts
-        saveUserData();
-
-        // Set a timeout to remove the boost effect after its duration
-        setTimeout(() => {
-            console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
-            boostMultiplier /= boostEffect.value;
-            markBoostAsInactive(boostName);
-
-            updateUI();
-            initializeBoostsPage(); // Refresh the Boosts page
-            updateProfilePage();    // Refresh the Profile page
-            saveUserData(); // Save data after boost expires
-        }, boostEffect.duration * 1000);
-
-        // Update the UI to reflect the boost
-        updateUI();
-        initializeBoostsPage(); // Refresh the Boosts page
-        updateProfilePage();    // Refresh the Profile page
-    } else {
-        console.error(`Unsupported boost effect type: ${boostEffect.type}`);
+function closeTaskPopup() {
+    const popup = document.querySelector('.popup');
+    if (popup) {
+        popup.remove();
     }
 }
 
-// Helper function to mark a boost as active
-function markBoostAsActive(boostName, expirationTime) {
+function applyBoostEffect(boostName, boostEffect) {
+    if (!boostEffect) {
+      console.error(`Boost effect is undefined for boost: ${boostName}`);
+      return;
+    }
+  
+    console.log('Applying boost effect:', { boostName, boostEffect });
+  
+    if (boostEffect.type === "multiplier") {
+      boostMultiplier *= boostEffect.value;
+  
+      const expirationTime = Date.now() + boostEffect.duration * 1000;
+  
+      console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
+  
+      // Add boost to activeBoosts array
+      activeBoosts.push({
+        name: boostName,
+        effect: boostEffect,
+        expirationTime: expirationTime
+      });
+  
+      // Mark the boost as active in window.boosts
+      markBoostAsActive(boostName);
+  
+      console.log('Active boosts after applying:', activeBoosts);
+  
+      // Save user data after updating activeBoosts
+      saveUserData();
+  
+      // Set a timeout to remove the boost effect after its duration
+      setTimeout(() => {
+        console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
+        boostMultiplier /= boostEffect.value;
+        activeBoosts = activeBoosts.filter(boost => boost.expirationTime !== expirationTime);
+  
+        // Mark the boost as inactive in window.boosts
+        markBoostAsInactive(boostName);
+  
+        console.log('Active boosts after expiring:', activeBoosts);
+        updateUI();
+        initializeBoostsPage(); // Refresh the Boosts page
+        updateProfilePage();    // Refresh the Profile page
+        saveUserData();
+      }, boostEffect.duration * 1000);
+  
+      // Update the UI to reflect the boost
+      updateUI();
+      initializeBoostsPage(); // Refresh the Boosts page
+      updateProfilePage();    // Refresh the Profile page
+    } else {
+      console.error(`Unsupported boost effect type: ${boostEffect.type}`);
+    }
+  }
+  
+  function markBoostAsActive(boostName) {
     Object.keys(window.boosts).forEach(category => {
         window.boosts[category].forEach(boost => {
             if (boost.name === boostName) {
                 boost.active = true;
-                boost.expirationTime = expirationTime;
+                boost.expirationTime = Date.now() + boost.effect.duration * 1000;
             }
         });
     });
 }
-
-// Helper function to mark a boost as inactive
+  
 function markBoostAsInactive(boostName) {
     Object.keys(window.boosts).forEach(category => {
-        window.boosts[category].forEach(boost => {
-            if (boost.name === boostName) {
-                boost.active = false;
-                delete boost.expirationTime;
-            }
-        });
+      window.boosts[category].forEach(boost => {
+        if (boost.name === boostName) {
+          boost.active = false;
+          delete boost.expirationTime;
+        }
+      });
     });
-}
+  }  
 
-// Function to update the display of active boosts
 function updateActiveBoostsDisplay() {
     const activeBoostsContainer = document.getElementById('active-boosts-container');
     if (activeBoostsContainer) {
         activeBoostsContainer.innerHTML = '';
         const now = Date.now();
 
-        // Collect all active boosts from window.boosts
-        const activeBoostsList = [];
-        Object.keys(window.boosts).forEach(category => {
-            window.boosts[category].forEach(boost => {
-                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
-                    activeBoostsList.push(boost);
-                } else if (boost.active) {
-                    // Boost has expired
-                    boost.active = false;
-                    boost.expirationTime = null;
-                }
-            });
-        });
+        // Remove expired boosts
+        activeBoosts = activeBoosts.filter(boost => boost.expiresAt > now);
 
-        if (activeBoostsList.length > 0) {
-            activeBoostsList.forEach(boost => {
-                const remainingTime = Math.ceil((boost.expirationTime - now) / 1000); // in seconds
-                const durationString = formatTime(remainingTime); // Format the remaining time
-
+        if (activeBoosts.length > 0) {
+            activeBoosts.forEach(boost => {
+                const timeRemaining = Math.ceil((boost.expiresAt - now) / 1000); // in seconds
                 const boostElement = document.createElement('div');
                 boostElement.className = 'active-boost-item';
                 boostElement.innerHTML = `
                     <div class="boost-name">${boost.name}</div>
-                    <div class="boost-duration">${durationString}</div>
+                    <div class="boost-duration">${formatTime(timeRemaining)}</div>
                 `;
                 activeBoostsContainer.appendChild(boostElement);
             });
@@ -686,9 +559,8 @@ function updateActiveBoostsDisplay() {
     }
 }
 
-// Function to format time in hh:mm:ss format
 function formatTime(seconds) {
-    console.log('Formatting time for:', seconds);
+    console.log('Formatting time for:', seconds);  // Debugging log
 
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -703,11 +575,10 @@ function formatTime(seconds) {
         formattedTime = `${s}s`;
     }
 
-    console.log('Formatted time:', formattedTime);
+    console.log('Formatted time:', formattedTime);  // Debugging log
     return formattedTime;
 }
 
-// Function to show insufficient gains message
 function showInsufficientGainsMessage(boostName) {
     const popupContent = `
         <p>You do not have enough Gains to activate "${boostName}".</p>
@@ -718,7 +589,6 @@ function showInsufficientGainsMessage(boostName) {
     showTaskPopup(popupContent);
 }
 
-// Function to update the Profile page
 function updateProfilePage() {
     const attributes = [
         { name: "Strength", value: 20 },
@@ -759,12 +629,14 @@ function updateProfilePage() {
         Object.keys(window.boosts).forEach(category => {
             window.boosts[category].forEach(boost => {
                 if (boost.active && boost.expirationTime) {
+                    // Ensure expirationTime is a number
                     boost.expirationTime = Number(boost.expirationTime);
 
-                    // Debug logs
+                    // Add debug logs to check the types
                     console.log(`boost.expirationTime: ${boost.expirationTime} (${typeof boost.expirationTime})`);
                     console.log(`now: ${now} (${typeof now})`);
 
+                    // Add the if condition to check expirationTime
                     if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
                         activeBoostsList.push(boost);
                     } else {
@@ -797,10 +669,274 @@ function updateProfilePage() {
     }
 }
 
-// Event listener for DOMContentLoaded
+function formatDuration(durationInMillis) {
+    const totalSeconds = Math.floor(durationInMillis / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let durationString = '';
+    if (hours > 0) durationString += `${hours}h `;
+    if (minutes > 0) durationString += `${minutes}m `;
+    if (seconds > 0 || durationString === '') durationString += `${seconds}s`;
+
+    return durationString.trim();
+}
+
+const socialTasks = {
+    socials: [
+        { id: 'telegram', name: "PUMPME.APP on Telegram", icon: "telegram-icon.png", reward: 5000, completed: false, link: "https://t.me/pumpme_me" },
+        { id: 'instagram', name: "PUMPME.APP on Insta", icon: "instagram-icon.png", reward: 5000, completed: false, link: "https://www.instagram.com/pumpme.me/" },
+        { id: 'twitter', name: "PUMPME.APP on X", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me" },
+        { id: 'twitter-like-retweet', name: "Like & Retweet", icon: "twitter-icon.png", reward: 5000, completed: false, link: "https://x.com/Pumpme_me/status/1799805962976715102?t=YEWsHD_DuNhyrV_Y0GrGDw&s=35" }
+    ],
+    'in-game': [
+        { id: 'reps', name: "Make 50,000 reps", icon: "reps-icon.png", reward: 50000, completed: false, noPopup: true },
+        { id: 'reps', name: "Make 500,000 reps", icon: "reps-icon.png", reward: 500000, completed: false, noPopup: true },
+        { id: 'level', name: "Achieve Level 3", icon: "level-icon.png", reward: 30000, completed: false, noPopup: true },
+        { id: 'level', name: "Achieve Level 7", icon: "level-icon.png", reward: 70000, completed: false, noPopup: true },
+        { id: 'level', name: "Achieve Level 10", icon: "level-icon.png", reward: 1000000, completed: false, noPopup: true },
+        { id: 'purchase', name: "Purchase 50 Boosts", icon: "boost-icon.png", reward: 5000, completed: false, noPopup: true }
+    ],
+    referrals: [
+        { id: 'refer', name: "Refer a friend", icon: "refer-friend-icon.png", reward: 10000, completed: true, noPopup: true }
+    ],
+    completed: []
+};
+
+function updateTasksPage() {
+    console.log("Updating Tasks page");
+    initializeTasksPage();
+}
+
+function initializeTasksPage() {
+    console.log("Initializing Tasks page");
+    setupTaskCategoryButtons();
+
+    // Set default active category to "socials"
+    const defaultCategory = 'socials';
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+    categoryButtons.forEach(btn => btn.classList.remove('active'));
+    const defaultButton = document.querySelector(`.task-categories .category-btn[data-category="${defaultCategory}"]`);
+    if (defaultButton) {
+        defaultButton.classList.add('active');
+    }
+    displayTasks(defaultCategory);
+}
+
+function setupTaskCategoryButtons() {
+    console.log("Setting up task category buttons");
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+    console.log("Found", categoryButtons.length, "category buttons");
+
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Category button clicked:", button.dataset.category);
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayTasks(button.dataset.category);
+        });
+    });
+}
+
+function displayTasks(category) {
+    console.log("Displaying tasks for category:", category);
+    const tasksContainer = document.getElementById('tasks-container');
+    if (!tasksContainer) {
+        console.error("Tasks container not found");
+        return;
+    }
+
+    tasksContainer.innerHTML = ''; // Clear existing tasks
+
+    if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
+        console.error("Invalid category or tasks not found for category:", category);
+        tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
+        return;
+    }
+
+    if (socialTasks[category].length === 0) {
+        tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
+        return;
+    }
+
+    socialTasks[category].forEach(task => {
+        if (!task || typeof task !== 'object') {
+            console.error("Invalid task object:", task);
+            return;
+        }
+
+        const taskElement = document.createElement('div');
+        taskElement.className = 'social-task';
+        taskElement.innerHTML = `
+            <img src="/public/images/${task.icon || 'default-icon.png'}" alt="${task.name || 'Task'}" class="social-task-icon">
+            <div class="social-task-content">
+                <div class="social-task-name">${task.name || 'Unnamed Task'}</div>
+                <div class="social-task-reward">
+                    <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                    +${(task.reward || 0).toLocaleString()}
+                </div>
+            </div>
+            <div class="social-task-status">
+                ${task.completed ? '<img src="/public/images/check-icon.png" alt="Completed" class="status-icon">' : '<img src="/public/images/chevron-right-icon.png" alt="Incomplete" class="chevron-icon">'}
+            </div>
+        `;
+        tasksContainer.appendChild(taskElement);
+
+        // Make tasks in the "completed" category or completed tasks non-clickable
+        if (!task.completed && category !== 'completed') {
+            if (!task.noPopup) {
+                taskElement.addEventListener('click', () => handleTaskClick(task));
+            }
+        } else {
+            // Optionally add a class to style completed tasks differently
+            taskElement.classList.add('completed-task');
+        }
+    });
+}
+
+function handleTaskClick(task) {
+    if (task.completed) return;
+
+    let platformName;
+    let actionText;
+    switch(task.id) {
+        case 'instagram':
+            platformName = 'Instagram';
+            actionText = 'Follow us on Instagram';
+            break;
+        case 'telegram':
+            platformName = 'Telegram';
+            actionText = 'Join our Telegram channel';
+            break;
+        case 'twitter':
+            platformName = 'X';
+            actionText = 'Follow us on X';
+            break;
+        case 'twitter-like-retweet':
+            platformName = 'X';
+            actionText = 'Like & Retweet our post on X';
+            break;
+        default:
+            platformName = task.id;
+            actionText = 'Complete the task';
+    }
+
+    const popupContent = `
+        <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
+        <p>${actionText}</p>
+        <div class="button-container">
+            <button class="popup-button primary-button" id="pump-me-button">Pump Me</button>
+        </div>
+    `;
+
+    showTaskPopup(popupContent);
+
+    // Attach event listener to the "Pump Me" button after the popup is shown
+    setTimeout(() => {
+        const pumpMeButton = document.getElementById('pump-me-button');
+        if (pumpMeButton) {
+            pumpMeButton.addEventListener('click', () => completeTask(task));
+        } else {
+            console.error('Pump Me button not found');
+        }
+    }, 0);
+}
+
+
+function completeTask(task) {
+    // Open the desired website
+    window.open(task.link, '_blank');
+
+    // Mark the task as completed
+    task.completed = true;
+
+    // Add the task's reward to the user's gains
+    gains += task.reward;
+    updateUI();
+
+    // Move the task to the "completed" category
+    moveTaskToCompleted(task);
+
+    // Close the task popup
+    closeTaskPopup();
+
+    // Show a reward popup (optional)
+    showRewardPopup(task.reward);
+
+    // Save user data
+    saveUserData();
+}
+
+function moveTaskToCompleted(task) {
+    // Find the category the task is in
+    const category = Object.keys(socialTasks).find(cat => {
+        return socialTasks[cat].includes(task);
+    });
+
+    if (category && category !== 'completed') {
+        // Remove the task from its current category
+        socialTasks[category] = socialTasks[category].filter(t => t !== task);
+
+        // Add the task to the "completed" category
+        if (!socialTasks['completed']) {
+            socialTasks['completed'] = [];
+        }
+        socialTasks['completed'].push(task);
+    }
+
+    // Update the tasks display
+    displayTasks(category);
+}
+
+function showTaskPopup(content) {
+    // Create the overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay task-popup-overlay';
+
+    // Create the popup content container
+    const popupContent = document.createElement('div');
+    popupContent.className = 'popup-content task-popup-content';
+
+    // Add the close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'popup-close task-popup-close';
+    closeButton.innerHTML = '&times;';
+    closeButton.onclick = closeTaskPopup;
+    popupContent.appendChild(closeButton);
+
+    // Insert the content
+    const contentContainer = document.createElement('div');
+    contentContainer.innerHTML = content;
+    popupContent.appendChild(contentContainer);
+
+    // Append the popup content to the overlay
+    overlay.appendChild(popupContent);
+
+    // Append the overlay to the body
+    document.body.appendChild(overlay);
+}
+
+function closeTaskPopup() {
+    const overlay = document.querySelector('.task-popup-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+function showRewardPopup(reward) {
+    const rewardPopupContent = `
+        <h2>Task Completed!</h2>
+        <p>You've earned ${reward.toLocaleString()} gains!</p>
+        <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
+    `;
+    showTaskPopup(rewardPopupContent);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
-
+    
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
 
@@ -839,6 +975,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Bicep icon debugging
+    const bicepIcon = document.getElementById('bicep-icon');
+    if (bicepIcon) {
+        bicepIcon.onload = function() {
+            console.log('Bicep icon loaded successfully');
+        };
+        bicepIcon.onerror = function() {
+            console.error('Failed to load bicep icon');
+            // Fallback to a text representation if the image fails to load
+            bicepIcon.style.display = 'none';
+            bicepIcon.parentElement.textContent = '💪';
+        };
+    } else {
+        console.error('Bicep icon element not found');
+    }
+
     // Initialize the gym page
     const pumpMeContainer = document.getElementById('pump-me-container');
     const character = document.getElementById('character');
@@ -868,5 +1020,3 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
     tg.expand();
 });
-
-// ... (Include other functions like tasks, etc., if needed)
