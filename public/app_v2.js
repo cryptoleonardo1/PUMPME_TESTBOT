@@ -546,34 +546,34 @@ function showInsufficientGainsMessage(boostName) {
 
 function updateProfilePage() {
     const attributes = [
-      { name: "Strength", value: 20 },
-      { name: "Endurance", value: 18 },
-      { name: "Recovery", value: 22 },
-      { name: "Technique", value: 15 },
-      { name: "Motivation", value: 25 },
-      { name: "Charisma", value: 17 },
-      { name: "Risk of Injury", value: 25 }
+        { name: "Strength", value: 20 },
+        { name: "Endurance", value: 18 },
+        { name: "Recovery", value: 22 },
+        { name: "Technique", value: 15 },
+        { name: "Motivation", value: 25 },
+        { name: "Charisma", value: 17 },
+        { name: "Risk of Injury", value: 25 }
     ];
-  
+
     const attributesContainer = document.getElementById('attributes-container');
     if (attributesContainer) {
-      attributesContainer.innerHTML = '';
-      attributes.forEach(attr => {
-        const attrElement = document.createElement('div');
-        attrElement.className = 'attribute-item';
-        attrElement.innerHTML = `
-          <div class="attribute-name">${attr.name}</div>
-          <div class="attribute-bar-container">
-            <div class="attribute-bar" style="width: ${attr.value}%"></div>
-          </div>
-          <div class="attribute-value">${attr.value}</div>
-        `;
-        attributesContainer.appendChild(attrElement);
-      });
+        attributesContainer.innerHTML = '';
+        attributes.forEach(attr => {
+            const attrElement = document.createElement('div');
+            attrElement.className = 'attribute-item';
+            attrElement.innerHTML = `
+                <div class="attribute-name">${attr.name}</div>
+                <div class="attribute-bar-container">
+                    <div class="attribute-bar" style="width: ${attr.value}%"></div>
+                </div>
+                <div class="attribute-value">${attr.value}</div>
+            `;
+            attributesContainer.appendChild(attrElement);
+        });
     }
-  
+
     const activeBoostsContainer = document.getElementById('active-boosts-container');
-    
+
     if (activeBoostsContainer) {
         activeBoostsContainer.innerHTML = ''; // Clear the container
 
@@ -583,12 +583,22 @@ function updateProfilePage() {
         const activeBoostsList = [];
         Object.keys(window.boosts).forEach(category => {
             window.boosts[category].forEach(boost => {
-                if (boost.active && boost.expirationTime && Number(boost.expirationTime) > now) {
-                    activeBoostsList.push(boost);
-                } else if (boost.active) {
-                    // Boost has expired
-                    boost.active = false;
-                    boost.expirationTime = null;
+                if (boost.active && boost.expirationTime) {
+                    // Ensure expirationTime is a number
+                    boost.expirationTime = Number(boost.expirationTime);
+
+                    // Add debug logs to check the types
+                    console.log(`boost.expirationTime: ${boost.expirationTime} (${typeof boost.expirationTime})`);
+                    console.log(`now: ${now} (${typeof now})`);
+
+                    // Add the if condition to check expirationTime
+                    if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
+                        activeBoostsList.push(boost);
+                    } else {
+                        // Boost has expired or invalid expirationTime
+                        boost.active = false;
+                        boost.expirationTime = null;
+                    }
                 }
             });
         });
