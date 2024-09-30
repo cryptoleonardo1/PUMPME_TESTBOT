@@ -150,18 +150,10 @@ function applyLoadedBoosts() {
     Object.keys(window.boosts).forEach(category => {
         window.boosts[category].forEach(boost => {
             if (boost.active && boost.expirationTime) {
-                // Ensure expirationTime is a number
                 boost.expirationTime = Number(boost.expirationTime);
-
-                // Add debug logs to check the types
-                console.log(`boost.expirationTime: ${boost.expirationTime} (${typeof boost.expirationTime})`);
-                console.log(`now: ${now} (${typeof now})`);
-
-                // Add the if condition to check expirationTime
-                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
-                    const remainingDuration = boost.expirationTime - now;
+                const remainingDuration = boost.expirationTime - now;
+                if (remainingDuration > 0) {
                     const boostEffect = boostEffects[boost.name];
-
                     if (boostEffect && boostEffect.type === "multiplier") {
                         boostMultiplier *= boostEffect.value;
 
@@ -177,11 +169,9 @@ function applyLoadedBoosts() {
                             updateProfilePage();
                             saveUserData();
                         }, remainingDuration);
-                    } else {
-                        console.error(`No boost effect found for ${boost.name}`);
                     }
                 } else {
-                    // Boost has expired or invalid expirationTime
+                    // Boost has expired
                     boost.active = false;
                     boost.expirationTime = null;
                 }

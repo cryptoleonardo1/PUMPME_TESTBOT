@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
       username: username || 'Anonymous',
       gains: gains,
       level: level,
-      boostsData: boostsDataString
+      boostsData: boostsDataString, // Use boostsData as the key
     });
 
     // Update leaderboard

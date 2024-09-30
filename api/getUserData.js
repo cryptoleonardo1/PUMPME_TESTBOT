@@ -28,7 +28,7 @@ module.exports = async function(req, res) {
         res.status(200).json({
           gains: parseInt(userData.gains) || 0,
           level: parseInt(userData.level) || 1,
-          boostsData: boostsData
+          boostsData: boostsData,
         });
       }
     } catch (error) {
