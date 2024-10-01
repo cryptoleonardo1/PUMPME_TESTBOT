@@ -62,6 +62,15 @@ header {
   cursor: pointer;
 }
 
+#play-music-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 10px;
+  font-size: 16px;
+}
+
 #gains-container {
   display: flex;
   justify-content: space-between;

@@ -1332,7 +1332,6 @@ function updateLevel() {
     }
 
 // Event listener for DOMContentLoaded
-// Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
@@ -1400,19 +1399,17 @@ document.addEventListener('DOMContentLoaded', () => {
    const backgroundMusic = document.getElementById('background-music');
    const muteButton = document.getElementById('mute-btn');
 
-   // Function to play music on user interaction
-   function playBackgroundMusic() {
-       if (backgroundMusic) {
-           backgroundMusic.play().catch(error => {
-               console.error('Error playing background music:', error);
-           });
-       }
-       // Remove the event listener after the first interaction
-       document.removeEventListener('click', playBackgroundMusic);
+   // Attempt to play the music on app launch
+   if (backgroundMusic) {
+       backgroundMusic.play().then(() => {
+           console.log('Background music started automatically');
+       }).catch(error => {
+           console.error('Error playing background music:', error);
+           // Optionally, inform the user or provide a button to start the music
+       });
+   } else {
+       console.error('Background music element not found');
    }
-
-   // Add event listener for user interaction
-   document.addEventListener('click', playBackgroundMusic);
 
    // Mute/Unmute toggle
    if (muteButton) {
