@@ -1047,6 +1047,24 @@ function handleTaskCompletion(event) {
     }
 }
 
+function moveTaskToCompleted(task) {
+    // Find the category the task is in
+    const category = Object.keys(socialTasks).find(cat => {
+        return socialTasks[cat].includes(task);
+    });
+    if (category && category !== 'completed') {
+        // Remove the task from its current category
+        socialTasks[category] = socialTasks[category].filter(t => t !== task);
+        // Add the task to the "completed" category
+        if (!socialTasks['completed']) {
+            socialTasks['completed'] = [];
+        }
+        socialTasks['completed'].push(task);
+    }
+    // Update the tasks display
+    displayTasks(category);
+}
+
 // Function to show a popup when a task is completed
 function showRewardPopup(reward) {
     const popupContent = `
@@ -1113,6 +1131,22 @@ function updateLevel() {
         console.log(`Leveled up to ${currentLevel.name}!`);
     }
 }
+
+    // Bicep icon debugging
+    const bicepIcon = document.getElementById('bicep-icon');
+    if (bicepIcon) {
+        bicepIcon.onload = function() {
+            console.log('Bicep icon loaded successfully');
+        };
+        bicepIcon.onerror = function() {
+            console.error('Failed to load bicep icon');
+            // Fallback to a text representation if the image fails to load
+            bicepIcon.style.display = 'none';
+            bicepIcon.parentElement.textContent = 'ðŸ’ª';
+        };
+    } else {
+        console.error('Bicep icon element not found');
+    }
 
 // Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
