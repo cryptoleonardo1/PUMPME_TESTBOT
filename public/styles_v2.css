@@ -54,8 +54,8 @@ header {
 #music-control-container {
   display: flex;
   justify-content: flex-end; /* Align to the right */
-  margin-top: 10px; /* Add spacing above if needed */
-  padding-right: 10px; /* Adjust padding as necessary */
+  margin-top: 5px; /* Add spacing above if needed */
+  padding-right: 0px; /* Adjust padding as necessary */
 }
 
 #music-control-btn {
@@ -105,7 +105,7 @@ header {
   font-size: 20px;
   font-weight: bold;
   color: #ffffff;
-  padding-left: 14px; /* Ensure space for the bicep icon */
+  padding-left: 10px; /* Ensure space for the bicep icon */
 }
 
 #level-display {
@@ -119,7 +119,7 @@ header {
 }
 
 #level-number {
-  font-size: 16px;
+  font-size: 14px;
   color: #cccccc;
 }
 
@@ -207,7 +207,7 @@ main {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 #character {
