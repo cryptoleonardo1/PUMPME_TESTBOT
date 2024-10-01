@@ -235,7 +235,7 @@ function saveUserData() {
     const boostsData = window.boosts;
 
     // Save tasks data
-    const tasksData = tasks;
+    const tasksData = socialTasks;
 
     fetch('/api/saveUserData', {
         method: 'POST',
@@ -277,9 +277,8 @@ function loadUserData() {
                 }
 
                 // Update tasks with the loaded tasks data
-                if (data.tasksData && Array.isArray(data.tasksData)) {
-                    tasks.length = 0; // Clear current tasks
-                    tasks.push(...data.tasksData);
+                if (data.tasksData && typeof data.tasksData === 'object') {
+                    Object.assign(socialTasks, data.tasksData);
                 } else {
                     // If tasksData is empty, initialize tasks
                     if (!tasks || tasks.length === 0) {
@@ -966,6 +965,11 @@ function setupTaskCategoryButtons() {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             const category = button.dataset.category;
+
+            // Remove 'active' class from all buttons and add to the clicked one
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
             displayTasks(category); // Display tasks for the clicked category
         });
     });
@@ -1034,12 +1038,12 @@ function handleTaskClick(task) {
             actionText = 'Join our Telegram channel';
             break;
         case 'twitter':
-            platformName = 'X';
-            actionText = 'Follow us on X';
+            platformName = 'Twitter';
+            actionText = 'Follow us on Twitter';
             break;
-        case 'twitter-like-retweet':
-            platformName = 'X';
-            actionText = 'Like & Retweet our post on X';
+        case 'like-retweet':
+            platformName = 'Twitter';
+            actionText = 'Like & Retweet our post on Twitter';
             break;
         default:
             platformName = task.id;
@@ -1050,41 +1054,33 @@ function handleTaskClick(task) {
         <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
         <p>${actionText}</p>
         <div class="button-container">
-            <a href="${task.link}" target="_blank" class="popup-button primary-button">Pump Me</a>
+            <button class="popup-button primary-button" id="pump-me-button">Pump Me</button>
         </div>
     `;
 
-    showTaskPopup(popupContent); // Call the function to show the popup
-}
+    showTaskPopup(popupContent); // Show the popup
 
-// Function to handle task completion
-function handleTaskCompletion(event) {
-    const button = event.currentTarget;
-    const taskId = parseInt(button.dataset.taskId);
-    const task = tasks.find(t => t.id === taskId);
-
-    if (task && !task.completed) {
-        task.completed = true;
-        gains += task.reward;
-        updateLevel();
-        updateUI();
-        saveUserData();
-        showRewardPopup(task.reward);
-
-        // Re-initialize the Tasks page to move the task to "Completed"
-        initializeTasksPage();
+    // Attach event listener to the "Pump Me" button
+    const pumpMeButton = document.getElementById('pump-me-button');
+    if (pumpMeButton) {
+        pumpMeButton.addEventListener('click', () => {
+            completeTask(task); // Complete the task when button is clicked
+        });
     }
 }
 
 function completeTask(task) {
-    // Open the desired website
-    window.open(task.link, '_blank');
+    // Open the desired website if the task has a link
+    if (task.link) {
+        window.open(task.link, '_blank');
+    }
 
     // Mark the task as completed
     task.completed = true;
 
     // Add the task's reward to the user's gains
     gains += task.reward;
+    updateLevel();
     updateUI();
 
     // Move the task to the "completed" category
@@ -1093,7 +1089,7 @@ function completeTask(task) {
     // Close the task popup
     closeTaskPopup();
 
-    // Show a reward popup (optional)
+    // Show a reward popup
     showRewardPopup(task.reward);
 
     // Save user data

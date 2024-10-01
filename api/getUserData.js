@@ -26,7 +26,7 @@ module.exports = async function(req, res) {
         }
 
         // Parse tasksData
-        let tasksData = [];
+        let tasksData = {};
         if (userData.tasksData) {
           try {
             tasksData = JSON.parse(userData.tasksData);
@@ -34,7 +34,7 @@ module.exports = async function(req, res) {
             console.error('Error parsing tasksData:', parseError);
           }
         }
-
+        
         res.status(200).json({
           gains: parseInt(userData.gains) || 0,
           level: parseInt(userData.level) || 1,
