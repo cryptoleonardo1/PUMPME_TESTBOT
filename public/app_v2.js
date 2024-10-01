@@ -1005,7 +1005,7 @@ let socialTasks = {
         },
         {
             id: 'twitter', 
-            name: "PUMPME.APP on Twitter", 
+            name: "PUMPME.APP on X", 
             icon: "twitter-icon.png", 
             reward: 5000, 
             completed: false, 
@@ -1013,7 +1013,7 @@ let socialTasks = {
         },
         {
             id: 'like-retweet', 
-            name: "Like & Retweet on Twitter", 
+            name: "Like & Retweet on X", 
             icon: "twitter-icon.png", 
             reward: 5000, 
             completed: false, 
@@ -1086,15 +1086,14 @@ let socialTasks = {
 function setupTaskCategoryButtons() {
     const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
     categoryButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
+        button.addEventListener('click', () => {
             const category = button.dataset.category;
 
             // Remove 'active' class from all buttons and add to the clicked one
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
-            displayTasks(category); // Display tasks for the clicked category
+            displayTasks(category); // Display tasks for the selected category
         });
     });
 }
@@ -1107,6 +1106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 */
 
 function displayTasks(category) {
+    console.log(`Displaying tasks for category: ${category}`);
     const tasksContainer = document.getElementById('tasks-container');
     if (!tasksContainer) {
         console.error("Tasks container not found");
@@ -1123,10 +1123,8 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    if (category !== 'completed') {
-        // Exclude completed tasks
-        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
-    }
+    // Exclude completed tasks
+    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
@@ -1145,12 +1143,14 @@ function displayTasks(category) {
                     +${task.reward.toLocaleString()}
                 </div>
             </div>
-            <div class="social-task-status">
-                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
-            </div>
         `;
+
+        // Make tasks clickable only if in 'socials' category
+        if (category === 'socials') {
+            taskElement.addEventListener('click', () => handleTaskClick(task));
+            taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
+        }
+
         tasksContainer.appendChild(taskElement);
     });
 }
@@ -1158,28 +1158,25 @@ function displayTasks(category) {
 function handleTaskClick(task) {
     if (task.completed) return;
 
-    let platformName;
-    let actionText;
-    switch(task.id) {
+    let actionText = 'Complete the task';
+
+    // Customize actionText based on task id if needed
+    switch (task.id) {
         case 'instagram':
-            platformName = 'Instagram';
-            actionText = 'Follow us on Instagram';
+            actionText = 'Follow Us On Instagram';
             break;
         case 'telegram':
-            platformName = 'Telegram';
-            actionText = 'Join our Telegram channel';
+            actionText = 'Join Our Telegram Chat';
             break;
         case 'twitter':
-            platformName = 'Twitter';
-            actionText = 'Follow us on Twitter';
+            actionText = 'Follow Us On X';
             break;
         case 'like-retweet':
-            platformName = 'Twitter';
-            actionText = 'Like & Retweet our post on Twitter';
+            actionText = 'Like & Retweet Our Post';
             break;
         default:
-            platformName = task.id;
             actionText = 'Complete the task';
+            break;
     }
 
     const popupContent = `
@@ -1190,7 +1187,7 @@ function handleTaskClick(task) {
         </div>
     `;
 
-    showTaskPopup(popupContent); // Show the popup
+    showTaskPopup(popupContent); // Show the task popup
 
     // Attach event listener to the "Pump Me" button
     const pumpMeButton = document.getElementById('pump-me-button');
@@ -1399,33 +1396,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Background Music Functionality ---
 
-    // Get the audio element and mute button
-    const backgroundMusic = document.getElementById('background-music');
-    const muteButton = document.getElementById('mute-btn');
+   // Get the audio element and mute button
+   const backgroundMusic = document.getElementById('background-music');
+   const muteButton = document.getElementById('mute-btn');
 
-    // Play the music on app launch
-    if (backgroundMusic) {
-        backgroundMusic.play().catch(error => {
-            console.error('Error playing background music:', error);
-        });
-    } else {
-        console.error('Background music element not found');
-    }
+   // Function to play music on user interaction
+   function playBackgroundMusic() {
+       if (backgroundMusic) {
+           backgroundMusic.play().catch(error => {
+               console.error('Error playing background music:', error);
+           });
+       }
+       // Remove the event listener after the first interaction
+       document.removeEventListener('click', playBackgroundMusic);
+   }
 
-    // Mute/Unmute toggle
-    if (muteButton) {
-        muteButton.addEventListener('click', () => {
-            if (backgroundMusic) {
-                if (backgroundMusic.muted) {
-                    backgroundMusic.muted = false;
-                    muteButton.textContent = '🔊 Mute';
-                } else {
-                    backgroundMusic.muted = true;
-                    muteButton.textContent = '🔈 Unmute';
-                }
-            }
-        });
-    } else {
-        console.error('Mute button element not found');
-    }
+   // Add event listener for user interaction
+   document.addEventListener('click', playBackgroundMusic);
+
+   // Mute/Unmute toggle
+   if (muteButton) {
+       muteButton.addEventListener('click', () => {
+           if (backgroundMusic) {
+               if (backgroundMusic.muted) {
+                   backgroundMusic.muted = false;
+                   muteButton.textContent = '🔊 Mute';
+               } else {
+                   backgroundMusic.muted = true;
+                   muteButton.textContent = '🔈 Unmute';
+               }
+           }
+       });
+   } else {
+       console.error('Mute button element not found');
+   }
 });
