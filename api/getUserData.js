@@ -26,21 +26,30 @@ module.exports = async function(req, res) {
           }
         }
 
+        // Retrieve user data from Redis or your database
+        const userData = await redis.hgetall(`user:${userId}`);
+        
         // Parse tasksData
         let tasksData = {};
         if (userData.tasksData) {
-          try {
-            tasksData = JSON.parse(userData.tasksData);
-          } catch (parseError) {
-            console.error('Error parsing tasksData:', parseError);
-          }
+            try {
+                tasksData = JSON.parse(userData.tasksData);
+            } catch (error) {
+                console.error('Error parsing tasksData:', error);
+                tasksData = {
+                    socials: [],
+                    inGame: [],
+                    referrals: [],
+                    completed: []
+                };
+            }
         }
-
+        
         res.status(200).json({
-          gains: parseInt(userData.gains) || 0,
-          level: parseInt(userData.level) || 1,
-          boostsData: boostsData,
-          tasksData: tasksData,
+            gains: parseInt(userData.gains) || 0,
+            level: parseInt(userData.level) || 1,
+            boostsData: userData.boostsData ? JSON.parse(userData.boostsData) : [],
+            tasksData: tasksData,
         });
       }
     } catch (error) {

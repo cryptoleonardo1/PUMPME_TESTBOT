@@ -213,6 +213,8 @@ main {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  position: relative;
+  z-index: 10;
 }
 
 #character-container {
@@ -234,6 +236,8 @@ main {
   pointer-events: auto;
   user-select: none;
   -webkit-user-drag: none;
+  position: relative;
+  z-index: 10;
 }
 
 #boosts-page h2,

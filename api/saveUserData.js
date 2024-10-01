@@ -15,9 +15,9 @@ module.exports = async (req, res) => {
       username: username || 'Anonymous',
       gains: gains,
       level: level,
-      boostsData: boostsDataString,
+      boostsData: JSON.stringify(boostsData || {}),
       tasksData: tasksDataString,
-    });
+  });
 
     // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);

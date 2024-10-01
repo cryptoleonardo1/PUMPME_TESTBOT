@@ -5,7 +5,7 @@ let gains = 0;
 let level = 1;
 let gainsPerRep = 1;
 let gainsPerDay = 0;
-let energy = 1000;
+let energy = 100;
 let boostMultiplier = 1;
 let activeBoosts = [];
 
@@ -228,14 +228,14 @@ function updateUI() {
 
 // Function to save user data to the server
 function saveUserData() {
-    const userId = tg.initDataUnsafe?.user?.id || 'test-user-id';
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
 
     // Save boosts data
     const boostsData = window.boosts;
 
     // Save tasks data
-    const tasksData = socialTasks; // Ensure this includes the updated tasks
+    const tasksData = socialTasks;
 
     fetch('/api/saveUserData', {
         method: 'POST',
@@ -256,7 +256,7 @@ function loadUserData() {
             .then(data => {
                 gains = data.gains || 0;
                 level = data.level || 1;
-
+                
                 // Update window.boosts with the loaded boosts data
                 if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
                     window.boosts = data.boostsData;
@@ -276,55 +276,22 @@ function loadUserData() {
                     }
                 }
 
-                    // Update socialTasks with the loaded tasks data
-                    if (data.tasksData && typeof data.tasksData === 'object') {
-                        // Replace socialTasks with the loaded data
-                        socialTasks = data.tasksData;
-    
-                        // Ensure 'completed' category exists
-                        if (!socialTasks['completed']) {
-                            socialTasks['completed'] = [];
-                        }
-    
-                        // Reorganize tasks: move completed tasks to 'completed' category
-                        let completedTasks = [];
-    
-                        Object.keys(socialTasks).forEach(category => {
-                            if (category !== 'completed') {
-                                let tasksInCategory = socialTasks[category];
-                                let tasksNotCompleted = [];
-                                tasksInCategory.forEach(task => {
-                                    if (task.completed) {
-                                        completedTasks.push(task);
-                                    } else {
-                                        tasksNotCompleted.push(task);
-                                    }
-                                });
-                                // Update the category with incomplete tasks
-                                socialTasks[category] = tasksNotCompleted;
-                            }
-                        });
-    
-                        // Add any new completed tasks
-                        socialTasks['completed'] = socialTasks['completed'].concat(completedTasks);
-                    } else {
-                        // If tasksData is empty, initialize socialTasks as empty categories
-                        socialTasks = {
-                            socials: [],
-                            inGame: [],
-                            referrals: [],
-                            completed: []
-                        };
-                    }
-    
-                    // Apply active boosts
-                    applyLoadedBoosts();
-    
-                    updateUI();
-                })
-                .catch(error => console.error('Error loading user data:', error));
-        }
+               // Only update socialTasks if tasksData from server is non-empty
+               if (data.tasksData && Object.keys(data.tasksData).length > 0) {
+                socialTasks = data.tasksData;
+                console.log('Loaded tasksData from server:', socialTasks);
+            } else {
+                console.log('No tasksData loaded from server, using local socialTasks');
+            }
+
+            // Apply active boosts
+            applyLoadedBoosts();
+
+            updateUI();
+        })
+        .catch(error => console.error('Error loading user data:', error));
     }
+}
 
 /*
 function getDefaultSocialTasks() {
@@ -1107,6 +1074,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function displayTasks(category) {
     console.log(`Displaying tasks for category: ${category}`);
+    console.log('socialTasks:', socialTasks);
+
     const tasksContainer = document.getElementById('tasks-container');
     if (!tasksContainer) {
         console.error("Tasks container not found");
@@ -1332,6 +1301,7 @@ function updateLevel() {
     }
 
 // Event listener for DOMContentLoaded
+// Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
@@ -1340,7 +1310,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.expand();
 
     // Get references to navigation buttons and pages
-    const navButtons = document.querySelectorAll('.nav-btn'); // Updated selector
+    const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
 
     // Function to hide all pages and deactivate all nav buttons
@@ -1387,6 +1357,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize the default page if necessary
     if (navButtons[defaultPageIndex].id === 'tasks-btn') {
         initializeTasksPage();
+    } else if (navButtons[defaultPageIndex].id === 'boosts-btn') {
+        initializeBoostsPage();
     }
 
     // Expand the Telegram Web App interface
@@ -1395,36 +1367,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Background Music Functionality ---
 
-   // Get the audio element and mute button
-   const backgroundMusic = document.getElementById('background-music');
-   const muteButton = document.getElementById('mute-btn');
+    // Get the audio element and mute button
+    const backgroundMusic = document.getElementById('background-music');
+    const muteButton = document.getElementById('mute-btn');
 
-   // Attempt to play the music on app launch
-   if (backgroundMusic) {
-       backgroundMusic.play().then(() => {
-           console.log('Background music started automatically');
-       }).catch(error => {
-           console.error('Error playing background music:', error);
-           // Optionally, inform the user or provide a button to start the music
-       });
-   } else {
-       console.error('Background music element not found');
-   }
+    // Attempt to play the music on app launch
+    if (backgroundMusic) {
+        backgroundMusic.play().catch(error => {
+            console.warn('Autoplay failed. User interaction may be required to play the background music.');
+        });
+    } else {
+        console.error('Background music element not found');
+    }
 
-   // Mute/Unmute toggle
-   if (muteButton) {
-       muteButton.addEventListener('click', () => {
-           if (backgroundMusic) {
-               if (backgroundMusic.muted) {
-                   backgroundMusic.muted = false;
-                   muteButton.textContent = '🔊 Mute';
-               } else {
-                   backgroundMusic.muted = true;
-                   muteButton.textContent = '🔈 Unmute';
-               }
-           }
-       });
-   } else {
-       console.error('Mute button element not found');
-   }
+    // Mute/Unmute toggle
+    if (muteButton) {
+        muteButton.addEventListener('click', () => {
+            if (backgroundMusic) {
+                if (backgroundMusic.muted) {
+                    backgroundMusic.muted = false;
+                    muteButton.textContent = '🔊 Mute';
+                } else {
+                    backgroundMusic.muted = true;
+                    muteButton.textContent = '🔈 Unmute';
+                }
+            }
+        });
+    } else {
+        console.error('Mute button element not found');
+    }
+
+    // --- Event Listeners for Gym Page ---
+
+    // Event listener for the character
+    const character = document.getElementById('character');
+    if (character) {
+        character.addEventListener('click', (e) => {
+            // Handle character click
+            console.log('Character clicked');
+            pump(e); // Call your existing pump function
+        });
+    } else {
+        console.error('Character element not found');
+    }
+
+    // Event listener for the "Pump Me" button on the gym page
+    const pumpMeButton = document.getElementById('pump-me-image');
+    if (pumpMeButton) {
+        pumpMeButton.addEventListener('click', (e) => {
+            // Handle "Pump Me" button click
+            console.log('"Pump Me" button clicked');
+            pump(e); // Call your existing pump function
+        });
+    } else {
+        console.error('"Pump Me" button element not found');
+    }
+
 });
