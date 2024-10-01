@@ -956,14 +956,12 @@ function displayTasks(category) {
 
     tasksContainer.innerHTML = ''; // Clear existing tasks
 
-    // Check if the category exists in socialTasks
     if (!socialTasks[category]) {
         console.error(`No tasks found for category: ${category}`);
         tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
         return;
     }
 
-    // Iterate through the tasks and create task elements
     socialTasks[category].forEach(task => {
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
@@ -990,6 +988,44 @@ function displayTasks(category) {
 
         tasksContainer.appendChild(taskElement);
     });
+}
+
+function handleTaskClick(task) {
+    if (task.completed) return;
+
+    let platformName;
+    let actionText;
+    switch(task.id) {
+        case 'instagram':
+            platformName = 'Instagram';
+            actionText = 'Follow us on Instagram';
+            break;
+        case 'telegram':
+            platformName = 'Telegram';
+            actionText = 'Join our Telegram channel';
+            break;
+        case 'twitter':
+            platformName = 'X';
+            actionText = 'Follow us on X';
+            break;
+        case 'twitter-like-retweet':
+            platformName = 'X';
+            actionText = 'Like & Retweet our post on X';
+            break;
+        default:
+            platformName = task.id;
+            actionText = 'Complete the task';
+    }
+
+    const popupContent = `
+        <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
+        <p>${actionText}</p>
+        <div class="button-container">
+            <a href="${task.link}" target="_blank" class="popup-button primary-button">Pump Me</a>
+        </div>
+    `;
+
+    showTaskPopup(popupContent); // Call the function to show the popup
 }
 
 // Function to handle task completion
@@ -1027,29 +1063,36 @@ function showRewardPopup(reward) {
 function showTaskPopup(content) {
     // Create the overlay
     const overlay = document.createElement('div');
-    overlay.className = 'task-popup-overlay';
-
+    overlay.className = 'popup-overlay task-popup-overlay';
+  
     // Create the popup content container
     const popupContent = document.createElement('div');
-    popupContent.className = 'task-popup-content';
-
-    // Close button
+    popupContent.className = 'popup-content task-popup-content';
+  
+    // Add the close button
     const closeButton = document.createElement('button');
-    closeButton.className = 'popup-close task-popup-close';
+    closeButton.className = 'popup-close';
     closeButton.innerHTML = '&times;';
     closeButton.onclick = closeTaskPopup;
     popupContent.appendChild(closeButton);
-
+  
     // Insert the content
     const contentContainer = document.createElement('div');
     contentContainer.innerHTML = content;
     popupContent.appendChild(contentContainer);
-
+  
     // Append the popup content to the overlay
     overlay.appendChild(popupContent);
-
+  
     // Append the overlay to the body
     document.body.appendChild(overlay);
+}
+
+function closeTaskPopup() {
+    const overlay = document.querySelector('.popup-overlay');
+    if (overlay) {
+      overlay.remove();
+    }
 }
 
 // Function to close the task popup
