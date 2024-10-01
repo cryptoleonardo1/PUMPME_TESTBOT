@@ -24,6 +24,23 @@ module.exports = async function(req, res) {
             console.error('Error parsing boostsData:', parseError);
           }
         }
+        
+        // Parse tasksData
+        let tasksData = [];
+        if (userData.tasksData) {
+          try {
+            tasksData = JSON.parse(userData.tasksData);
+          } catch (parseError) {
+            console.error('Error parsing tasksData:', parseError);
+          }
+        }
+        
+        res.json({
+          gains: parseInt(userData.gains) || 0,
+          level: parseInt(userData.level) || 1,
+          boostsData: boostsData,
+          tasksData: tasksData
+        });
 
         res.status(200).json({
           gains: parseInt(userData.gains) || 0,

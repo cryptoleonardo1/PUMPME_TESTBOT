@@ -234,10 +234,13 @@ function saveUserData() {
     // Save boosts data
     const boostsData = window.boosts;
 
+    // Save tasks data
+    const tasksData = tasks;
+
     fetch('/api/saveUserData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level, boostsData }),
+        body: JSON.stringify({ userId, username, gains, level, boostsData, tasksData }),
     })
     .then(response => response.json())
     .then(data => console.log('User data saved:', data))
@@ -266,6 +269,11 @@ function loadUserData() {
                             }
                         });
                     });
+                // Update tasks with the loaded tasks data
+                if (data.tasksData && Array.isArray(data.tasksData)) {
+                    tasks.length = 0; // Clear current tasks
+                    tasks.push(...data.tasksData);
+                }
                 } else {
                     // If boostsData is empty, initialize window.boosts
                     if (!window.boosts || Object.keys(window.boosts).length === 0) {

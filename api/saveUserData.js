@@ -7,14 +7,22 @@ module.exports = async (req, res) => {
 
     // Convert boostsData to JSON string
     const boostsDataString = JSON.stringify(boostsData || {});
+    const tasksDataString = JSON.stringify(tasksData || []);
 
     // Save user data
-    await redis.hmset(`user:${userId}`, {
-      username: username || 'Anonymous',
-      gains: gains,
-      level: level,
-      boostsData: boostsDataString, // Use boostsData as the key
-    });
+    await redis.hset(
+      `user:${userId}`,
+      'username',
+      username,
+      'gains',
+      gains,
+      'level',
+      level,
+      'boostsData',
+      boostsDataString,
+      'tasksData',
+      tasksDataString
+    );
 
     // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);
