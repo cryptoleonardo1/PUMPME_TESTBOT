@@ -1065,13 +1065,6 @@ function setupTaskCategoryButtons() {
     });
 }
 
-/*
-document.addEventListener('DOMContentLoaded', () => {
-    setupTaskCategoryButtons();
-    displayTasks('socials'); // Display the default category tasks (socials)
-});
-*/
-
 function displayTasks(category) {
     console.log(`Displaying tasks for category: ${category}`);
     console.log('socialTasks:', socialTasks);
@@ -1364,12 +1357,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
     tg.expand();
 
-    // --- Background Music Functionality ---
+     // --- Background Music Functionality ---
 
-    // Get the audio element and mute button
+    // Get the audio element and Music Control button
     const backgroundMusic = document.getElementById('background-music');
-    const muteButton = document.getElementById('mute-btn');
-    const playMusicButton = document.getElementById('play-music-btn');
+    const musicControlButton = document.getElementById('music-control-btn');
 
     // Ensure the background music doesn't start on app launch
     if (backgroundMusic) {
@@ -1378,61 +1370,31 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Background music element not found');
     }
 
-    // Play Music button functionality
-    if (playMusicButton) {
-        playMusicButton.addEventListener('click', () => {
+    // Music Control button functionality
+    if (musicControlButton) {
+        // Set initial state
+        let isMusicPlaying = false;
+
+        musicControlButton.addEventListener('click', () => {
             if (backgroundMusic) {
-                backgroundMusic.play().then(() => {
-                    console.log('Background music started');
-                    // Optionally, change the button to a pause button
-                    playMusicButton.textContent = '⏸️ Pause Music';
-                    // You can toggle the functionality to pause/resume music
-                    playMusicButton.removeEventListener('click', playMusic);
-                    playMusicButton.addEventListener('click', pauseMusic);
-                }).catch(error => {
-                    console.error('Error playing background music:', error);
-                });
-            }
-        });
-
-        // Define playMusic and pauseMusic functions
-        function playMusic() {
-            backgroundMusic.play().then(() => {
-                console.log('Background music started');
-                playMusicButton.textContent = '⏸️ Pause Music';
-                playMusicButton.removeEventListener('click', playMusic);
-                playMusicButton.addEventListener('click', pauseMusic);
-            }).catch(error => {
-                console.error('Error playing background music:', error);
-            });
-        }
-
-        function pauseMusic() {
-            backgroundMusic.pause();
-            console.log('Background music paused');
-            playMusicButton.textContent = '🎵 Play Music';
-            playMusicButton.removeEventListener('click', pauseMusic);
-            playMusicButton.addEventListener('click', playMusic);
-        }
-    } else {
-        console.error('Play Music button element not found');
-    }
-
-    // Mute/Unmute toggle
-    if (muteButton) {
-        muteButton.addEventListener('click', () => {
-            if (backgroundMusic) {
-                if (backgroundMusic.muted) {
-                    backgroundMusic.muted = false;
-                    muteButton.textContent = '🔊 Mute';
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    isMusicPlaying = false;
+                    musicControlButton.textContent = '🎵'; // Music Icon
+                    console.log('Background music paused');
                 } else {
-                    backgroundMusic.muted = true;
-                    muteButton.textContent = '🔈 Unmute';
+                    backgroundMusic.play().then(() => {
+                        isMusicPlaying = true;
+                        musicControlButton.textContent = '⏸️'; // Pause Icon
+                        console.log('Background music started');
+                    }).catch(error => {
+                        console.error('Error playing background music:', error);
+                    });
                 }
             }
         });
     } else {
-        console.error('Mute button element not found');
+        console.error('Music Control button element not found');
     }
 
     // --- Event Listeners for Gym Page ---

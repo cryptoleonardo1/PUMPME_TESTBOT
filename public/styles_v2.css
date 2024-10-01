@@ -50,28 +50,24 @@ header {
   border-radius: 0;
 }
 
-#mute-container {
+/* Style for the Music Control Button */
+#music-control-container {
   display: flex;
-  justify-content: center;
-  margin-top: 10px; /* Adjust spacing as needed */
+  justify-content: flex-end; /* Align to the right */
+  margin-top: 10px; /* Add spacing above if needed */
+  padding-right: 20px; /* Adjust padding as necessary */
 }
 
-#mute-btn {
-  padding: 8px 16px;
-  font-size: 16px;
+#music-control-btn {
+  background: none;
+  border: none;
+  font-size: 24px; /* Adjust icon size */
   cursor: pointer;
+  outline: none;
 }
 
-#play-music-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-#play-music-btn {
-  padding: 8px 16px;
-  font-size: 16px;
-  cursor: pointer;
+#music-control-btn:hover {
+  opacity: 0.8; /* Optional hover effect */
 }
 
 #gains-container {
@@ -201,26 +197,6 @@ main {
   justify-content: flex-start;
   padding: 20px;
 }
-
-/*
-#pump-me-container {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  text-align: center;
-}
-
-#pump-me-image {
-  width: 120px;
-  height: auto;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  position: relative;
-  z-index: 10;
-}
-*/
 
 #character-container {
   width: 400px;
