@@ -9,14 +9,14 @@ module.exports = async (req, res) => {
     const boostsDataString = JSON.stringify(boostsData || {});
     const tasksDataString = JSON.stringify(tasksData || []);
 
-    // Save user data to Redis
-    await redis.hmset(`user:${userId}`, {
-      username: username || 'Anonymous',
-      gains: gains,
-      level: level,
-      boostsData: boostsDataString,
-      tasksData: tasksDataString,
-    });
+  // Save user data
+  await redis.hmset(`user:${userId}`, {
+    username: username || 'Anonymous',
+    gains: gains,
+    level: level,
+    boostsData: boostsDataString,
+    tasksData: tasksDataString,
+  });
 
     // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);

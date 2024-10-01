@@ -276,15 +276,38 @@ function loadUserData() {
                     }
                 }
 
-                // Update tasks with the loaded tasks data
-                if (data.tasksData && typeof data.tasksData === 'object') {
-                    Object.assign(socialTasks, data.tasksData);
-                } else {
-                    // If tasksData is empty, initialize tasks
-                    if (!tasks || tasks.length === 0) {
-                        tasks = getDefaultTasks();
+    // After loading tasksData
+    if (data.tasksData && typeof data.tasksData === 'object') {
+        // Replace socialTasks with the loaded data
+        socialTasks = data.tasksData;
+
+        // Ensure 'completed' category exists
+        if (!socialTasks['completed']) {
+            socialTasks['completed'] = [];
+        }
+
+        // Reorganize tasks: move completed tasks to 'completed' category
+        Object.keys(socialTasks).forEach(category => {
+            if (category !== 'completed') {
+                const tasksInCategory = socialTasks[category];
+                const tasksNotCompleted = [];
+                tasksInCategory.forEach(task => {
+                    if (task.completed) {
+                        socialTasks['completed'].push(task);
+                    } else {
+                        tasksNotCompleted.push(task);
                     }
-                }
+                });
+                // Update the category with incomplete tasks
+                socialTasks[category] = tasksNotCompleted;
+            }
+        });
+    } else {
+        // If tasksData is empty, initialize socialTasks
+        if (!socialTasks || Object.keys(socialTasks).length === 0) {
+            socialTasks = getDefaultSocialTasks();
+        }
+    }
 
                 // Apply active boosts
                 applyLoadedBoosts();
@@ -295,7 +318,8 @@ function loadUserData() {
     }
 }
 
-function getDefaultTasks() {
+/*
+function getDefaultSocialTasks() {
     return [
         { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false, link: "https://example.com/push-ups" },
         { id: 2, name: "Run 5km", reward: 200, completed: false, link: "https://example.com/run-5km" },
@@ -303,6 +327,110 @@ function getDefaultTasks() {
         { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
         { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
     ];
+}
+*/
+
+// Function to get default social tasks
+function getDefaultSocialTasks() {
+    return {
+        socials: [
+            {
+                id: 'telegram',
+                name: "PUMPME.APP on Telegram",
+                icon: "telegram-icon.png",
+                reward: 5000,
+                completed: false,
+                link: "https://t.me/pumpme_me"
+            },
+            {
+                id: 'instagram',
+                name: "PUMPME.APP on Instagram",
+                icon: "instagram-icon.png",
+                reward: 5000,
+                completed: false,
+                link: "https://www.instagram.com/pumpme.me/"
+            },
+            {
+                id: 'twitter',
+                name: "PUMPME.APP on Twitter",
+                icon: "twitter-icon.png",
+                reward: 5000,
+                completed: false,
+                link: "https://twitter.com/Pumpme_me"
+            },
+            {
+                id: 'like-retweet',
+                name: "Like & Retweet on Twitter",
+                icon: "twitter-icon.png",
+                reward: 5000,
+                completed: false,
+                link: "https://twitter.com/Pumpme_me/status/123456789"
+            }
+        ],
+        inGame: [
+            {
+                id: 'reps-50k',
+                name: "Complete 50,000 Reps",
+                icon: "reps-icon.png",
+                reward: 50000,
+                completed: false
+            },
+            {
+                id: 'reps-500k',
+                name: "Complete 500,000 Reps",
+                icon: "reps-icon.png",
+                reward: 500000,
+                completed: false
+            },
+            {
+                id: 'level-3',
+                name: "Reach Level 3",
+                icon: "level-icon.png",
+                reward: 30000,
+                completed: false
+            },
+            {
+                id: 'level-7',
+                name: "Reach Level 7",
+                icon: "level-icon.png",
+                reward: 70000,
+                completed: false
+            },
+            {
+                id: 'level-10',
+                name: "Reach Level 10",
+                icon: "level-icon.png",
+                reward: 100000,
+                completed: false
+            },
+            {
+                id: 'purchase-boosts',
+                name: "Purchase 50 Boosts",
+                icon: "boost-icon.png",
+                reward: 5000,
+                completed: false
+            }
+        ],
+        referrals: [
+            {
+                id: 'refer-friend',
+                name: "Refer a Friend",
+                icon: "refer-friend-icon.png",
+                reward: 10000,
+                completed: false,
+                link: "https://pumpme.app/refer"
+            },
+            {
+                id: 'refer-5-friends',
+                name: "Refer 5 Friends",
+                icon: "refer-friend-icon.png",
+                reward: 50000,
+                completed: false,
+                link: "https://pumpme.app/refer"
+            }
+        ],
+        completed: []
+    };
 }
 
 // Function to get the default boosts data
@@ -991,11 +1119,23 @@ function displayTasks(category) {
 
     if (!socialTasks[category]) {
         console.error(`No tasks found for category: ${category}`);
-        tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
+        tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
         return;
     }
 
-    socialTasks[category].forEach(task => {
+    let tasksToDisplay = socialTasks[category];
+
+    if (category !== 'completed') {
+        // Exclude completed tasks
+        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    }
+
+    if (tasksToDisplay.length === 0) {
+        tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
+        return;
+    }
+
+    tasksToDisplay.forEach(task => {
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
         taskElement.innerHTML = `
