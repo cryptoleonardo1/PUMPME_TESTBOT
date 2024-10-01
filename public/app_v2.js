@@ -931,6 +931,22 @@ const socialTasks = {
     completed: []
 };
 
+function setupTaskCategoryButtons() {
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const category = button.dataset.category;
+            displayTasks(category); // Display tasks for the clicked category
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupTaskCategoryButtons();
+    displayTasks('socials'); // Display the default category tasks (socials)
+});
+
 function displayTasks(category) {
     console.log("Displaying tasks for category:", category); // Log category selected
     const tasksContainer = document.getElementById('tasks-container');
