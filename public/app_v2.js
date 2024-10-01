@@ -797,6 +797,124 @@ function updateProfilePage() {
     }
 }
 
+
+
+
+// Task data (you can customize this according to your needs)
+const tasks = [
+    { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false },
+    { id: 2, name: "Run 5km", reward: 200, completed: false },
+    { id: 3, name: "Attend a yoga class", reward: 150, completed: false },
+    { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
+    { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
+];
+
+// Function to initialize the Tasks page
+function initializeTasksPage() {
+    const taskList = document.getElementById('task-list');
+    if (taskList) {
+        taskList.innerHTML = '';
+        tasks.forEach(task => {
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item';
+            taskItem.innerHTML = `
+                <div class="task-name">${task.name}</div>
+                <div class="task-reward">
+                    <img src="/public/images/bicep-icon-yellow.png" alt="Reward" class="reward-icon">
+                    ${task.reward}
+                </div>
+                <button class="task-complete-btn" data-task-id="${task.id}" ${task.completed ? 'disabled' : ''}>
+                    ${task.completed ? 'Completed' : 'Complete'}
+                </button>
+            `;
+            taskList.appendChild(taskItem);
+
+            // Attach event listener to the complete button
+            const completeBtn = taskItem.querySelector('.task-complete-btn');
+            completeBtn.addEventListener('click', handleTaskCompletion);
+        });
+    }
+}
+
+// Function to handle task completion
+function handleTaskCompletion(event) {
+    const button = event.currentTarget;
+    const taskId = parseInt(button.dataset.taskId);
+    const task = tasks.find(t => t.id === taskId);
+
+    if (task && !task.completed) {
+        task.completed = true;
+        gains += task.reward;
+        updateUI();
+        saveUserData();
+        showRewardPopup(task.reward);
+
+        // Update the button state
+        button.textContent = 'Completed';
+        button.disabled = true;
+    }
+}
+
+// Function to show a popup when a task is completed
+function showRewardPopup(reward) {
+    const popupContent = `
+        <h2>Task Completed!</h2>
+        <p>You've earned ${reward} gains!</p>
+        <div class="button-container">
+            <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
+        </div>
+    `;
+    showTaskPopup(popupContent);
+}
+
+// Function to show a general popup
+function showTaskPopup(content) {
+    // Create the overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'task-popup-overlay';
+
+    // Create the popup content container
+    const popupContent = document.createElement('div');
+    popupContent.className = 'task-popup-content';
+
+    // Close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'popup-close task-popup-close';
+    closeButton.innerHTML = '&times;';
+    closeButton.onclick = closeTaskPopup;
+    popupContent.appendChild(closeButton);
+
+    // Insert the content
+    const contentContainer = document.createElement('div');
+    contentContainer.innerHTML = content;
+    popupContent.appendChild(contentContainer);
+
+    // Append the popup content to the overlay
+    overlay.appendChild(popupContent);
+
+    // Append the overlay to the body
+    document.body.appendChild(overlay);
+}
+
+// Function to close the task popup
+function closeTaskPopup() {
+    const overlay = document.querySelector('.task-popup-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+// Function to update fitness level based on gains
+function updateLevel() {
+    const currentLevel = fitnessLevels.find(l => gains >= l.minGains && gains <= l.maxGains);
+    if (currentLevel && currentLevel.level !== level) {
+        level = currentLevel.level;
+        gainsPerRep = currentLevel.gainsPerRep;
+        gainsPerDay = currentLevel.gainsPerDay;
+        console.log(`Leveled up to ${currentLevel.name}!`);
+    }
+}
+
 // Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
