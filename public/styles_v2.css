@@ -50,6 +50,20 @@ header {
   border-radius: 0;
 }
 
+#mute-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+#mute-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
 #gains-container {
   display: flex;
   justify-content: space-between;

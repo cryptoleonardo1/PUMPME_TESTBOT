@@ -1099,10 +1099,12 @@ function setupTaskCategoryButtons() {
     });
 }
 
+/*
 document.addEventListener('DOMContentLoaded', () => {
     setupTaskCategoryButtons();
     displayTasks('socials'); // Display the default category tasks (socials)
 });
+*/
 
 function displayTasks(category) {
     const tasksContainer = document.getElementById('tasks-container');
@@ -1336,32 +1338,34 @@ function updateLevel() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
-    const navButtons = document.querySelectorAll('.nav-btn');
+    // Initialize Telegram Web Apps SDK
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // Get references to navigation buttons and pages
+    const navButtons = document.querySelectorAll('.nav-button');
     const pages = document.querySelectorAll('.page');
 
-    // Hide all pages except the gym page on initial load
-    pages.forEach(page => {
-        if (page.id === 'gym-page') {
-            page.style.display = 'flex';
-        } else {
-            page.style.display = 'none';
-        }
-    });
-
-    // Ensure the gym button is active on initial load
-    const gymButton = document.getElementById('gym-btn');
-    if (gymButton) {
-        gymButton.classList.add('active');
+    // Function to hide all pages and deactivate all nav buttons
+    function hideAllPages() {
+        pages.forEach(page => page.style.display = 'none');
+        navButtons.forEach(btn => btn.classList.remove('active'));
     }
 
+    // Set up navigation button event listeners
     navButtons.forEach((btn, index) => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             console.log("Nav button clicked:", btn.id);
-            navButtons.forEach(b => b.classList.remove('active'));
+
+            // Hide all pages and deactivate all buttons
+            hideAllPages();
+
+            // Show the selected page and activate the button
             btn.classList.add('active');
-            pages.forEach(page => page.style.display = 'none');
             pages[index].style.display = 'flex';
+
+            // Call initialization functions based on the page
             if (btn.id === 'boosts-btn') {
                 initializeBoostsPage();
             } else if (btn.id === 'top-pumpers-btn') {
@@ -1374,34 +1378,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initialize the gym page
-    const pumpMeContainer = document.getElementById('pump-me-container');
-    const character = document.getElementById('character');
-    [pumpMeContainer, character].forEach(element => {
-        if (element) {
-            element.addEventListener('touchstart', pump, { passive: false });
-            element.addEventListener('mousedown', pump);
-        }
-    });
-
-    setInterval(() => {
-        if (energy < 1000) {
-            energy = Math.min(1000, energy + 1);
-            updateUI();
-        }
-    }, 1000);
-
-    setInterval(() => {
-        gains += gainsPerDay * boostMultiplier / (24 * 60 * 60);
-        updateLevel();
-        updateUI();
-    }, 1000);
-
+    // Load user data and initialize the app
     loadUserData();
-    updateUI();
 
+    // Set default active page and button (e.g., 'home')
+    const defaultPageIndex = 0; // Index of the default page in the 'pages' NodeList
+    hideAllPages();
+    navButtons[defaultPageIndex].classList.add('active');
+    pages[defaultPageIndex].style.display = 'flex';
+
+    // Initialize the default page if necessary
+    if (navButtons[defaultPageIndex].id === 'tasks-btn') {
+        initializeTasksPage();
+    }
+
+    // Expand the Telegram Web App interface
     tg.ready();
     tg.expand();
-});
 
-// ... (Include other functions like tasks, etc., if needed)
+    // --- Background Music Functionality ---
+
+    // Get the audio element and mute button
+    const backgroundMusic = document.getElementById('background-music');
+    const muteButton = document.getElementById('mute-btn');
+
+    // Play the music on app launch
+    if (backgroundMusic) {
+        backgroundMusic.play().catch(error => {
+            console.error('Error playing background music:', error);
+        });
+    } else {
+        console.error('Background music element not found');
+    }
+
+    // Mute/Unmute toggle
+    if (muteButton) {
+        muteButton.addEventListener('click', () => {
+            if (backgroundMusic) {
+                if (backgroundMusic.muted) {
+                    backgroundMusic.muted = false;
+                    muteButton.textContent = '🔊 Mute';
+                } else {
+                    backgroundMusic.muted = true;
+                    muteButton.textContent = '🔈 Unmute';
+                }
+            }
+        });
+    } else {
+        console.error('Mute button element not found');
+    }
+});
