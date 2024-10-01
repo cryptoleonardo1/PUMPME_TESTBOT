@@ -561,6 +561,30 @@ main {
   color: #ffffff;
 }
 
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.task-name {
+  font-size: 18px;
+}
+
+.task-reward {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.reward-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
 .social-task {
   display: flex;
   align-items: center;
@@ -694,6 +718,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 15px;
   width: 100%;
 }
 
@@ -721,7 +746,7 @@ main {
 
 .popup-button {
   display: inline-block;
-  padding: 12px 20px;
+  padding: 10px 20px;
   margin: 10px 5px 0 5px;
   font-size: 16px;
   border-radius: 5px;

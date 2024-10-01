@@ -809,8 +809,12 @@ const tasks = [
 // Function to initialize the Tasks page
 function initializeTasksPage() {
     const taskList = document.getElementById('task-list');
-    if (taskList) {
+    const completedTaskList = document.getElementById('completed-task-list');
+
+    if (taskList && completedTaskList) {
         taskList.innerHTML = '';
+        completedTaskList.innerHTML = '';
+
         tasks.forEach(task => {
             const taskItem = document.createElement('div');
             taskItem.className = 'task-item';
@@ -820,15 +824,16 @@ function initializeTasksPage() {
                     <img src="/public/images/bicep-icon-yellow.png" alt="Reward" class="reward-icon">
                     ${task.reward}
                 </div>
-                <button class="task-complete-btn" data-task-id="${task.id}" ${task.completed ? 'disabled' : ''}>
-                    ${task.completed ? 'Completed' : 'Complete'}
-                </button>
             `;
-            taskList.appendChild(taskItem);
 
-            // Attach event listener to the complete button
-            const completeBtn = taskItem.querySelector('.task-complete-btn');
-            completeBtn.addEventListener('click', handleTaskCompletion);
+            // Attach event listener to the task item
+            taskItem.addEventListener('click', () => handleTaskClick(task));
+
+            if (task.completed) {
+                completedTaskList.appendChild(taskItem);
+            } else {
+                taskList.appendChild(taskItem);
+            }
         });
     }
 }
@@ -1037,13 +1042,13 @@ function handleTaskCompletion(event) {
     if (task && !task.completed) {
         task.completed = true;
         gains += task.reward;
+        updateLevel();
         updateUI();
         saveUserData();
         showRewardPopup(task.reward);
 
-        // Update the button state
-        button.textContent = 'Completed';
-        button.disabled = true;
+        // Re-initialize the Tasks page to move the task to "Completed"
+        initializeTasksPage();
     }
 }
 
@@ -1105,35 +1110,35 @@ function showRewardPopup(reward) {
 function showTaskPopup(content) {
     // Create the overlay
     const overlay = document.createElement('div');
-    overlay.className = 'popup-overlay task-popup-overlay';
-  
+    overlay.className = 'task-popup-overlay';
+
     // Create the popup content container
     const popupContent = document.createElement('div');
-    popupContent.className = 'popup-content task-popup-content';
-  
-    // Add the close button
+    popupContent.className = 'task-popup-content';
+
+    // Close button
     const closeButton = document.createElement('button');
-    closeButton.className = 'popup-close';
+    closeButton.className = 'popup-close task-popup-close';
     closeButton.innerHTML = '&times;';
     closeButton.onclick = closeTaskPopup;
     popupContent.appendChild(closeButton);
-  
+
     // Insert the content
     const contentContainer = document.createElement('div');
     contentContainer.innerHTML = content;
     popupContent.appendChild(contentContainer);
-  
+
     // Append the popup content to the overlay
     overlay.appendChild(popupContent);
-  
+
     // Append the overlay to the body
     document.body.appendChild(overlay);
 }
 
 function closeTaskPopup() {
-    const overlay = document.querySelector('.popup-overlay');
+    const overlay = document.querySelector('.task-popup-overlay');
     if (overlay) {
-      overlay.remove();
+        overlay.remove();
     }
 }
 
