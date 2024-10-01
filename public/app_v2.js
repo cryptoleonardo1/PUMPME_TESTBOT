@@ -1047,6 +1047,30 @@ function handleTaskCompletion(event) {
     }
 }
 
+function completeTask(task) {
+    // Open the desired website
+    window.open(task.link, '_blank');
+
+    // Mark the task as completed
+    task.completed = true;
+
+    // Add the task's reward to the user's gains
+    gains += task.reward;
+    updateUI();
+
+    // Move the task to the "completed" category
+    moveTaskToCompleted(task);
+
+    // Close the task popup
+    closeTaskPopup();
+
+    // Show a reward popup (optional)
+    showRewardPopup(task.reward);
+
+    // Save user data
+    saveUserData();
+}
+
 function moveTaskToCompleted(task) {
     // Find the category the task is in
     const category = Object.keys(socialTasks).find(cat => {
