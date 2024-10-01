@@ -1301,7 +1301,6 @@ function updateLevel() {
     }
 
 // Event listener for DOMContentLoaded
-// Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
@@ -1370,14 +1369,53 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get the audio element and mute button
     const backgroundMusic = document.getElementById('background-music');
     const muteButton = document.getElementById('mute-btn');
+    const playMusicButton = document.getElementById('play-music-btn');
 
-    // Attempt to play the music on app launch
+    // Ensure the background music doesn't start on app launch
     if (backgroundMusic) {
-        backgroundMusic.play().catch(error => {
-            console.warn('Autoplay failed. User interaction may be required to play the background music.');
-        });
+        backgroundMusic.pause(); // Ensure music is paused
     } else {
         console.error('Background music element not found');
+    }
+
+    // Play Music button functionality
+    if (playMusicButton) {
+        playMusicButton.addEventListener('click', () => {
+            if (backgroundMusic) {
+                backgroundMusic.play().then(() => {
+                    console.log('Background music started');
+                    // Optionally, change the button to a pause button
+                    playMusicButton.textContent = '⏸️ Pause Music';
+                    // You can toggle the functionality to pause/resume music
+                    playMusicButton.removeEventListener('click', playMusic);
+                    playMusicButton.addEventListener('click', pauseMusic);
+                }).catch(error => {
+                    console.error('Error playing background music:', error);
+                });
+            }
+        });
+
+        // Define playMusic and pauseMusic functions
+        function playMusic() {
+            backgroundMusic.play().then(() => {
+                console.log('Background music started');
+                playMusicButton.textContent = '⏸️ Pause Music';
+                playMusicButton.removeEventListener('click', playMusic);
+                playMusicButton.addEventListener('click', pauseMusic);
+            }).catch(error => {
+                console.error('Error playing background music:', error);
+            });
+        }
+
+        function pauseMusic() {
+            backgroundMusic.pause();
+            console.log('Background music paused');
+            playMusicButton.textContent = '🎵 Play Music';
+            playMusicButton.removeEventListener('click', pauseMusic);
+            playMusicButton.addEventListener('click', playMusic);
+        }
+    } else {
+        console.error('Play Music button element not found');
     }
 
     // Mute/Unmute toggle
@@ -1411,6 +1449,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Character element not found');
     }
 
+    /*
     // Event listener for the "Pump Me" button on the gym page
     const pumpMeButton = document.getElementById('pump-me-image');
     if (pumpMeButton) {
@@ -1422,5 +1461,5 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('"Pump Me" button element not found');
     }
-
+*/
 });

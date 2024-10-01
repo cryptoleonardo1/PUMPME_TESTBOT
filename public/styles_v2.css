@@ -62,13 +62,16 @@ header {
   cursor: pointer;
 }
 
+#play-music-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 #play-music-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  padding: 10px;
+  padding: 8px 16px;
   font-size: 16px;
+  cursor: pointer;
 }
 
 #gains-container {
@@ -199,6 +202,7 @@ main {
   padding: 20px;
 }
 
+/*
 #pump-me-container {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -216,10 +220,11 @@ main {
   position: relative;
   z-index: 10;
 }
+*/
 
 #character-container {
-  width: 320px;
-  height: 320px;
+  width: 400px;
+  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
