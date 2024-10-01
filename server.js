@@ -45,30 +45,29 @@ app.get('/api/leaderboard', async (req, res) => {
 
 app.post('/api/saveUserData', async (req, res) => {
   try {
-    const { userId, username, gains, level, boostsData } = req.body;
+    const { userId, username, gains, level, boostsData, tasksData } = req.body;
     console.log('Saving user data:', { userId, username, gains, level });
 
-    // Convert boostsData to JSON string
+    // Convert boostsData and tasksData to JSON strings
     const boostsDataString = JSON.stringify(boostsData || {});
+    const tasksDataString = JSON.stringify(tasksData || []);
 
     // Save user data
-    await redis.hset(
-      `user:${userId}`,
-      'username',
-      username,
-      'gains',
-      gains,
-      'level',
-      level,
-      'boostsData',
-      boostsDataString // Use boostsData as the key
-    );
+    await redis.hmset(`user:${userId}`, {
+      username: username || 'Anonymous',
+      gains: gains,
+      level: level,
+      boostsData: boostsDataString,
+      tasksData: tasksDataString,
+    });
+
+    // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);
 
     console.log('User data saved successfully');
     res.json({ success: true });
   } catch (error) {
-    console.error('Error saving user data:', util.inspect(error, { depth: null }));
+    console.error('Error saving user data:', error);
     res.status(500).json({ success: false, error: 'Error saving user data', details: error.message });
   }
 });
@@ -82,7 +81,7 @@ app.get('/api/getUserData', async (req, res) => {
 
     if (Object.keys(userData).length === 0) {
       console.log('No user data found, returning default values');
-      res.json({ gains: 0, level: 1, boostsData: {} });
+      res.json({ gains: 0, level: 1, boostsData: {}, tasksData: [] });
     } else {
       console.log('User data found, returning:', userData);
 
@@ -96,14 +95,25 @@ app.get('/api/getUserData', async (req, res) => {
         }
       }
 
+      // Parse tasksData
+      let tasksData = [];
+      if (userData.tasksData) {
+        try {
+          tasksData = JSON.parse(userData.tasksData);
+        } catch (parseError) {
+          console.error('Error parsing tasksData:', parseError);
+        }
+      }
+
       res.json({
         gains: parseInt(userData.gains) || 0,
         level: parseInt(userData.level) || 1,
         boostsData: boostsData,
+        tasksData: tasksData,
       });
     }
   } catch (error) {
-    console.error('Error getting user data:', util.inspect(error, { depth: null }));
+    console.error('Error getting user data:', error);
     res.status(500).json({ success: false, error: 'Error getting user data', details: error.message });
   }
 });

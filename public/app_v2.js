@@ -269,15 +269,21 @@ function loadUserData() {
                             }
                         });
                     });
-                // Update tasks with the loaded tasks data
-                if (data.tasksData && Array.isArray(data.tasksData)) {
-                    tasks.length = 0; // Clear current tasks
-                    tasks.push(...data.tasksData);
-                }
                 } else {
                     // If boostsData is empty, initialize window.boosts
                     if (!window.boosts || Object.keys(window.boosts).length === 0) {
                         window.boosts = getDefaultBoosts();
+                    }
+                }
+
+                // Update tasks with the loaded tasks data
+                if (data.tasksData && Array.isArray(data.tasksData)) {
+                    tasks.length = 0; // Clear current tasks
+                    tasks.push(...data.tasksData);
+                } else {
+                    // If tasksData is empty, initialize tasks
+                    if (!tasks || tasks.length === 0) {
+                        tasks = getDefaultTasks();
                     }
                 }
 
@@ -288,6 +294,16 @@ function loadUserData() {
             })
             .catch(error => console.error('Error loading user data:', error));
     }
+}
+
+function getDefaultTasks() {
+    return [
+        { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false, link: "https://example.com/push-ups" },
+        { id: 2, name: "Run 5km", reward: 200, completed: false, link: "https://example.com/run-5km" },
+        { id: 3, name: "Attend a yoga class", reward: 150, completed: false, link: "https://example.com/yoga-class" },
+        { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
+        { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
+    ];
 }
 
 // Function to get the default boosts data

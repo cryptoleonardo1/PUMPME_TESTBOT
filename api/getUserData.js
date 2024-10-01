@@ -11,11 +11,11 @@ module.exports = async function(req, res) {
 
       if (Object.keys(userData).length === 0) {
         console.log('No user data found, returning default values');
-        res.status(200).json({ gains: 0, level: 1, boostsData: {} });
+        res.status(200).json({ gains: 0, level: 1, boostsData: {}, tasksData: [] });
       } else {
         console.log('User data found, returning:', userData);
 
-        // Parse boostsData if it exists
+        // Parse boostsData
         let boostsData = {};
         if (userData.boostsData) {
           try {
@@ -24,7 +24,7 @@ module.exports = async function(req, res) {
             console.error('Error parsing boostsData:', parseError);
           }
         }
-        
+
         // Parse tasksData
         let tasksData = [];
         if (userData.tasksData) {
@@ -34,18 +34,12 @@ module.exports = async function(req, res) {
             console.error('Error parsing tasksData:', parseError);
           }
         }
-        
-        res.json({
-          gains: parseInt(userData.gains) || 0,
-          level: parseInt(userData.level) || 1,
-          boostsData: boostsData,
-          tasksData: tasksData
-        });
 
         res.status(200).json({
           gains: parseInt(userData.gains) || 0,
           level: parseInt(userData.level) || 1,
           boostsData: boostsData,
+          tasksData: tasksData,
         });
       }
     } catch (error) {
@@ -56,4 +50,4 @@ module.exports = async function(req, res) {
     res.setHeader('Allow', ['GET']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
