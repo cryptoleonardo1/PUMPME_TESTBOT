@@ -51,17 +51,15 @@ header {
 }
 
 #mute-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px; /* Adjust spacing as needed */
 }
 
 #mute-btn {
-  background-color: transparent;
-  border: none;
-  font-size: 24px;
+  padding: 8px 16px;
+  font-size: 16px;
   cursor: pointer;
-  color: white;
 }
 
 #gains-container {
