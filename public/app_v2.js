@@ -985,7 +985,7 @@ function initializeTasksPage() {
     displayTasks(defaultCategory); // Display tasks for the default category
 }
 
-const socialTasks = {
+let socialTasks = {
     socials: [
         {
             id: 'telegram', 
@@ -1196,7 +1196,7 @@ function handleTaskClick(task) {
     const pumpMeButton = document.getElementById('pump-me-button');
     if (pumpMeButton) {
         pumpMeButton.addEventListener('click', () => {
-            completeTask(task); // Use your existing function
+            completeTask(task); // Complete the task when button is clicked
         });
     }
 }
@@ -1301,9 +1301,9 @@ function closeTaskPopup() {
 
 // Function to close the task popup
 function closeTaskPopup() {
-    const overlay = document.querySelector('.task-popup-overlay');
-    if (overlay) {
-        overlay.remove();
+    const taskPopup = document.getElementById('task-popup');
+    if (taskPopup) {
+        taskPopup.style.display = 'none';
     }
 }
 
@@ -1335,6 +1335,7 @@ function updateLevel() {
     }
 
 // Event listener for DOMContentLoaded
+// Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
@@ -1343,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.expand();
 
     // Get references to navigation buttons and pages
-    const navButtons = document.querySelectorAll('.nav-button');
+    const navButtons = document.querySelectorAll('.nav-btn'); // Updated selector
     const pages = document.querySelectorAll('.page');
 
     // Function to hide all pages and deactivate all nav buttons
@@ -1381,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load user data and initialize the app
     loadUserData();
 
-    // Set default active page and button (e.g., 'home')
+    // Set default active page and button (e.g., 'gym')
     const defaultPageIndex = 0; // Index of the default page in the 'pages' NodeList
     hideAllPages();
     navButtons[defaultPageIndex].classList.add('active');
