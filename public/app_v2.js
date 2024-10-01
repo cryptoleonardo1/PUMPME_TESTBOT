@@ -833,6 +833,104 @@ function initializeTasksPage() {
     }
 }
 
+const socialTasks = {
+    socials: [
+        {
+            id: 'telegram', 
+            name: "PUMPME.APP on Telegram", 
+            icon: "telegram-icon.png", 
+            reward: 5000, 
+            completed: false, 
+            link: "https://t.me/pumpme_me"
+        },
+        {
+            id: 'instagram', 
+            name: "PUMPME.APP on Instagram", 
+            icon: "instagram-icon.png", 
+            reward: 5000, 
+            completed: false, 
+            link: "https://www.instagram.com/pumpme.me/"
+        },
+        {
+            id: 'twitter', 
+            name: "PUMPME.APP on Twitter", 
+            icon: "twitter-icon.png", 
+            reward: 5000, 
+            completed: false, 
+            link: "https://twitter.com/Pumpme_me"
+        },
+        {
+            id: 'like-retweet', 
+            name: "Like & Retweet on Twitter", 
+            icon: "twitter-icon.png", 
+            reward: 5000, 
+            completed: false, 
+            link: "https://twitter.com/Pumpme_me/status/123456789"
+        }
+    ],
+    inGame: [
+        {
+            id: 'reps-50k', 
+            name: "Complete 50,000 Reps", 
+            icon: "reps-icon.png", 
+            reward: 50000, 
+            completed: false
+        },
+        {
+            id: 'reps-500k', 
+            name: "Complete 500,000 Reps", 
+            icon: "reps-icon.png", 
+            reward: 500000, 
+            completed: false
+        },
+        {
+            id: 'level-3', 
+            name: "Reach Level 3", 
+            icon: "level-icon.png", 
+            reward: 30000, 
+            completed: false
+        },
+        {
+            id: 'level-7', 
+            name: "Reach Level 7", 
+            icon: "level-icon.png", 
+            reward: 70000, 
+            completed: false
+        },
+        {
+            id: 'level-10', 
+            name: "Reach Level 10", 
+            icon: "level-icon.png", 
+            reward: 100000, 
+            completed: false
+        },
+        {
+            id: 'purchase-boosts', 
+            name: "Purchase 50 Boosts", 
+            icon: "boost-icon.png", 
+            reward: 5000, 
+            completed: false
+        }
+    ],
+    referrals: [
+        {
+            id: 'refer-friend', 
+            name: "Refer a Friend", 
+            icon: "refer-friend-icon.png", 
+            reward: 10000, 
+            completed: false
+        },
+        {
+            id: 'refer-5-friends', 
+            name: "Refer 5 Friends", 
+            icon: "refer-friend-icon.png", 
+            reward: 50000, 
+            completed: false
+        }
+    ],
+    completed: []
+};
+
 function displayTasks(category) {
     console.log("Displaying tasks for category:", category); // Log category selected
     const tasksContainer = document.getElementById('tasks-container');
