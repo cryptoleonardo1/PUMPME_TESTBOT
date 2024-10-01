@@ -797,9 +797,6 @@ function updateProfilePage() {
     }
 }
 
-
-
-
 // Task data (you can customize this according to your needs)
 const tasks = [
     { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false },
@@ -834,6 +831,65 @@ function initializeTasksPage() {
             completeBtn.addEventListener('click', handleTaskCompletion);
         });
     }
+}
+
+function displayTasks(category) {
+    console.log("Displaying tasks for category:", category); // Log category selected
+    const tasksContainer = document.getElementById('tasks-container');
+    
+    if (!tasksContainer) {
+        console.error("Tasks container not found");
+        return;
+    }
+
+    tasksContainer.innerHTML = ''; // Clear existing tasks
+
+    if (category === 'completed') {
+        // Display the title for the Completed sub-page
+        tasksContainer.innerHTML = '<h2>Completed Tasks</h2><p>No completed tasks yet.</p>';
+        return;
+    }
+
+    // Check if the category exists in socialTasks
+    if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
+        console.error("Invalid category or tasks not found for category:", category);
+        tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
+        return;
+    }
+
+    console.log("Found tasks for category:", socialTasks[category]); // Log tasks found for the category
+
+    // Loop through tasks and display them
+    socialTasks[category].forEach(task => {
+        if (!task || typeof task !== 'object') {
+            console.error("Invalid task object:", task);
+            return;
+        }
+
+        const taskElement = document.createElement('div');
+        taskElement.className = 'social-task';
+        taskElement.innerHTML = `
+            <img src="/public/images/${task.icon || 'default-icon.png'}" alt="${task.name || 'Task'}" class="social-task-icon">
+            <div class="social-task-content">
+                <div class="social-task-name">${task.name || 'Unnamed Task'}</div>
+                <div class="social-task-reward">
+                    <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
+                    +${(task.reward || 0).toLocaleString()}
+                </div>
+            </div>
+            <div class="social-task-status">
+                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+            </div>
+        `;
+        tasksContainer.appendChild(taskElement); // Append each task to the DOM
+
+        // Add click event handler for incomplete tasks
+        if (!task.completed) {
+            taskElement.addEventListener('click', () => handleTaskClick(task));
+        }
+    });
 }
 
 // Function to handle task completion
