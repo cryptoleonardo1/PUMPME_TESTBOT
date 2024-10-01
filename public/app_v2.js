@@ -276,7 +276,7 @@ function loadUserData() {
                     }
                 }
 
-    // After loading tasksData
+    // Update socialTasks with the loaded tasks data
     if (data.tasksData && typeof data.tasksData === 'object') {
         // Replace socialTasks with the loaded data
         socialTasks = data.tasksData;
@@ -287,13 +287,15 @@ function loadUserData() {
         }
 
         // Reorganize tasks: move completed tasks to 'completed' category
+        let completedTasks = [];
+
         Object.keys(socialTasks).forEach(category => {
             if (category !== 'completed') {
-                const tasksInCategory = socialTasks[category];
-                const tasksNotCompleted = [];
+                let tasksInCategory = socialTasks[category];
+                let tasksNotCompleted = [];
                 tasksInCategory.forEach(task => {
                     if (task.completed) {
-                        socialTasks['completed'].push(task);
+                        completedTasks.push(task);
                     } else {
                         tasksNotCompleted.push(task);
                     }
@@ -302,20 +304,26 @@ function loadUserData() {
                 socialTasks[category] = tasksNotCompleted;
             }
         });
+
+        // Add any new completed tasks
+        socialTasks['completed'] = socialTasks['completed'].concat(completedTasks);
     } else {
-        // If tasksData is empty, initialize socialTasks
-        if (!socialTasks || Object.keys(socialTasks).length === 0) {
-            socialTasks = getDefaultSocialTasks();
-        }
+        // If tasksData is empty, initialize socialTasks as empty categories
+        socialTasks = {
+            socials: [],
+            inGame: [],
+            referrals: [],
+            completed: []
+        };
     }
 
-                // Apply active boosts
-                applyLoadedBoosts();
+    // Apply active boosts
+    applyLoadedBoosts();
 
-                updateUI();
-            })
-            .catch(error => console.error('Error loading user data:', error));
-    }
+    updateUI();
+})
+.catch(error => console.error('Error loading user data:', error));
+}
 }
 
 /*
@@ -959,34 +967,22 @@ const tasks = [
 
 // Function to initialize the Tasks page
 function initializeTasksPage() {
-    const taskList = document.getElementById('task-list');
-    const completedTaskList = document.getElementById('completed-task-list');
+    setupTaskCategoryButtons();
 
-    if (taskList && completedTaskList) {
-        taskList.innerHTML = '';
-        completedTaskList.innerHTML = '';
+    // Set default category to 'socials'
+    const defaultCategory = 'socials';
+    const categoryButtons = document.querySelectorAll('.task-categories .category-btn');
 
-        tasks.forEach(task => {
-            const taskItem = document.createElement('div');
-            taskItem.className = 'task-item';
-            taskItem.innerHTML = `
-                <div class="task-name">${task.name}</div>
-                <div class="task-reward">
-                    <img src="/public/images/bicep-icon-yellow.png" alt="Reward" class="reward-icon">
-                    ${task.reward}
-                </div>
-            `;
+    // Remove 'active' class from all buttons and add to the default one
+    categoryButtons.forEach(btn => {
+        if (btn.dataset.category === defaultCategory) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 
-            // Attach event listener to the task item
-            taskItem.addEventListener('click', () => handleTaskClick(task));
-
-            if (task.completed) {
-                completedTaskList.appendChild(taskItem);
-            } else {
-                taskList.appendChild(taskItem);
-            }
-        });
-    }
+    displayTasks(defaultCategory); // Display tasks for the default category
 }
 
 const socialTasks = {
@@ -1125,10 +1121,8 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    if (category !== 'completed') {
-        // Exclude completed tasks
-        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
-    }
+    // Exclude completed tasks
+    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
@@ -1148,14 +1142,12 @@ function displayTasks(category) {
                 </div>
             </div>
             <div class="social-task-status">
-                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
-                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
-                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
+                <!-- Status icon can be omitted if tasks are always active -->
             </div>
         `;
 
-        // If the task is not completed, make it clickable
-        if (!task.completed) {
+        // Make tasks clickable only if in 'socials' category
+        if (category === 'socials') {
             taskElement.addEventListener('click', () => handleTaskClick(task));
         }
 
@@ -1204,7 +1196,7 @@ function handleTaskClick(task) {
     const pumpMeButton = document.getElementById('pump-me-button');
     if (pumpMeButton) {
         pumpMeButton.addEventListener('click', () => {
-            completeTask(task); // Complete the task when button is clicked
+            completeTask(task); // Use your existing function
         });
     }
 }
