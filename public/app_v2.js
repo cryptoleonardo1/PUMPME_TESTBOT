@@ -5,7 +5,7 @@ let gains = 0;
 let level = 1;
 let gainsPerRep = 1;
 let gainsPerDay = 0;
-let energy = 100;
+let energy = 1000;
 let boostMultiplier = 1;
 let activeBoosts = [];
 

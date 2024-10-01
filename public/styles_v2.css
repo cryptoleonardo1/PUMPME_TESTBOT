@@ -55,13 +55,13 @@ header {
   display: flex;
   justify-content: flex-end; /* Align to the right */
   margin-top: 10px; /* Add spacing above if needed */
-  padding-right: 20px; /* Adjust padding as necessary */
+  padding-right: 10px; /* Adjust padding as necessary */
 }
 
 #music-control-btn {
   background: none;
   border: none;
-  font-size: 24px; /* Adjust icon size */
+  font-size: 40px; /* Adjust icon size */
   cursor: pointer;
   outline: none;
 }
