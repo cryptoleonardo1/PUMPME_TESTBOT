@@ -1,3 +1,4 @@
+// saveUserData.js
 const redis = require('../redis-client');
 
 module.exports = async (req, res) => {
@@ -7,16 +8,16 @@ module.exports = async (req, res) => {
 
     // Convert boostsData and tasksData to JSON strings
     const boostsDataString = JSON.stringify(boostsData || {});
-    const tasksDataString = JSON.stringify(tasksData || []);
+    const tasksDataString = JSON.stringify(tasksData || {});
 
-  // Save user data
-  await redis.hmset(`user:${userId}`, {
-    username: username || 'Anonymous',
-    gains: gains,
-    level: level,
-    boostsData: boostsDataString,
-    tasksData: tasksDataString,
-  });
+    // Save user data to Redis
+    await redis.hmset(`user:${userId}`, {
+      username: username || 'Anonymous',
+      gains: gains,
+      level: level,
+      boostsData: boostsDataString,
+      tasksData: tasksDataString,
+    });
 
     // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);

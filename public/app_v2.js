@@ -235,7 +235,7 @@ function saveUserData() {
     const boostsData = window.boosts;
 
     // Save tasks data
-    const tasksData = socialTasks;
+    const tasksData = socialTasks; // Ensure this includes the updated tasks
 
     fetch('/api/saveUserData', {
         method: 'POST',
@@ -276,55 +276,55 @@ function loadUserData() {
                     }
                 }
 
-    // Update socialTasks with the loaded tasks data
-    if (data.tasksData && typeof data.tasksData === 'object') {
-        // Replace socialTasks with the loaded data
-        socialTasks = data.tasksData;
-
-        // Ensure 'completed' category exists
-        if (!socialTasks['completed']) {
-            socialTasks['completed'] = [];
-        }
-
-        // Reorganize tasks: move completed tasks to 'completed' category
-        let completedTasks = [];
-
-        Object.keys(socialTasks).forEach(category => {
-            if (category !== 'completed') {
-                let tasksInCategory = socialTasks[category];
-                let tasksNotCompleted = [];
-                tasksInCategory.forEach(task => {
-                    if (task.completed) {
-                        completedTasks.push(task);
+                    // Update socialTasks with the loaded tasks data
+                    if (data.tasksData && typeof data.tasksData === 'object') {
+                        // Replace socialTasks with the loaded data
+                        socialTasks = data.tasksData;
+    
+                        // Ensure 'completed' category exists
+                        if (!socialTasks['completed']) {
+                            socialTasks['completed'] = [];
+                        }
+    
+                        // Reorganize tasks: move completed tasks to 'completed' category
+                        let completedTasks = [];
+    
+                        Object.keys(socialTasks).forEach(category => {
+                            if (category !== 'completed') {
+                                let tasksInCategory = socialTasks[category];
+                                let tasksNotCompleted = [];
+                                tasksInCategory.forEach(task => {
+                                    if (task.completed) {
+                                        completedTasks.push(task);
+                                    } else {
+                                        tasksNotCompleted.push(task);
+                                    }
+                                });
+                                // Update the category with incomplete tasks
+                                socialTasks[category] = tasksNotCompleted;
+                            }
+                        });
+    
+                        // Add any new completed tasks
+                        socialTasks['completed'] = socialTasks['completed'].concat(completedTasks);
                     } else {
-                        tasksNotCompleted.push(task);
+                        // If tasksData is empty, initialize socialTasks as empty categories
+                        socialTasks = {
+                            socials: [],
+                            inGame: [],
+                            referrals: [],
+                            completed: []
+                        };
                     }
-                });
-                // Update the category with incomplete tasks
-                socialTasks[category] = tasksNotCompleted;
-            }
-        });
-
-        // Add any new completed tasks
-        socialTasks['completed'] = socialTasks['completed'].concat(completedTasks);
-    } else {
-        // If tasksData is empty, initialize socialTasks as empty categories
-        socialTasks = {
-            socials: [],
-            inGame: [],
-            referrals: [],
-            completed: []
-        };
+    
+                    // Apply active boosts
+                    applyLoadedBoosts();
+    
+                    updateUI();
+                })
+                .catch(error => console.error('Error loading user data:', error));
+        }
     }
-
-    // Apply active boosts
-    applyLoadedBoosts();
-
-    updateUI();
-})
-.catch(error => console.error('Error loading user data:', error));
-}
-}
 
 /*
 function getDefaultSocialTasks() {
@@ -1121,8 +1121,10 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    // Exclude completed tasks
-    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    if (category !== 'completed') {
+        // Exclude completed tasks
+        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    }
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
@@ -1142,15 +1144,11 @@ function displayTasks(category) {
                 </div>
             </div>
             <div class="social-task-status">
-                <!-- Status icon can be omitted if tasks are always active -->
+                <img src="/public/images/${task.completed ? 'check-icon.png' : 'chevron-right-icon.png'}" 
+                     alt="${task.completed ? 'Completed' : 'Incomplete'}" 
+                     class="${task.completed ? 'status-icon' : 'chevron-icon'}">
             </div>
         `;
-
-        // Make tasks clickable only if in 'socials' category
-        if (category === 'socials') {
-            taskElement.addEventListener('click', () => handleTaskClick(task));
-        }
-
         tasksContainer.appendChild(taskElement);
     });
 }
@@ -1224,7 +1222,7 @@ function completeTask(task) {
     // Show a reward popup
     showRewardPopup(task.reward);
 
-    // Save user data
+    // Save user data (ensure this is called)
     saveUserData();
 }
 
@@ -1236,14 +1234,19 @@ function moveTaskToCompleted(task) {
     if (category && category !== 'completed') {
         // Remove the task from its current category
         socialTasks[category] = socialTasks[category].filter(t => t !== task);
+
         // Add the task to the "completed" category
         if (!socialTasks['completed']) {
             socialTasks['completed'] = [];
         }
         socialTasks['completed'].push(task);
+
+        // Save the updated socialTasks data
+        saveUserData();
+
+        // Update the tasks display
+        displayTasks(category);
     }
-    // Update the tasks display
-    displayTasks(category);
 }
 
 // Function to show a popup when a task is completed

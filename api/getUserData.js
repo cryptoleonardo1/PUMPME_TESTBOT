@@ -1,3 +1,4 @@
+// getUserData.js
 const redis = require('../redis-client');
 
 module.exports = async function(req, res) {
@@ -11,7 +12,7 @@ module.exports = async function(req, res) {
 
       if (Object.keys(userData).length === 0) {
         console.log('No user data found, returning default values');
-        res.status(200).json({ gains: 0, level: 1, boostsData: {}, tasksData: [] });
+        res.status(200).json({ gains: 0, level: 1, boostsData: {}, tasksData: {} });
       } else {
         console.log('User data found, returning:', userData);
 
@@ -25,22 +26,22 @@ module.exports = async function(req, res) {
           }
         }
 
-    // Parse tasksData
-    let tasksData = {};
-    if (userData.tasksData) {
-        try {
+        // Parse tasksData
+        let tasksData = {};
+        if (userData.tasksData) {
+          try {
             tasksData = JSON.parse(userData.tasksData);
-        } catch (parseError) {
+          } catch (parseError) {
             console.error('Error parsing tasksData:', parseError);
+          }
         }
-    }
 
-    res.status(200).json({
-        gains: parseInt(userData.gains) || 0,
-        level: parseInt(userData.level) || 1,
-        boostsData: boostsData,
-        tasksData: tasksData,
-    });
+        res.status(200).json({
+          gains: parseInt(userData.gains) || 0,
+          level: parseInt(userData.level) || 1,
+          boostsData: boostsData,
+          tasksData: tasksData,
+        });
       }
     } catch (error) {
       console.error('Error getting user data:', error);
