@@ -1380,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isMusicPlaying) {
                     backgroundMusic.pause();
                     isMusicPlaying = false;
-                    musicControlButton.textContent = '🎵'; // Music Icon
+                    musicControlButton.textContent = '📀'; // Music Icon
                     console.log('Background music paused');
                 } else {
                     backgroundMusic.play().then(() => {
