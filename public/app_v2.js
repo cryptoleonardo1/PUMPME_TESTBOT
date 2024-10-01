@@ -948,9 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function displayTasks(category) {
-    console.log("Displaying tasks for category:", category); // Log category selected
     const tasksContainer = document.getElementById('tasks-container');
-    
     if (!tasksContainer) {
         console.error("Tasks container not found");
         return;
@@ -958,37 +956,24 @@ function displayTasks(category) {
 
     tasksContainer.innerHTML = ''; // Clear existing tasks
 
-    if (category === 'completed') {
-        // Display the title for the Completed sub-page
-        tasksContainer.innerHTML = '<h2>Completed Tasks</h2><p>No completed tasks yet.</p>';
-        return;
-    }
-
     // Check if the category exists in socialTasks
-    if (!socialTasks[category] || !Array.isArray(socialTasks[category])) {
-        console.error("Invalid category or tasks not found for category:", category);
+    if (!socialTasks[category]) {
+        console.error(`No tasks found for category: ${category}`);
         tasksContainer.innerHTML = '<p>No tasks available for this category.</p>';
         return;
     }
 
-    console.log("Found tasks for category:", socialTasks[category]); // Log tasks found for the category
-
-    // Loop through tasks and display them
+    // Iterate through the tasks and create task elements
     socialTasks[category].forEach(task => {
-        if (!task || typeof task !== 'object') {
-            console.error("Invalid task object:", task);
-            return;
-        }
-
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
         taskElement.innerHTML = `
-            <img src="/public/images/${task.icon || 'default-icon.png'}" alt="${task.name || 'Task'}" class="social-task-icon">
+            <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
             <div class="social-task-content">
-                <div class="social-task-name">${task.name || 'Unnamed Task'}</div>
+                <div class="social-task-name">${task.name}</div>
                 <div class="social-task-reward">
                     <img src="/public/images/bicep-icon-yellow.png" alt="Gains" class="gains-icon">
-                    +${(task.reward || 0).toLocaleString()}
+                    +${task.reward.toLocaleString()}
                 </div>
             </div>
             <div class="social-task-status">
@@ -997,12 +982,13 @@ function displayTasks(category) {
                      class="${task.completed ? 'status-icon' : 'chevron-icon'}">
             </div>
         `;
-        tasksContainer.appendChild(taskElement); // Append each task to the DOM
 
-        // Add click event handler for incomplete tasks
+        // If the task is not completed, make it clickable
         if (!task.completed) {
             taskElement.addEventListener('click', () => handleTaskClick(task));
         }
+
+        tasksContainer.appendChild(taskElement);
     });
 }
 
