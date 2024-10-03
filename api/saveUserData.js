@@ -12,12 +12,13 @@ module.exports = async (req, res) => {
 
     // Save user data to Redis
     await redis.hmset(`user:${userId}`, {
-      username: username || 'Anonymous',
+      username: username || '',
       gains: gains,
       level: level,
-      boostsData: JSON.stringify(boostsData || {}),
+      boostsData: boostsDataString,
       tasksData: tasksDataString,
-  });
+      telegramId: userId, // Store Telegram ID
+    });
 
     // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);

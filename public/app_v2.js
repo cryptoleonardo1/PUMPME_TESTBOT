@@ -227,25 +227,34 @@ function updateUI() {
 }
 
 // Function to save user data to the server
+// app_v2.js
+
 function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-    const username = tg.initDataUnsafe?.user?.username || 'Anonymous';
-
-    // Save boosts data
-    const boostsData = window.boosts;
-
-    // Save tasks data
-    const tasksData = socialTasks;
-
-    fetch('/api/saveUserData', {
+    const username = tg.initDataUnsafe?.user?.username || '';
+  
+    if (userId) {
+      fetch('/api/saveUserData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, username, gains, level, boostsData, tasksData }),
-    })
-    .then(response => response.json())
-    .then(data => console.log('User data saved:', data))
-    .catch(error => console.error('Error saving user data:', error));
-}
+        body: JSON.stringify({
+          userId: userId,
+          username: username,
+          gains: gains,
+          level: level,
+          boostsData: boosts,
+          tasksData: socialTasks,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('User data saved successfully');
+        })
+        .catch(error => console.error('Error saving user data:', error));
+    } else {
+      console.error('User ID not available');
+    }
+  }
 
 // Function to load user data from the server
 function loadUserData() {
@@ -525,24 +534,24 @@ function pump(e) {
 // Function to update the leaderboard
 function updateLeaderboard() {
     fetch('/api/leaderboard')
-    .then(response => response.json())
-    .then(data => {
+      .then(response => response.json())
+      .then(data => {
         const leaderboardBody = document.getElementById('leaderboard-body');
         if (leaderboardBody) {
-            leaderboardBody.innerHTML = '';
-            data.forEach((user, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${user.username}</td>
-                    <td>${user.gains.toLocaleString()}</td>
-                `;
-                leaderboardBody.appendChild(row);
-            });
+          leaderboardBody.innerHTML = '';
+          data.forEach((user) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${user.rank}</td>
+              <td>${user.displayName}</td>
+              <td>${user.gains.toLocaleString()}</td>
+            `;
+            leaderboardBody.appendChild(row);
+          });
         }
-    })
-    .catch(error => console.error('Error updating leaderboard:', error));
-}
+      })
+      .catch(error => console.error('Error updating leaderboard:', error));
+  }  
 
 // Function to initialize the Boosts page
 function initializeBoostsPage() {
