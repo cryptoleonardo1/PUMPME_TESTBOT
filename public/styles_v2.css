@@ -630,6 +630,12 @@ main {
   color: #ffffff;
 }
 
+.completed-task .social-task-name::after {
+  content: ' (Completed)';
+  color: yellow;
+  font-weight: bold;
+}
+
 #tasks-container {
   padding: 0 20px;
   margin-bottom: 60px;

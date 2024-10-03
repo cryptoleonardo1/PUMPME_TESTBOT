@@ -7,6 +7,9 @@ let gainsPerRep = 1;
 let gainsPerDay = 0;
 let energy = 1000;
 let boostMultiplier = 1;
+let totalReps = 0; // Initialize at the top of your script
+let totalBoostsPurchased = 0;
+let totalReferrals = 0;
 let activeBoosts = [];
 
 const tg = window.Telegram.WebApp;
@@ -233,18 +236,21 @@ function saveUserData() {
     console.log('Saving user data with userId:', userId, 'and username:', username);
   
     if (userId) {
-      fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userId,
-          username: username,
-          gains: gains,
-          level: level,
-          boostsData: boosts,
-          tasksData: socialTasks,
-        }),
-      })
+        fetch('/api/saveUserData', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                username: username,
+                gains: gains,
+                level: level,
+                boostsData: boosts,
+                tasksData: socialTasks,
+                totalReps: totalReps,
+                totalBoostsPurchased: totalBoostsPurchased,
+                totalReferrals: totalReferrals
+            }),
+        })
         .then(response => response.json())
         .then(data => {
           console.log('User data saved successfully:', data);
@@ -260,10 +266,13 @@ function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     if (userId) {
         fetch(`/api/getUserData?userId=${userId}`)
-            .then(response => response.json())
-            .then(data => {
+        .then(response => response.json())
+        .then(data => {
                 gains = data.gains || 0;
                 level = data.level || 1;
+                totalReps = data.totalReps || 0;
+                totalBoostsPurchased = data.totalBoostsPurchased || 0;
+                totalReferrals = data.totalReferrals || 0;
                 
                 // Update window.boosts with the loaded boosts data
                 if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
@@ -508,8 +517,11 @@ function pump(e) {
     if (energy > 0) {
         gains += gainsPerRep * boostMultiplier;
         energy = Math.max(0, energy - 1);
+        totalReps += 1;
+        gains += gainsPerClick;
         updateLevel();
         updateUI();
+        checkTaskCompletion();
         saveUserData();
 
         const character = document.getElementById('character');
@@ -922,17 +934,15 @@ function updateProfilePage() {
     }
 }
 
-/*
-// Task data (you can customize this according to your needs)
-const tasks = [
-    { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false },
-    { id: 2, name: "Run 5km", reward: 200, completed: false },
-    { id: 3, name: "Attend a yoga class", reward: 150, completed: false },
-    { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
-    { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
-];
-*/
+function purchaseBoost(boostType) {
+    // ... existing code ...
 
+    totalBoostsPurchased += 1;
+
+    checkTaskCompletion();
+}
+
+// Tasks Tasks Tasks Tasks Tasks Tasks Tasks
 // Function to initialize the Tasks page
 function initializeTasksPage() {
     setupTaskCategoryButtons();
@@ -1011,58 +1021,79 @@ let socialTasks = {
             name: "Complete 50,000 Reps", 
             icon: "reps-icon.png", 
             reward: 50000, 
-            completed: false
+            completed: false,
+            condition: () => totalReps >= 50000
         },
         {
             id: 'reps-500k', 
             name: "Complete 500,000 Reps", 
             icon: "reps-icon.png", 
             reward: 500000, 
-            completed: false
+            completed: false,
+            condition: () => totalReps >= 500000
         },
         {
             id: 'level-3', 
             name: "Reach Level 3", 
             icon: "level-icon.png", 
-            reward: 30000, 
+            reward: 300000, 
             completed: false
         },
         {
             id: 'level-7', 
             name: "Reach Level 7", 
             icon: "level-icon.png", 
-            reward: 70000, 
+            reward: 700000, 
             completed: false
         },
         {
             id: 'level-10', 
             name: "Reach Level 10", 
             icon: "level-icon.png", 
-            reward: 100000, 
+            reward: 10000000, 
             completed: false
         },
         {
             id: 'purchase-boosts', 
             name: "Purchase 50 Boosts", 
             icon: "boost-icon.png", 
-            reward: 5000, 
-            completed: false
+            reward: 50000, 
+            completed: false,
+            condition: () => totalBoostsPurchased >= 50
+        },
+        {
+            id: 'purchase-boosts', 
+            name: "Purchase 500 Boosts", 
+            icon: "boost-icon.png", 
+            reward: 5000000, 
+            completed: false,
+            condition: () => totalBoostsPurchased >= 50
         }
     ],
     referrals: [
         {
-            id: 'refer-friend', 
-            name: "Refer a Friend", 
+            id: 'refer-10-friends', 
+            name: "Refer 10 Friends", 
             icon: "refer-friend-icon.png", 
             reward: 10000, 
-            completed: false
+            completed: false,
+            condition: () => totalReferrals >= 10
         },
         {
-            id: 'refer-5-friends', 
-            name: "Refer 5 Friends", 
+            id: 'refer-30-friends', 
+            name: "Refer 30 Friends", 
             icon: "refer-friend-icon.png", 
             reward: 50000, 
-            completed: false
+            completed: false,
+            condition: () => totalReferrals >= 30
+        },
+        {
+            id: 'refer-50-friends', 
+            name: "Refer 50 Friends", 
+            icon: "refer-friend-icon.png", 
+            reward: 50000, 
+            completed: false,
+            condition: () => totalReferrals >= 50
         }
     ],
     completed: []
@@ -1117,9 +1148,9 @@ function displayTasks(category) {
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
 
-        // Modify the task element appearance if it's in the 'completed' category
+        // Modify appearance if needed
         if (category === 'completed') {
-            taskElement.classList.add('completed-task'); // Add a class for styling if needed
+            taskElement.classList.add('completed-task');
         }
 
         taskElement.innerHTML = `
@@ -1133,12 +1164,10 @@ function displayTasks(category) {
             </div>
         `;
 
-        // For categories other than 'completed', make tasks clickable
-        if (category !== 'completed') {
-            if (!task.completed) {
-                taskElement.addEventListener('click', () => handleTaskClick(task));
-                taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
-            }
+        // Make tasks clickable only in 'socials' category
+        if (category === 'socials' && !task.completed) {
+            taskElement.addEventListener('click', () => handleTaskClick(task));
+            taskElement.style.cursor = 'pointer';
         }
 
         tasksContainer.appendChild(taskElement);
@@ -1240,6 +1269,53 @@ function moveTaskToCompleted(task) {
     }
 }
 
+function checkTaskCompletion() {
+    // Check In-Game Tasks
+    socialTasks.inGame.forEach(task => {
+        if (!task.completed && task.condition()) {
+            completeAutomaticTask(task, 'inGame');
+        }
+    });
+
+    // Check Referral Tasks
+    socialTasks.referrals.forEach(task => {
+        if (!task.completed && task.condition()) {
+            completeAutomaticTask(task, 'referrals');
+        }
+    });
+}
+
+function completeAutomaticTask(task, category) {
+    // Mark the task as completed
+    task.completed = true;
+
+    // Add the task's reward to the user's gains
+    gains += task.reward;
+    updateLevel();
+    updateUI();
+
+    // Move the task to the "completed" category
+    moveTaskToCompleted(task);
+
+    // Optionally, display a notification to the user
+    displayTaskCompletionNotification(task);
+
+    // Save user data
+    saveUserData();
+
+    // Update tasks display if the current category is being viewed
+    const activeCategoryButton = document.querySelector('.task-categories .category-btn.active');
+    if (activeCategoryButton && activeCategoryButton.dataset.category === category) {
+        displayTasks(category);
+    }
+}
+
+function displayTaskCompletionNotification(task) {
+    // Use a toast notification or an alert
+    alert(`Congratulations! You've completed the task: "${task.name}" and earned ${task.reward.toLocaleString()} gains!`);
+}
+
+
 // Function to show a general popup
 function showTaskPopup(content) {
     const taskPopup = document.getElementById('task-popup');
@@ -1282,8 +1358,10 @@ function updateLevel() {
         level = currentLevel.level;
         gainsPerRep = currentLevel.gainsPerRep;
         gainsPerDay = currentLevel.gainsPerDay;
+        checkTaskCompletion();
         console.log(`Leveled up to ${currentLevel.name}!`);
     }
+    checkTaskCompletion();
 }
 
     // Bicep icon debugging
