@@ -372,6 +372,17 @@ main {
   margin-bottom: 20px;
 }
 
+.completed-task {
+  opacity: 0.6;
+  pointer-events: none; /* Prevent interaction */
+}
+
+.completed-task .social-task-name::after {
+  content: ' (Completed)';
+  color: yellow;
+  font-weight: bold;
+}
+
 /* Overlay background */
 .popup-overlay {
   position: fixed;

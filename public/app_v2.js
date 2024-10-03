@@ -1103,8 +1103,10 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    // Exclude completed tasks
-    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    // Exclude completed tasks unless the category is 'completed'
+    if (category !== 'completed') {
+        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    }
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
@@ -1114,6 +1116,12 @@ function displayTasks(category) {
     tasksToDisplay.forEach(task => {
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
+
+        // Modify the task element appearance if it's in the 'completed' category
+        if (category === 'completed') {
+            taskElement.classList.add('completed-task'); // Add a class for styling if needed
+        }
+
         taskElement.innerHTML = `
             <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
             <div class="social-task-content">
@@ -1125,10 +1133,12 @@ function displayTasks(category) {
             </div>
         `;
 
-        // Make tasks clickable only if in 'socials' category
-        if (category === 'socials') {
-            taskElement.addEventListener('click', () => handleTaskClick(task));
-            taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
+        // For categories other than 'completed', make tasks clickable
+        if (category !== 'completed') {
+            if (!task.completed) {
+                taskElement.addEventListener('click', () => handleTaskClick(task));
+                taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
+            }
         }
 
         tasksContainer.appendChild(taskElement);
@@ -1217,16 +1227,16 @@ function moveTaskToCompleted(task) {
         socialTasks[category] = socialTasks[category].filter(t => t !== task);
 
         // Add the task to the "completed" category
-        if (!socialTasks['completed']) {
-            socialTasks['completed'] = [];
-        }
         socialTasks['completed'].push(task);
 
         // Save the updated socialTasks data
         saveUserData();
 
-        // Update the tasks display
-        displayTasks(category);
+        // Update the tasks display if currently viewing the same category
+        const activeCategoryButton = document.querySelector('.task-categories .category-btn.active');
+        if (activeCategoryButton && activeCategoryButton.dataset.category === category) {
+            displayTasks(category);
+        }
     }
 }
 
