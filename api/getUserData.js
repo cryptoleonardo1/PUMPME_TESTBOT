@@ -1,18 +1,18 @@
 // getUserData.js
 const redis = require('../redis-client');
 
-module.exports = async function (req, res) {
+module.exports = async (req, res) => {
   if (req.method === 'GET') {
     try {
       const { userId } = req.query;
       console.log('Getting user data for userId:', userId);
 
-      const userData = await redis.hgetall(`user:${userId}`);
+      const userData = await redis.hGetAll(`user:${userId}`);
       console.log('Raw user data:', userData);
 
       if (!userData || Object.keys(userData).length === 0) {
         console.log('No user data found, returning default values');
-        res.status(200).json({ gains: 0, level: 1, boostsData: {}, tasksData: {} });
+        res.status(200).json({ gains: 0, level: 1, boostsData: {}, tasksData: {}, userId: userId, username: null });
       } else {
         console.log('User data found, returning:', userData);
 
@@ -43,12 +43,12 @@ module.exports = async function (req, res) {
         }
 
         res.status(200).json({
+          userId: userData.userId || userId,
           gains: parseInt(userData.gains) || 0,
           level: parseInt(userData.level) || 1,
           boostsData: boostsData,
           tasksData: tasksData,
           username: userData.username || null,
-          telegramId: userData.telegramId || userId, // Include Telegram ID
         });
       }
     } catch (error) {

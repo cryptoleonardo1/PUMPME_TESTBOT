@@ -233,6 +233,8 @@ function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     const username = tg.initDataUnsafe?.user?.username || '';
   
+    console.log('Saving user data with userId:', userId, 'and username:', username);
+  
     if (userId) {
       fetch('/api/saveUserData', {
         method: 'POST',
@@ -255,6 +257,7 @@ function saveUserData() {
       console.error('User ID not available');
     }
   }
+  
 
 // Function to load user data from the server
 function loadUserData() {
@@ -551,8 +554,8 @@ function updateLeaderboard() {
         }
       })
       .catch(error => console.error('Error updating leaderboard:', error));
-  }  
-
+  }
+  
 // Function to initialize the Boosts page
 function initializeBoostsPage() {
     console.log("Initializing Boosts page");
