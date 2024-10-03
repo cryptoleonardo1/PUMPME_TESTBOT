@@ -226,6 +226,7 @@ function updateUI() {
     updateActiveBoostsDisplay();
 }
 
+// Function to save user data to the server
 function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     const username = tg.initDataUnsafe?.user?.username || '';
@@ -246,7 +247,7 @@ function saveUserData() {
       })
         .then(response => response.json())
         .then(data => {
-          console.log('User data saved successfully');
+          console.log('User data saved successfully:', data);
         })
         .catch(error => console.error('Error saving user data:', error));
     } else {
@@ -546,6 +547,7 @@ function updateLeaderboard() {
     fetch('/api/leaderboard')
       .then(response => response.json())
       .then(data => {
+        console.log('Leaderboard data received from server:', data); // Add this line
         const leaderboardBody = document.getElementById('leaderboard-body');
         if (leaderboardBody) {
           leaderboardBody.innerHTML = '';
@@ -553,7 +555,7 @@ function updateLeaderboard() {
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${user.rank}</td>
-              <td>${user.displayName}</td>
+              <td>${user.username}</td> <!-- Changed from user.displayName to user.username -->
               <td>${user.gains.toLocaleString()}</td>
             `;
             leaderboardBody.appendChild(row);
