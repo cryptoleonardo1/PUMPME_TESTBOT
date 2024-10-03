@@ -28,9 +28,14 @@ app.get('/api/leaderboard', async (req, res) => {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1], 10);
       const userData = await redis.hgetall(`user:${userId}`);
+      console.log(`User data for userId ${userId}:`, userData);
+
+      // Determine the display name
+      const displayName = userData.username && userData.username !== '' ? userData.username : userId;
+
       leaderboard.push({
         rank: Math.floor(i / 2) + 1,
-        username: userData.username || 'Anonymous',
+        username: displayName,
         gains: score,
       });
     }
@@ -53,13 +58,14 @@ app.post('/api/saveUserData', async (req, res) => {
     const tasksDataString = JSON.stringify(tasksData || []);
 
     // Save user data
-    await redis.hmset(`user:${userId}`, {
-      username: username || 'Anonymous',
-      gains: gains,
-      level: level,
-      boostsData: boostsDataString,
-      tasksData: tasksDataString,
-    });
+    await redis.hset(`user:${userId}`,
+      'userId', userId,
+      'username', username || '',
+      'gains', gainsString,
+      'level', levelString,
+      'boostsData', boostsDataString,
+      'tasksData', tasksDataString
+    );
 
     // Update leaderboard
     await redis.zadd('leaderboard', gains, userId);
@@ -79,9 +85,16 @@ app.get('/api/getUserData', async (req, res) => {
     const userData = await redis.hgetall(`user:${userId}`);
     console.log('Raw user data:', userData);
 
-    if (Object.keys(userData).length === 0) {
+    if (!userData || Object.keys(userData).length === 0) {
       console.log('No user data found, returning default values');
-      res.json({ gains: 0, level: 1, boostsData: {}, tasksData: [] });
+      res.json({
+        gains: 0,
+        level: 1,
+        boostsData: {},
+        tasksData: [],
+        username: '',
+        userId: userId
+      });
     } else {
       console.log('User data found, returning:', userData);
 
@@ -110,11 +123,17 @@ app.get('/api/getUserData', async (req, res) => {
         level: parseInt(userData.level) || 1,
         boostsData: boostsData,
         tasksData: tasksData,
+        username: userData.username || '',
+        userId: userData.userId || userId,
       });
     }
   } catch (error) {
     console.error('Error getting user data:', error);
-    res.status(500).json({ success: false, error: 'Error getting user data', details: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Error getting user data',
+      details: error.message
+    });
   }
 });
 

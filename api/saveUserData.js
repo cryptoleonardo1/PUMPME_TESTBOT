@@ -4,7 +4,7 @@ const redis = require('../redis-client');
 module.exports = async (req, res) => {
   try {
     const { userId, username, gains, level, boostsData, tasksData } = req.body;
-    console.log('Saving user data:', { userId, username, gains, level });
+    console.log('Received data:', { userId, username, gains, level });
 
     // Convert data to strings for Redis
     const boostsDataString = JSON.stringify(boostsData || {});
@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     const levelString = level.toString();
 
     // Save user data to Redis, including userId
-    await redis.hSet(`user:${userId}`, {
+    await redis.hmSet(`user:${userId}`, {
       userId: userId, // Store userId explicitly
       username: username || '',
       gains: gainsString,
