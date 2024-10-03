@@ -226,44 +226,45 @@ function updateUI() {
     updateActiveBoostsDisplay();
 }
 
-// Function to save user data to the server
-app.post('/api/saveUserData', async (req, res) => {
-    try {
-      const { userId, username, gains, level, boostsData, tasksData } = req.body;
-      console.log('Saving user data:', { userId, username, gains, level });
+function saveUserData() {
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+    const username = tg.initDataUnsafe?.user?.username || '';
+    console.log('Saving user data with userId:', userId, 'and username:', username);
   
-      // Convert data to strings
-      const boostsDataString = JSON.stringify(boostsData || {});
-      const tasksDataString = JSON.stringify(tasksData || []);
-      const gainsString = gains.toString();
-      const levelString = level.toString();
-  
-      // Save user data using hset with field-value pairs
-      await redis.hset(`user:${userId}`,
-        'userId', userId,
-        'username', username || '',
-        'gains', gainsString,
-        'level', levelString,
-        'boostsData', boostsDataString,
-        'tasksData', tasksDataString
-      );
-  
-      // Update leaderboard
-      await redis.zadd('leaderboard', gainsString, userId);
-  
-      console.log('User data saved successfully');
-      res.json({ success: true });
-    } catch (error) {
-      console.error('Error saving user data:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Error saving user data',
-        details: error.message
-      });
+    if (userId) {
+      fetch('/api/saveUserData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          username: username,
+          gains: gains,
+          level: level,
+          boostsData: boosts,
+          tasksData: socialTasks,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('User data saved successfully');
+        })
+        .catch(error => console.error('Error saving user data:', error));
+    } else {
+      console.error('User ID not available');
     }
-  });
+  }
   
-  
+// Function to show a popup when a task is completed
+function showRewardPopup(reward) {
+    const popupContent = `
+        <h2>Task Completed!</h2>
+        <p>You've earned ${reward} gains!</p>
+        <div class="button-container">
+            <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
+        </div>
+    `;
+    showTaskPopup(popupContent);
+}
 
 // Function to load user data from the server
 function loadUserData() {
@@ -1226,46 +1227,6 @@ function moveTaskToCompleted(task) {
         // Update the tasks display
         displayTasks(category);
     }
-}
-
-function saveUserData() {
-    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-    const username = tg.initDataUnsafe?.user?.username || '';
-    console.log('Saving user data with userId:', userId, 'and username:', username);
-  
-    if (userId) {
-      fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userId,
-          username: username,
-          gains: gains,
-          level: level,
-          boostsData: boosts,
-          tasksData: socialTasks,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('User data saved successfully');
-        })
-        .catch(error => console.error('Error saving user data:', error));
-    } else {
-      console.error('User ID not available');
-    }
-  }
-  
-// Function to show a popup when a task is completed
-function showRewardPopup(reward) {
-    const popupContent = `
-        <h2>Task Completed!</h2>
-        <p>You've earned ${reward} gains!</p>
-        <div class="button-container">
-            <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
-        </div>
-    `;
-    showTaskPopup(popupContent);
 }
 
 // Function to show a general popup
