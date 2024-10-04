@@ -497,11 +497,7 @@ function applyLoadedBoosts() {
             if (boost.active && boost.expirationTime) {
                 boost.expirationTime = Number(boost.expirationTime);
 
-                // Debug logs
-                console.log(`boost.expirationTime: ${boost.expirationTime} (${typeof boost.expirationTime})`);
-                console.log(`now: ${now} (${typeof now})`);
-
-                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
+                if (!isNaN(boost.expirationTime) && boost.expirationTime > now) {
                     const remainingDuration = boost.expirationTime - now;
                     const boostEffect = boostEffects[boost.name];
 
@@ -781,11 +777,8 @@ function applyBoostEffect(boostName, boostEffect) {
 
         console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
 
-        // Mark the boost as active
-        boosts[boostName] = {
-            active: true,
-            expirationTime: expirationTime
-        };
+        // Mark the boost as active using the helper function
+        markBoostAsActive(boostName, expirationTime);
 
         // Save user data after updating boosts
         saveUserData();
@@ -795,8 +788,8 @@ function applyBoostEffect(boostName, boostEffect) {
             console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
             boostMultiplier /= boostEffect.value;
 
-            boosts[boostName].active = false;
-            delete boosts[boostName].expirationTime;
+            // Mark the boost as inactive using the helper function
+            markBoostAsInactive(boostName);
 
             updateUI();
             initializeBoostsPage(); // Refresh the Boosts page
