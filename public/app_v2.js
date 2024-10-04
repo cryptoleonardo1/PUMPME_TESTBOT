@@ -7,7 +7,18 @@ let gainsPerRep = 1;
 let gainsPerDay = 0;
 let energy = 1000;
 let boostMultiplier = 1;
+let totalReps = 0; // Initialize at the top of your script
+let totalBoostsPurchased = 0;
+let totalReferrals = 0;
 let activeBoosts = [];
+
+/*
+let boosts = {
+    doubleGains: { active: false },
+    tripleGains: { active: false }
+    // Removed autoClicker
+};
+*/
 
 const tg = window.Telegram.WebApp;
 
@@ -242,7 +253,8 @@ function saveUserData() {
           gains: gains,
           level: level,
           boostsData: boosts,
-          tasksData: socialTasks,
+          tasksData: socialTasks
+          // Removed totalReps, totalBoostsPurchased, totalReferrals
         }),
       })
         .then(response => response.json())
@@ -254,17 +266,30 @@ function saveUserData() {
       console.error('User ID not available');
     }
   }
-
+  
 // Function to load user data from the server
 function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+    console.log('Loading user data for userId:', userId);
+  
     if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                gains = data.gains || 0;
-                level = data.level || 1;
+      fetch(`/api/getUserData?userId=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('User data loaded from server:', data);
+  
+          gains = data.gains || 0;
+          level = data.level || 1;
+          boosts = data.boostsData || boosts;
+          socialTasks = data.tasksData || socialTasks;
+          totalReps = data.totalReps || 0;
+          totalBoostsPurchased = data.totalBoostsPurchased || 0;
+          totalReferrals = data.totalReferrals || 0;
                 
+             
+             
+             
+             /*
                 // Update window.boosts with the loaded boosts data
                 if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
                     window.boosts = data.boostsData;
@@ -294,11 +319,18 @@ function loadUserData() {
 
             // Apply active boosts
             applyLoadedBoosts();
+            */
 
             updateUI();
-        })
-        .catch(error => console.error('Error loading user data:', error));
-    }
+        updateLevel();
+
+        // Check for task completion in case any tasks are immediately completed upon loading
+        checkTaskCompletion();
+      })
+      .catch(error => console.error('Error loading user data:', error));
+  } else {
+    console.error('User ID not available');
+  }
 }
 
 /*
@@ -501,22 +533,51 @@ function applyLoadedBoosts() {
     });
 }
 
-// Function to handle pumping action
+// Function to handle pumping action (e.g., clicking on the character)
 function pump(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (energy > 0) {
-        gains += gainsPerRep * boostMultiplier;
-        energy = Math.max(0, energy - 1);
-        updateLevel();
-        updateUI();
-        saveUserData();
+    // Increment total reps
+    totalReps += 1;
 
-        const character = document.getElementById('character');
-        if (character) {
-            character.style.transform = 'scale(1.1)';
-            setTimeout(() => { character.style.transform = 'scale(1)'; }, 100);
-        }
+    // Base gains per click
+    let gainsPerClick = 1;
+
+    // Apply boost multiplier
+    gainsPerClick *= boostMultiplier;
+    
+    // Perform scale-up animation
+    const characterElement = e.target;
+    characterElement.classList.add('scale-up');
+
+    // Remove the class after the animation ends to allow it to be triggered again
+    characterElement.addEventListener('animationend', () => {
+        characterElement.classList.remove('scale-up');
+    }, { once: true });
+
+    // Increment gains
+    gains += gainsPerClick;
+
+    // Update UI elements
+    updateUI();
+
+    // Check for level up
+    updateLevel();
+
+    // Check if any tasks are completed
+    checkTaskCompletion();
+
+    // Save user data
+    saveUserData();
+}
+ 
+function animateCharacter() {
+    const character = document.getElementById('character');
+    if (character) {
+        character.classList.add('scale-up');
+
+        // Remove the class after the animation ends to allow it to run again
+        character.addEventListener('animationend', () => {
+            character.classList.remove('scale-up');
+        }, { once: true }); // The { once: true } option ensures the event listener is removed after it runs
     }
 }
 
@@ -720,8 +781,11 @@ function applyBoostEffect(boostName, boostEffect) {
 
         console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
 
-        // Mark the boost as active in window.boosts
-        markBoostAsActive(boostName, expirationTime);
+        // Mark the boost as active
+        boosts[boostName] = {
+            active: true,
+            expirationTime: expirationTime
+        };
 
         // Save user data after updating boosts
         saveUserData();
@@ -730,7 +794,9 @@ function applyBoostEffect(boostName, boostEffect) {
         setTimeout(() => {
             console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
             boostMultiplier /= boostEffect.value;
-            markBoostAsInactive(boostName);
+
+            boosts[boostName].active = false;
+            delete boosts[boostName].expirationTime;
 
             updateUI();
             initializeBoostsPage(); // Refresh the Boosts page
@@ -922,17 +988,72 @@ function updateProfilePage() {
     }
 }
 
-/*
-// Task data (you can customize this according to your needs)
-const tasks = [
-    { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false },
-    { id: 2, name: "Run 5km", reward: 200, completed: false },
-    { id: 3, name: "Attend a yoga class", reward: 150, completed: false },
-    { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
-    { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
-];
-*/
+// Function to handle purchasing a boost
+function purchaseBoost(boostType) {
+    // Define the cost of each boost type
+    const boostCosts = {
+        doubleGains: 100,   // Cost for Double Gains boost
+        tripleGains: 300    // Cost for Triple Gains boost
+    };
 
+    // Check if the boostType is valid
+    if (!boostCosts[boostType]) {
+        console.error(`Invalid boost type: ${boostType}`);
+        return;
+    }
+
+    const cost = boostCosts[boostType];
+
+    // Check if the user has enough gains
+    if (gains >= cost) {
+        // Deduct the cost
+        gains -= cost;
+
+        // Activate the boost
+        boosts[boostType] = { active: true };
+
+        // Increment total boosts purchased
+        totalBoostsPurchased += 1;
+
+        // Update UI elements
+        updateUI();
+
+        // Check for level up
+        updateLevel();
+
+        // Check if any tasks are completed
+        checkTaskCompletion();
+
+        // Save user data
+        saveUserData();
+
+        // Provide feedback to the user
+        alert(`${boostType === 'doubleGains' ? 'Double Gains' : 'Triple Gains'} boost purchased!`);
+    } else {
+        // Not enough gains
+        alert('Not enough gains to purchase this boost.');
+    }
+}
+
+// Function to handle adding a referral
+function addReferral() {
+    // Increment total referrals
+    totalReferrals += 1;
+  
+    // Update UI elements if necessary
+    updateUI();
+  
+    // Check if any referral tasks are completed
+    checkTaskCompletion();
+  
+    // Save user data
+    saveUserData();
+  
+    // Optionally, provide feedback to the user
+    alert('Referral added successfully!');
+  }  
+
+// Tasks Tasks Tasks Tasks Tasks Tasks Tasks
 // Function to initialize the Tasks page
 function initializeTasksPage() {
     setupTaskCategoryButtons();
@@ -1011,58 +1132,79 @@ let socialTasks = {
             name: "Complete 50,000 Reps", 
             icon: "reps-icon.png", 
             reward: 50000, 
-            completed: false
+            completed: false,
+            condition: () => totalReps >= 50000
         },
         {
             id: 'reps-500k', 
             name: "Complete 500,000 Reps", 
             icon: "reps-icon.png", 
             reward: 500000, 
-            completed: false
+            completed: false,
+            condition: () => totalReps >= 500000
         },
         {
             id: 'level-3', 
             name: "Reach Level 3", 
             icon: "level-icon.png", 
-            reward: 30000, 
+            reward: 300000, 
             completed: false
         },
         {
             id: 'level-7', 
             name: "Reach Level 7", 
             icon: "level-icon.png", 
-            reward: 70000, 
+            reward: 700000, 
             completed: false
         },
         {
             id: 'level-10', 
             name: "Reach Level 10", 
             icon: "level-icon.png", 
-            reward: 100000, 
+            reward: 10000000, 
             completed: false
         },
         {
             id: 'purchase-boosts', 
             name: "Purchase 50 Boosts", 
             icon: "boost-icon.png", 
-            reward: 5000, 
-            completed: false
+            reward: 50000, 
+            completed: false,
+            condition: () => totalBoostsPurchased >= 50
+        },
+        {
+            id: 'purchase-boosts', 
+            name: "Purchase 500 Boosts", 
+            icon: "boost-icon.png", 
+            reward: 5000000, 
+            completed: false,
+            condition: () => totalBoostsPurchased >= 50
         }
     ],
     referrals: [
         {
-            id: 'refer-friend', 
-            name: "Refer a Friend", 
+            id: 'refer-10-friends', 
+            name: "Refer 10 Friends", 
             icon: "refer-friend-icon.png", 
             reward: 10000, 
-            completed: false
+            completed: false,
+            condition: () => totalReferrals >= 10
         },
         {
-            id: 'refer-5-friends', 
-            name: "Refer 5 Friends", 
+            id: 'refer-30-friends', 
+            name: "Refer 30 Friends", 
             icon: "refer-friend-icon.png", 
             reward: 50000, 
-            completed: false
+            completed: false,
+            condition: () => totalReferrals >= 30
+        },
+        {
+            id: 'refer-50-friends', 
+            name: "Refer 50 Friends", 
+            icon: "refer-friend-icon.png", 
+            reward: 50000, 
+            completed: false,
+            condition: () => totalReferrals >= 50
         }
     ],
     completed: []
@@ -1103,8 +1245,10 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    // Exclude completed tasks
-    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    // Exclude completed tasks unless the category is 'completed'
+    if (category !== 'completed') {
+        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    }
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
@@ -1114,6 +1258,12 @@ function displayTasks(category) {
     tasksToDisplay.forEach(task => {
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
+
+        // Modify appearance if needed
+        if (category === 'completed') {
+            taskElement.classList.add('completed-task');
+        }
+
         taskElement.innerHTML = `
             <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
             <div class="social-task-content">
@@ -1125,10 +1275,10 @@ function displayTasks(category) {
             </div>
         `;
 
-        // Make tasks clickable only if in 'socials' category
-        if (category === 'socials') {
+        // Make tasks clickable only in 'socials' category
+        if (category === 'socials' && !task.completed) {
             taskElement.addEventListener('click', () => handleTaskClick(task));
-            taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
+            taskElement.style.cursor = 'pointer';
         }
 
         tasksContainer.appendChild(taskElement);
@@ -1217,18 +1367,71 @@ function moveTaskToCompleted(task) {
         socialTasks[category] = socialTasks[category].filter(t => t !== task);
 
         // Add the task to the "completed" category
-        if (!socialTasks['completed']) {
-            socialTasks['completed'] = [];
-        }
         socialTasks['completed'].push(task);
 
         // Save the updated socialTasks data
         saveUserData();
 
-        // Update the tasks display
+        // Update the tasks display if currently viewing the same category
+        const activeCategoryButton = document.querySelector('.task-categories .category-btn.active');
+        if (activeCategoryButton && activeCategoryButton.dataset.category === category) {
+            displayTasks(category);
+        }
+    }
+}
+
+function checkTaskCompletion() {
+    // Check In-Game Tasks
+    if (socialTasks.inGame) {
+        socialTasks.inGame.forEach(task => {
+            if (!task.completed && typeof task.condition === 'function' && task.condition()) {
+                completeAutomaticTask(task, 'inGame');
+            }
+        });
+    }
+
+    // Check Referral Tasks
+    if (socialTasks.referrals) {
+        socialTasks.referrals.forEach(task => {
+            if (!task.completed && typeof task.condition === 'function' && task.condition()) {
+                completeAutomaticTask(task, 'referrals');
+            }
+        });
+    }
+
+    // Optionally, you can check other categories that have tasks with conditions
+}
+
+function completeAutomaticTask(task, category) {
+    // Mark the task as completed
+    task.completed = true;
+
+    // Add the task's reward to the user's gains
+    gains += task.reward;
+    updateLevel();
+    updateUI();
+
+    // Move the task to the "completed" category
+    moveTaskToCompleted(task);
+
+    // Optionally, display a notification to the user
+    displayTaskCompletionNotification(task);
+
+    // Save user data
+    saveUserData();
+
+    // Update tasks display if the current category is being viewed
+    const activeCategoryButton = document.querySelector('.task-categories .category-btn.active');
+    if (activeCategoryButton && activeCategoryButton.dataset.category === category) {
         displayTasks(category);
     }
 }
+
+function displayTaskCompletionNotification(task) {
+    // Use a toast notification or an alert
+    alert(`Congratulations! You've completed the task: "${task.name}" and earned ${task.reward.toLocaleString()} gains!`);
+}
+
 
 // Function to show a general popup
 function showTaskPopup(content) {
@@ -1272,8 +1475,10 @@ function updateLevel() {
         level = currentLevel.level;
         gainsPerRep = currentLevel.gainsPerRep;
         gainsPerDay = currentLevel.gainsPerDay;
+        checkTaskCompletion();
         console.log(`Leveled up to ${currentLevel.name}!`);
     }
+    checkTaskCompletion();
 }
 
     // Bicep icon debugging
@@ -1299,6 +1504,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Telegram Web Apps SDK
     const tg = window.Telegram.WebApp;
     tg.expand();
+
+    // --- Event Listeners for Gym Page ---
+
+    // Event listener for the character (pump action)
+    const character = document.getElementById('character');
+    if (character) {
+        character.addEventListener('click', (e) => {
+            console.log('Character clicked');
+            pump(e); // Existing function to handle pumping action
+            animateCharacter(); // Function to perform the scale-up animation
+        });
+    } else {
+        console.error('Character element not found');
+    }
+
+
+    /*
+    // Event listeners for boost purchase buttons
+    const doubleGainsButton = document.getElementById('double-gains-btn');
+    if (doubleGainsButton) {
+        doubleGainsButton.addEventListener('click', () => {
+            purchaseBoost('doubleGains');
+        });
+    } else {
+        console.error('Double Gains button not found');
+    }
+
+    const tripleGainsButton = document.getElementById('triple-gains-btn');
+    if (tripleGainsButton) {
+        tripleGainsButton.addEventListener('click', () => {
+            purchaseBoost('tripleGains');
+        });
+    } else {
+        console.error('Triple Gains button not found');
+    }
+*/
+
+
+    /*
+    // Event listener for adding a referral (if you have this functionality)
+    const addReferralButton = document.getElementById('add-referral-btn');
+    if (addReferralButton) {
+        addReferralButton.addEventListener('click', () => {
+            addReferral();
+        });
+    } else {
+        console.error('Add Referral button not found');
+    }
+    */
 
     // Get references to navigation buttons and pages
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -1356,7 +1610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
     tg.expand();
 
-     // --- Background Music Functionality ---
+    // --- Background Music Functionality ---
 
     // Get the audio element and Music Control button
     const backgroundMusic = document.getElementById('background-music');
@@ -1394,19 +1648,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } else {
         console.error('Music Control button element not found');
-    }
-
-    // --- Event Listeners for Gym Page ---
-
-    // Event listener for the character
-    const character = document.getElementById('character');
-    if (character) {
-        character.addEventListener('click', (e) => {
-            // Handle character click
-            console.log('Character clicked');
-            pump(e); // Call your existing pump function
-        });
-    } else {
-        console.error('Character element not found');
     }
 });
