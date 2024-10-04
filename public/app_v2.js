@@ -242,30 +242,43 @@ function saveUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     const username = tg.initDataUnsafe?.user?.username || '';
     console.log('Saving user data with userId:', userId, 'and username:', username);
-  
+
     if (userId) {
-      fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userId,
-          username: username,
-          gains: gains,
-          level: level,
-          boostsData: boosts,
-          tasksData: socialTasks
+        // Prepare boostsData to save
+        const boostsDataToSave = {};
+        Object.keys(window.boosts).forEach(category => {
+            window.boosts[category].forEach(boost => {
+                if (boost.active) {
+                    boostsDataToSave[boost.name] = {
+                        active: true,
+                        expirationTime: boost.expirationTime
+                    };
+                }
+            });
+        });
+
+        fetch('/api/saveUserData', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                username: username,
+                gains: gains,
+                level: level,
+                boostsData: boostsDataToSave,
+                tasksData: socialTasks,
           // Removed totalReps, totalBoostsPurchased, totalReferrals
         }),
-      })
+    })
         .then(response => response.json())
         .then(data => {
-          console.log('User data saved successfully:', data);
+            console.log('User data saved successfully:', data);
         })
         .catch(error => console.error('Error saving user data:', error));
     } else {
-      console.error('User ID not available');
+    console.error('User ID not available');
     }
-  }
+}
   
 // Function to load user data from the server
 function loadUserData() {
@@ -282,11 +295,22 @@ function loadUserData() {
           level = data.level || 1;
           boosts = data.boostsData || boosts;
           socialTasks = data.tasksData || socialTasks;
-          totalReps = data.totalReps || 0;
-          totalBoostsPurchased = data.totalBoostsPurchased || 0;
-          totalReferrals = data.totalReferrals || 0;
+         // totalReps = data.totalReps || 0;
+         // totalBoostsPurchased = data.totalBoostsPurchased || 0;
+         // totalReferrals = data.totalReferrals || 0;
                 
-             
+        // Update window.boosts with the loaded boosts data
+        if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
+            // Merge the loaded boostsData into window.boosts
+            updateBoostsWithLoadedData(data.boostsData);
+        } else {
+            // If boostsData is empty, initialize window.boosts
+            if (!window.boosts || Object.keys(window.boosts).length === 0) {
+                window.boosts = getDefaultBoosts();
+            }
+        } 
+
+
              
              
              /*
@@ -316,12 +340,13 @@ function loadUserData() {
             } else {
                 console.log('No tasksData loaded from server, using local socialTasks');
             }
-
-            // Apply active boosts
-            applyLoadedBoosts();
             */
 
-            updateUI();
+        // Apply active boosts
+        applyLoadedBoosts();
+    
+
+        updateUI();
         updateLevel();
 
         // Check for task completion in case any tasks are immediately completed upon loading
@@ -616,6 +641,32 @@ function initializeBoostsPage() {
 
     displayBoosts(defaultCategory);
     setupBoostsCategoryButtons();
+}
+
+function updateBoostsWithLoadedData(loadedBoostsData) {
+    // Iterate over the categories in window.boosts
+    Object.keys(window.boosts).forEach(category => {
+        // Iterate over the boosts in each category
+        window.boosts[category].forEach(boost => {
+            const boostName = boost.name;
+
+            // Check if the boost exists in loadedBoostsData
+            if (loadedBoostsData[boostName]) {
+                // Update the boost's active status and expirationTime
+                boost.active = loadedBoostsData[boostName].active;
+                boost.expirationTime = loadedBoostsData[boostName].expirationTime;
+
+                // Ensure expirationTime is a number
+                if (boost.expirationTime) {
+                    boost.expirationTime = Number(boost.expirationTime);
+                }
+            } else {
+                // If the boost is not in loadedBoostsData, ensure it's inactive
+                boost.active = false;
+                delete boost.expirationTime;
+            }
+        });
+    });
 }
 
 // Function to display boosts for a category
