@@ -13,14 +13,13 @@ module.exports = async (req, res) => {
     const levelString = level.toString();
 
     // Save user data to Redis, including userId
-    await redis.hSet(`user:${userId}`, {
+    await redis.hmSet(`user:${userId}`, {
       userId: userId, // Store userId explicitly
       username: username || '',
       gains: gainsString,
       level: levelString,
       boostsData: boostsDataString,
       tasksData: tasksDataString,
-      // totalReps: totalReps,
     });
 
     // Update leaderboard
