@@ -221,6 +221,17 @@ main {
   z-index: 10;
 }
 
+/* CSS for character scale-up animation */
+@keyframes scaleUpAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.scale-up {
+  animation: scaleUpAnimation 0.2s ease-in-out;
+}
+
 #boosts-page h2,
 #social-page h2,
 #top-pumpers-page h2,

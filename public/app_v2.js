@@ -548,6 +548,15 @@ function pump(e) {
     if (boosts.tripleGains?.active) {
         gainsPerClick *= 3;
     }
+    
+    // Perform scale-up animation
+    const characterElement = e.target;
+    characterElement.classList.add('scale-up');
+
+    // Remove the class after the animation ends to allow it to be triggered again
+    characterElement.addEventListener('animationend', () => {
+        characterElement.classList.remove('scale-up');
+    }, { once: true });
 
     // Increment gains
     gains += gainsPerClick;
@@ -565,6 +574,17 @@ function pump(e) {
     saveUserData();
 }
  
+function animateCharacter() {
+    const character = document.getElementById('character');
+    if (character) {
+        character.classList.add('scale-up');
+
+        // Remove the class after the animation ends to allow it to run again
+        character.addEventListener('animationend', () => {
+            character.classList.remove('scale-up');
+        }, { once: true }); // The { once: true } option ensures the event listener is removed after it runs
+    }
+}
 
 // Function to update the leaderboard
 function updateLeaderboard() {
@@ -1362,18 +1382,24 @@ function moveTaskToCompleted(task) {
 
 function checkTaskCompletion() {
     // Check In-Game Tasks
-    socialTasks.inGame.forEach(task => {
-        if (!task.completed && task.condition()) {
-            completeAutomaticTask(task, 'inGame');
-        }
-    });
+    if (socialTasks.inGame) {
+        socialTasks.inGame.forEach(task => {
+            if (!task.completed && typeof task.condition === 'function' && task.condition()) {
+                completeAutomaticTask(task, 'inGame');
+            }
+        });
+    }
 
     // Check Referral Tasks
-    socialTasks.referrals.forEach(task => {
-        if (!task.completed && task.condition()) {
-            completeAutomaticTask(task, 'referrals');
-        }
-    });
+    if (socialTasks.referrals) {
+        socialTasks.referrals.forEach(task => {
+            if (!task.completed && typeof task.condition === 'function' && task.condition()) {
+                completeAutomaticTask(task, 'referrals');
+            }
+        });
+    }
+
+    // Optionally, you can check other categories that have tasks with conditions
 }
 
 function completeAutomaticTask(task, category) {
@@ -1486,12 +1512,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (character) {
         character.addEventListener('click', (e) => {
             console.log('Character clicked');
-            pump(e);
+            pump(e); // Existing function to handle pumping action
+            animateCharacter(); // Function to perform the scale-up animation
         });
     } else {
         console.error('Character element not found');
     }
 
+
+    /*
     // Event listeners for boost purchase buttons
     const doubleGainsButton = document.getElementById('double-gains-btn');
     if (doubleGainsButton) {
@@ -1510,6 +1539,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Triple Gains button not found');
     }
+*/
+
 
     /*
     // Event listener for adding a referral (if you have this functionality)
