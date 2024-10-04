@@ -11,12 +11,14 @@ let totalReps = 0; // Initialize at the top of your script
 let totalBoostsPurchased = 0;
 let totalReferrals = 0;
 let activeBoosts = [];
-// Boosts object
+
+/*
 let boosts = {
     doubleGains: { active: false },
     tripleGains: { active: false }
     // Removed autoClicker
 };
+*/
 
 const tg = window.Telegram.WebApp;
 
@@ -538,16 +540,11 @@ function pump(e) {
     // Increment total reps
     totalReps += 1;
 
-    // Calculate gains per click
-    let gainsPerClick = 1; // Base gains per click
+    // Base gains per click
+    let gainsPerClick = 1;
 
-    // Apply boosts
-    if (boosts.doubleGains?.active) {
-        gainsPerClick *= 2;
-    }
-    if (boosts.tripleGains?.active) {
-        gainsPerClick *= 3;
-    }
+    // Apply boost multiplier
+    gainsPerClick *= boostMultiplier;
     
     // Perform scale-up animation
     const characterElement = e.target;
@@ -786,8 +783,11 @@ function applyBoostEffect(boostName, boostEffect) {
 
         console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
 
-        // Mark the boost as active in window.boosts
-        markBoostAsActive(boostName, expirationTime);
+        // Mark the boost as active
+        boosts[boostName] = {
+            active: true,
+            expirationTime: expirationTime
+        };
 
         // Save user data after updating boosts
         saveUserData();
@@ -796,7 +796,9 @@ function applyBoostEffect(boostName, boostEffect) {
         setTimeout(() => {
             console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
             boostMultiplier /= boostEffect.value;
-            markBoostAsInactive(boostName);
+
+            boosts[boostName].active = false;
+            delete boosts[boostName].expirationTime;
 
             updateUI();
             initializeBoostsPage(); // Refresh the Boosts page
