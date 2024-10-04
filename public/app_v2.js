@@ -236,21 +236,21 @@ function saveUserData() {
     console.log('Saving user data with userId:', userId, 'and username:', username);
   
     if (userId) {
-        fetch('/api/saveUserData', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: userId,
-                username: username,
-                gains: gains,
-                level: level,
-                boostsData: boosts,
-                tasksData: socialTasks,
-                totalReps: totalReps,
-                totalBoostsPurchased: totalBoostsPurchased,
-                totalReferrals: totalReferrals
-            }),
-        })
+      fetch('/api/saveUserData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          username: username,
+          gains: gains,
+          level: level,
+          boostsData: boosts,
+          tasksData: socialTasks,
+          totalReps: totalReps,
+          totalBoostsPurchased: totalBoostsPurchased,
+          totalReferrals: totalReferrals
+        }),
+      })
         .then(response => response.json())
         .then(data => {
           console.log('User data saved successfully:', data);
@@ -259,7 +259,7 @@ function saveUserData() {
     } else {
       console.error('User ID not available');
     }
-  }
+  }  
 
 // Function to load user data from the server
 function loadUserData() {
@@ -274,6 +274,10 @@ function loadUserData() {
                 totalBoostsPurchased = data.totalBoostsPurchased || 0;
                 totalReferrals = data.totalReferrals || 0;
                 
+             
+             
+             
+             /*
                 // Update window.boosts with the loaded boosts data
                 if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
                     window.boosts = data.boostsData;
@@ -303,11 +307,18 @@ function loadUserData() {
 
             // Apply active boosts
             applyLoadedBoosts();
+            */
 
             updateUI();
-        })
-        .catch(error => console.error('Error loading user data:', error));
-    }
+        updateLevel();
+
+        // Check for task completion in case any tasks are immediately completed upon loading
+        checkTaskCompletion();
+      })
+      .catch(error => console.error('Error loading user data:', error));
+  } else {
+    console.error('User ID not available');
+  }
 }
 
 /*
@@ -510,27 +521,37 @@ function applyLoadedBoosts() {
     });
 }
 
-// Function to handle pumping action
+// Function to handle pumping action (e.g., clicking on the character)
 function pump(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (energy > 0) {
-        gains += gainsPerRep * boostMultiplier;
-        energy = Math.max(0, energy - 1);
-        totalReps += 1;
-        gains += gainsPerClick;
-        updateLevel();
-        updateUI();
-        checkTaskCompletion();
-        saveUserData();
-
-        const character = document.getElementById('character');
-        if (character) {
-            character.style.transform = 'scale(1.1)';
-            setTimeout(() => { character.style.transform = 'scale(1)'; }, 100);
-        }
+    // Increment total reps
+    totalReps += 1;
+  
+    // Calculate gains per click
+    let gainsPerClick = 1; // Base gains per click
+  
+    // Apply boosts
+    if (boosts.doubleGains?.active) {
+      gainsPerClick *= 2;
     }
-}
+    if (boosts.tripleGains?.active) {
+      gainsPerClick *= 3;
+    }
+  
+    // Increment gains
+    gains += gainsPerClick;
+  
+    // Update UI elements
+    updateUI();
+  
+    // Check for level up
+    updateLevel();
+  
+    // Check if any tasks are completed
+    checkTaskCompletion();
+  
+    // Save user data
+    saveUserData();
+  }  
 
 // Function to update the leaderboard
 function updateLeaderboard() {
@@ -935,12 +956,69 @@ function updateProfilePage() {
 }
 
 function purchaseBoost(boostType) {
-    // ... existing code ...
+    // Define the cost of each boost type
+    const boostCosts = {
+      doubleGains: 100,   // Cost for Double Gains boost
+      tripleGains: 300,   // Cost for Triple Gains boost
+      autoClicker: 500    // Cost for Auto Clicker boost
+    };
+  
+    // Check if the boostType is valid
+    if (!boostCosts[boostType]) {
+      console.error(`Invalid boost type: ${boostType}`);
+      return;
+    }
+  
+    const cost = boostCosts[boostType];
+  
+    // Check if the user has enough gains
+    if (gains >= cost) {
+      // Deduct the cost
+      gains -= cost;
+  
+      // Activate the boost
+      boosts[boostType] = { active: true };
+  
+      // Increment total boosts purchased
+      totalBoostsPurchased += 1;
+  
+      // Update UI elements
+      updateUI();
+  
+      // Check for level up
+      updateLevel();
+  
+      // Check if any tasks are completed
+      checkTaskCompletion();
+  
+      // Save user data
+      saveUserData();
+  
+      // Optionally, provide feedback to the user
+      alert(`${boostType} boost purchased!`);
+    } else {
+      // Not enough gains
+      alert('Not enough gains to purchase this boost.');
+    }
+  }  
 
-    totalBoostsPurchased += 1;
-
+// Function to handle adding a referral
+function addReferral() {
+    // Increment total referrals
+    totalReferrals += 1;
+  
+    // Update UI elements if necessary
+    updateUI();
+  
+    // Check if any referral tasks are completed
     checkTaskCompletion();
-}
+  
+    // Save user data
+    saveUserData();
+  
+    // Optionally, provide feedback to the user
+    alert('Referral added successfully!');
+  }  
 
 // Tasks Tasks Tasks Tasks Tasks Tasks Tasks
 // Function to initialize the Tasks page
@@ -1382,6 +1460,28 @@ function updateLevel() {
 
 // Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
+        const doubleGainsButton = document.getElementById('double-gains-btn');
+        if (doubleGainsButton) {
+          doubleGainsButton.addEventListener('click', () => {
+            purchaseBoost('doubleGains');
+          });
+        }
+      
+        const tripleGainsButton = document.getElementById('triple-gains-btn');
+        if (tripleGainsButton) {
+          tripleGainsButton.addEventListener('click', () => {
+            purchaseBoost('tripleGains');
+          });
+        }
+      
+        const autoClickerButton = document.getElementById('auto-clicker-btn');
+        if (autoClickerButton) {
+          autoClickerButton.addEventListener('click', () => {
+            purchaseBoost('autoClicker');
+          });
+        }
+    });
     console.log("DOM fully loaded and parsed");
 
     // Initialize Telegram Web Apps SDK
@@ -1486,15 +1586,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners for Gym Page ---
 
-    // Event listener for the character
-    const character = document.getElementById('character');
-    if (character) {
-        character.addEventListener('click', (e) => {
-            // Handle character click
-            console.log('Character clicked');
-            pump(e); // Call your existing pump function
-        });
-    } else {
-        console.error('Character element not found');
-    }
+// Event listener for the character
+const character = document.getElementById('character');
+if (character) {
+  character.addEventListener('click', (e) => {
+    console.log('Character clicked');
+    pump(e);
+  });
+} else {
+  console.error('Character element not found');
+}
 });
