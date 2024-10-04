@@ -259,20 +259,26 @@ function saveUserData() {
     } else {
       console.error('User ID not available');
     }
-  }  
+}
 
 // Function to load user data from the server
 function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+    console.log('Loading user data for userId:', userId);
+  
     if (userId) {
-        fetch(`/api/getUserData?userId=${userId}`)
+      fetch(`/api/getUserData?userId=${userId}`)
         .then(response => response.json())
         .then(data => {
-                gains = data.gains || 0;
-                level = data.level || 1;
-                totalReps = data.totalReps || 0;
-                totalBoostsPurchased = data.totalBoostsPurchased || 0;
-                totalReferrals = data.totalReferrals || 0;
+          console.log('User data loaded from server:', data);
+  
+          gains = data.gains || 0;
+          level = data.level || 1;
+          boosts = data.boostsData || boosts;
+          socialTasks = data.tasksData || socialTasks;
+          totalReps = data.totalReps || 0;
+          totalBoostsPurchased = data.totalBoostsPurchased || 0;
+          totalReferrals = data.totalReferrals || 0;
                 
              
              
@@ -1460,33 +1466,62 @@ function updateLevel() {
 
 // Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
-    document.addEventListener('DOMContentLoaded', () => {
-        const doubleGainsButton = document.getElementById('double-gains-btn');
-        if (doubleGainsButton) {
-          doubleGainsButton.addEventListener('click', () => {
-            purchaseBoost('doubleGains');
-          });
-        }
-      
-        const tripleGainsButton = document.getElementById('triple-gains-btn');
-        if (tripleGainsButton) {
-          tripleGainsButton.addEventListener('click', () => {
-            purchaseBoost('tripleGains');
-          });
-        }
-      
-        const autoClickerButton = document.getElementById('auto-clicker-btn');
-        if (autoClickerButton) {
-          autoClickerButton.addEventListener('click', () => {
-            purchaseBoost('autoClicker');
-          });
-        }
-    });
     console.log("DOM fully loaded and parsed");
 
     // Initialize Telegram Web Apps SDK
     const tg = window.Telegram.WebApp;
     tg.expand();
+
+    // --- Event Listeners for Gym Page ---
+
+    // Event listener for the character (pump action)
+    const character = document.getElementById('character');
+    if (character) {
+        character.addEventListener('click', (e) => {
+            console.log('Character clicked');
+            pump(e);
+        });
+    } else {
+        console.error('Character element not found');
+    }
+
+    // Event listeners for boost purchase buttons
+    const doubleGainsButton = document.getElementById('double-gains-btn');
+    if (doubleGainsButton) {
+        doubleGainsButton.addEventListener('click', () => {
+            purchaseBoost('doubleGains');
+        });
+    } else {
+        console.error('Double Gains button not found');
+    }
+
+    const tripleGainsButton = document.getElementById('triple-gains-btn');
+    if (tripleGainsButton) {
+        tripleGainsButton.addEventListener('click', () => {
+            purchaseBoost('tripleGains');
+        });
+    } else {
+        console.error('Triple Gains button not found');
+    }
+
+    const autoClickerButton = document.getElementById('auto-clicker-btn');
+    if (autoClickerButton) {
+        autoClickerButton.addEventListener('click', () => {
+            purchaseBoost('autoClicker');
+        });
+    } else {
+        console.error('Auto Clicker button not found');
+    }
+
+    // Event listener for adding a referral
+    const addReferralButton = document.getElementById('add-referral-btn');
+    if (addReferralButton) {
+        addReferralButton.addEventListener('click', () => {
+            addReferral();
+        });
+    } else {
+        console.error('Add Referral button not found');
+    }
 
     // Get references to navigation buttons and pages
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -1544,7 +1579,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
     tg.expand();
 
-     // --- Background Music Functionality ---
+    // --- Background Music Functionality ---
 
     // Get the audio element and Music Control button
     const backgroundMusic = document.getElementById('background-music');
@@ -1583,17 +1618,4 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Music Control button element not found');
     }
-
-    // --- Event Listeners for Gym Page ---
-
-// Event listener for the character
-const character = document.getElementById('character');
-if (character) {
-  character.addEventListener('click', (e) => {
-    console.log('Character clicked');
-    pump(e);
-  });
-} else {
-  console.error('Character element not found');
-}
 });
