@@ -253,10 +253,8 @@ function saveUserData() {
           gains: gains,
           level: level,
           boostsData: boosts,
-          tasksData: socialTasks,
-          totalReps: totalReps,
-          totalBoostsPurchased: totalBoostsPurchased,
-          totalReferrals: totalReferrals
+          tasksData: socialTasks
+          // Removed totalReps, totalBoostsPurchased, totalReferrals
         }),
       })
         .then(response => response.json())
@@ -267,8 +265,8 @@ function saveUserData() {
     } else {
       console.error('User ID not available');
     }
-}
-
+  }
+  
 // Function to load user data from the server
 function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;

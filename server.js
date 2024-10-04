@@ -67,9 +67,9 @@ await redis.hset(`user:${userId}`,
   'level', levelString,
   'boostsData', boostsDataString,
   'tasksData', tasksDataString,
-  'totalReps', totalReps.toString(),
-  'totalBoostsPurchased', totalBoostsPurchased.toString(),
-  'totalReferrals', totalReferrals.toString()
+  //'totalReps', totalReps.toString(),
+  //'totalBoostsPurchased', totalBoostsPurchased.toString(),
+  //'totalReferrals', totalReferrals.toString()
 );
 
     // Update leaderboard
@@ -137,6 +137,9 @@ app.get('/api/getUserData', async (req, res) => {
         tasksData: tasksData,
         username: userData.username || '',
         userId: userData.userId || userId,
+        totalReps: parseInt(userData.totalReps) || 0,
+        totalBoostsPurchased: parseInt(userData.totalBoostsPurchased) || 0,
+        totalReferrals: parseInt(userData.totalReferrals) || 0,
       });
     }
   } catch (error) {
