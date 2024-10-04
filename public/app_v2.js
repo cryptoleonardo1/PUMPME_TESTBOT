@@ -133,7 +133,7 @@ const boostEffects = {
     "Ice Bath": { type: "multiplier", value: 1.5, duration: 3600 },
     "Cold Shower": { type: "multiplier", value: 1.5, duration: 3600 },
     "20 Min Nap": { type: "multiplier", value: 1.5, duration: 3600 },
-    "8 Hour Sleep": { type: "multiplier", value: 1.5, duration: 3600 },
+    "7 Hour Sleep": { type: "multiplier", value: 1.5, duration: 3600 },
     "Walk a Dog": { type: "multiplier", value: 1.5, duration: 3600 },
     "Breathing Exercise": { type: "multiplier", value: 1.5, duration: 3600 },
     "Meditation": { type: "multiplier", value: 5, duration: 20 },
@@ -181,7 +181,7 @@ window.boosts = {
         { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "8 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
+        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350, active: false, effect: { type: "multiplier", value: 5, duration: 20 } }
@@ -254,6 +254,18 @@ function saveUserData() {
       console.error('User ID not available');
     }
   }
+  
+// Function to show a popup when a task is completed
+function showRewardPopup(reward) {
+    const popupContent = `
+        <h2>Task Completed!</h2>
+        <p>You've earned ${reward} gains!</p>
+        <div class="button-container">
+            <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
+        </div>
+    `;
+    showTaskPopup(popupContent);
+}
 
 // Function to load user data from the server
 function loadUserData() {
@@ -302,6 +314,17 @@ function loadUserData() {
 }
 
 /*
+function getDefaultSocialTasks() {
+    return [
+        { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false, link: "https://example.com/push-ups" },
+        { id: 2, name: "Run 5km", reward: 200, completed: false, link: "https://example.com/run-5km" },
+        { id: 3, name: "Attend a yoga class", reward: 150, completed: false, link: "https://example.com/yoga-class" },
+        { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
+        { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
+    ];
+}
+*/
+
 // Function to get default social tasks
 function getDefaultSocialTasks() {
     return {
@@ -404,7 +427,6 @@ function getDefaultSocialTasks() {
         completed: []
     };
 }
-*/
 
 // Function to get the default boosts data
 function getDefaultBoosts() {
@@ -449,7 +471,7 @@ function getDefaultBoosts() {
         { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "8 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
+        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
         { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350, active: false, effect: { type: "multiplier", value: 5, duration: 20 } }
@@ -922,7 +944,6 @@ function updateProfilePage() {
     }
 }
 
-/*
 // Task data (you can customize this according to your needs)
 const tasks = [
     { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false },
@@ -931,7 +952,6 @@ const tasks = [
     { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
     { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
 ];
-*/
 
 // Function to initialize the Tasks page
 function initializeTasksPage() {
@@ -951,23 +971,6 @@ function initializeTasksPage() {
     });
 
     displayTasks(defaultCategory); // Display tasks for the default category
-}
-
-// Function to show a popup when a task is completed
-function showRewardPopup(reward) {
-    const popupContent = `
-        <div class="popup-header">
-            <button class="popup-close">&times;</button>
-        </div>
-        <div class="popup-body">
-            <h2>Task Completed!</h2>
-            <p>You've earned ${reward.toLocaleString()} gains!</p>
-            <div class="button-container">
-                <button class="popup-button ok-button">OK</button>
-            </div>
-        </div>
-    `;
-    showTaskPopup(popupContent);
 }
 
 let socialTasks = {
@@ -1103,10 +1106,8 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    // Exclude completed tasks unless the category is 'completed'
-    if (category !== 'completed') {
-        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
-    }
+    // Exclude completed tasks
+    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
@@ -1116,12 +1117,6 @@ function displayTasks(category) {
     tasksToDisplay.forEach(task => {
         const taskElement = document.createElement('div');
         taskElement.className = 'social-task';
-
-        // Modify the task element appearance if it's in the 'completed' category
-        if (category === 'completed') {
-            taskElement.classList.add('completed-task'); // Add a class for styling if needed
-        }
-
         taskElement.innerHTML = `
             <img src="/public/images/${task.icon}" alt="${task.name}" class="social-task-icon">
             <div class="social-task-content">
@@ -1133,12 +1128,10 @@ function displayTasks(category) {
             </div>
         `;
 
-        // For categories other than 'completed', make tasks clickable
-        if (category !== 'completed') {
-            if (!task.completed) {
-                taskElement.addEventListener('click', () => handleTaskClick(task));
-                taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
-            }
+        // Make tasks clickable only if in 'socials' category
+        if (category === 'socials') {
+            taskElement.addEventListener('click', () => handleTaskClick(task));
+            taskElement.style.cursor = 'pointer'; // Optional: Change cursor to pointer
         }
 
         tasksContainer.appendChild(taskElement);
@@ -1170,15 +1163,10 @@ function handleTaskClick(task) {
     }
 
     const popupContent = `
-        <div class="popup-header">
-            <button class="popup-close">&times;</button>
-        </div>
-        <div class="popup-body">
-            <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
-            <p>${actionText}</p>
-            <div class="button-container">
-                <button class="popup-button primary-button" id="pump-me-button">Pump Me</button>
-            </div>
+        <img src="/public/images/max1.png" alt="PUMP ME Character" class="character-image">
+        <p>${actionText}</p>
+        <div class="button-container">
+            <button class="popup-button primary-button" id="pump-me-button">Pump Me</button>
         </div>
     `;
 
@@ -1210,10 +1198,13 @@ function completeTask(task) {
     // Move the task to the "completed" category
     moveTaskToCompleted(task);
 
-    // Show a reward popup (will update the popup content)
+    // Close the task popup
+    closeTaskPopup();
+
+    // Show a reward popup
     showRewardPopup(task.reward);
 
-    // Save user data
+    // Save user data (ensure this is called)
     saveUserData();
 }
 
@@ -1227,51 +1218,60 @@ function moveTaskToCompleted(task) {
         socialTasks[category] = socialTasks[category].filter(t => t !== task);
 
         // Add the task to the "completed" category
+        if (!socialTasks['completed']) {
+            socialTasks['completed'] = [];
+        }
         socialTasks['completed'].push(task);
 
         // Save the updated socialTasks data
         saveUserData();
 
-        // Update the tasks display if currently viewing the same category
-        const activeCategoryButton = document.querySelector('.task-categories .category-btn.active');
-        if (activeCategoryButton && activeCategoryButton.dataset.category === category) {
-            displayTasks(category);
-        }
+        // Update the tasks display
+        displayTasks(category);
     }
 }
 
 // Function to show a general popup
 function showTaskPopup(content) {
-    const taskPopup = document.getElementById('task-popup');
-    const taskPopupContent = document.getElementById('task-popup-content');
+    // Create the overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'task-popup-overlay';
 
-    if (taskPopup && taskPopupContent) {
-        taskPopupContent.innerHTML = content;
+    // Create the popup content container
+    const popupContent = document.createElement('div');
+    popupContent.className = 'task-popup-content';
 
-        // Attach event listener to close button in the popup content
-        const closeButton = taskPopupContent.querySelector('.popup-close');
-        if (closeButton) {
-            closeButton.addEventListener('click', closeTaskPopup);
-        }
+    // Close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'popup-close task-popup-close';
+    closeButton.innerHTML = '&times;';
+    closeButton.onclick = closeTaskPopup;
+    popupContent.appendChild(closeButton);
 
-        // Attach event listener to "OK" button in the popup content, if present
-        const okButton = taskPopupContent.querySelector('.popup-button.ok-button');
-        if (okButton) {
-            okButton.addEventListener('click', closeTaskPopup);
-        }
+    // Insert the content
+    const contentContainer = document.createElement('div');
+    contentContainer.innerHTML = content;
+    popupContent.appendChild(contentContainer);
 
-        taskPopup.style.display = 'block';
-    } else {
-        console.error('Task popup elements not found');
+    // Append the popup content to the overlay
+    overlay.appendChild(popupContent);
+
+    // Append the overlay to the body
+    document.body.appendChild(overlay);
+}
+
+function closeTaskPopup() {
+    const overlay = document.querySelector('.task-popup-overlay');
+    if (overlay) {
+        overlay.remove();
     }
 }
 
+// Function to close the task popup
 function closeTaskPopup() {
     const taskPopup = document.getElementById('task-popup');
     if (taskPopup) {
         taskPopup.style.display = 'none';
-    } else {
-        console.error('Task popup element not found');
     }
 }
 
@@ -1419,4 +1419,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Character element not found');
     }
+
+    /*
+    // Event listener for the "Pump Me" button on the gym page
+    const pumpMeButton = document.getElementById('pump-me-image');
+    if (pumpMeButton) {
+        pumpMeButton.addEventListener('click', (e) => {
+            // Handle "Pump Me" button click
+            console.log('"Pump Me" button clicked');
+            pump(e); // Call your existing pump function
+        });
+    } else {
+        console.error('"Pump Me" button element not found');
+    }
+*/
 });

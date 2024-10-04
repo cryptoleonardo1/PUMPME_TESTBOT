@@ -59,18 +59,15 @@ app.post('/api/saveUserData', async (req, res) => {
     const gainsString = gains.toString();
     const levelString = level.toString();
 
-// In app.post('/api/saveUserData', ...)
-await redis.hset(`user:${userId}`,
-  'userId', userId,
-  'username', username || '',
-  'gains', gainsString,
-  'level', levelString,
-  'boostsData', boostsDataString,
-  'tasksData', tasksDataString,
-  //'totalReps', totalReps.toString(),
-  //'totalBoostsPurchased', totalBoostsPurchased.toString(),
-  //'totalReferrals', totalReferrals.toString()
-);
+    // Save user data using hset with field-value pairs
+    await redis.hset(`user:${userId}`,
+      'userId', userId,
+      'username', username || '',
+      'gains', gainsString,
+      'level', levelString,
+      'boostsData', boostsDataString,
+      'tasksData', tasksDataString
+    );
 
     // Update leaderboard
     await redis.zadd('leaderboard', gainsString, userId);
@@ -99,9 +96,6 @@ app.get('/api/getUserData', async (req, res) => {
       res.json({
         gains: 0,
         level: 1,
-        totalReps: parseInt(userData.totalReps) || 0,
-        totalBoostsPurchased: parseInt(userData.totalBoostsPurchased) || 0,
-        totalReferrals: parseInt(userData.totalReferrals) || 0,
         boostsData: {},
         tasksData: [],
         username: '',
@@ -137,9 +131,6 @@ app.get('/api/getUserData', async (req, res) => {
         tasksData: tasksData,
         username: userData.username || '',
         userId: userData.userId || userId,
-        totalReps: parseInt(userData.totalReps) || 0,
-        totalBoostsPurchased: parseInt(userData.totalBoostsPurchased) || 0,
-        totalReferrals: parseInt(userData.totalReferrals) || 0,
       });
     }
   } catch (error) {
