@@ -11,6 +11,12 @@ let totalReps = 0; // Initialize at the top of your script
 let totalBoostsPurchased = 0;
 let totalReferrals = 0;
 let activeBoosts = [];
+// Boosts object
+let boosts = {
+    doubleGains: { active: false },
+    tripleGains: { active: false }
+    // Removed autoClicker
+};
 
 const tg = window.Telegram.WebApp;
 
@@ -531,33 +537,34 @@ function applyLoadedBoosts() {
 function pump(e) {
     // Increment total reps
     totalReps += 1;
-  
+
     // Calculate gains per click
     let gainsPerClick = 1; // Base gains per click
-  
+
     // Apply boosts
     if (boosts.doubleGains?.active) {
-      gainsPerClick *= 2;
+        gainsPerClick *= 2;
     }
     if (boosts.tripleGains?.active) {
-      gainsPerClick *= 3;
+        gainsPerClick *= 3;
     }
-  
+
     // Increment gains
     gains += gainsPerClick;
-  
+
     // Update UI elements
     updateUI();
-  
+
     // Check for level up
     updateLevel();
-  
+
     // Check if any tasks are completed
     checkTaskCompletion();
-  
+
     // Save user data
     saveUserData();
-  }  
+}
+ 
 
 // Function to update the leaderboard
 function updateLeaderboard() {
@@ -961,52 +968,52 @@ function updateProfilePage() {
     }
 }
 
+// Function to handle purchasing a boost
 function purchaseBoost(boostType) {
     // Define the cost of each boost type
     const boostCosts = {
-      doubleGains: 100,   // Cost for Double Gains boost
-      tripleGains: 300,   // Cost for Triple Gains boost
-      autoClicker: 500    // Cost for Auto Clicker boost
+        doubleGains: 100,   // Cost for Double Gains boost
+        tripleGains: 300    // Cost for Triple Gains boost
     };
-  
+
     // Check if the boostType is valid
     if (!boostCosts[boostType]) {
-      console.error(`Invalid boost type: ${boostType}`);
-      return;
+        console.error(`Invalid boost type: ${boostType}`);
+        return;
     }
-  
+
     const cost = boostCosts[boostType];
-  
+
     // Check if the user has enough gains
     if (gains >= cost) {
-      // Deduct the cost
-      gains -= cost;
-  
-      // Activate the boost
-      boosts[boostType] = { active: true };
-  
-      // Increment total boosts purchased
-      totalBoostsPurchased += 1;
-  
-      // Update UI elements
-      updateUI();
-  
-      // Check for level up
-      updateLevel();
-  
-      // Check if any tasks are completed
-      checkTaskCompletion();
-  
-      // Save user data
-      saveUserData();
-  
-      // Optionally, provide feedback to the user
-      alert(`${boostType} boost purchased!`);
+        // Deduct the cost
+        gains -= cost;
+
+        // Activate the boost
+        boosts[boostType] = { active: true };
+
+        // Increment total boosts purchased
+        totalBoostsPurchased += 1;
+
+        // Update UI elements
+        updateUI();
+
+        // Check for level up
+        updateLevel();
+
+        // Check if any tasks are completed
+        checkTaskCompletion();
+
+        // Save user data
+        saveUserData();
+
+        // Provide feedback to the user
+        alert(`${boostType === 'doubleGains' ? 'Double Gains' : 'Triple Gains'} boost purchased!`);
     } else {
-      // Not enough gains
-      alert('Not enough gains to purchase this boost.');
+        // Not enough gains
+        alert('Not enough gains to purchase this boost.');
     }
-  }  
+}
 
 // Function to handle adding a referral
 function addReferral() {
@@ -1504,16 +1511,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Triple Gains button not found');
     }
 
-    const autoClickerButton = document.getElementById('auto-clicker-btn');
-    if (autoClickerButton) {
-        autoClickerButton.addEventListener('click', () => {
-            purchaseBoost('autoClicker');
-        });
-    } else {
-        console.error('Auto Clicker button not found');
-    }
-
-    // Event listener for adding a referral
+    /*
+    // Event listener for adding a referral (if you have this functionality)
     const addReferralButton = document.getElementById('add-referral-btn');
     if (addReferralButton) {
         addReferralButton.addEventListener('click', () => {
@@ -1522,6 +1521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Add Referral button not found');
     }
+    */
 
     // Get references to navigation buttons and pages
     const navButtons = document.querySelectorAll('.nav-btn');
