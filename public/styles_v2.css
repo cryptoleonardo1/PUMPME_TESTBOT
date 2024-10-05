@@ -54,7 +54,7 @@ header {
 #music-control-container {
   display: flex;
   justify-content: flex-end; /* Align to the right */
-  margin-top: 5px; /* Add spacing above if needed */
+  margin-top: 15px; /* Add spacing above if needed */
   padding-right: 0px; /* Adjust padding as necessary */
 }
 
@@ -221,6 +221,23 @@ main {
   z-index: 10;
 }
 
+/* CSS Animation */
+@keyframes scaleUp {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.1); /* Scale up to 110% */
+  }
+  100% {
+      transform: scale(1);
+  }
+}
+
+.scale-up {
+  animation: scaleUp 0.2s ease-in-out;
+}
+
 #boosts-page h2,
 #social-page h2,
 #top-pumpers-page h2,
@@ -340,16 +357,15 @@ main {
 }
 
 .boost-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background: #120257;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  display: none;
-  z-index: 1000;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  position: relative; /* For positioning the close button */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: popupFadeIn 0.3s ease-in-out;
 }
 
 /* Confirmation Popup Styling */
@@ -370,6 +386,17 @@ main {
   color: #fff;
   font-size: 18px;
   margin-bottom: 20px;
+}
+
+.completed-task {
+  opacity: 0.6;
+  pointer-events: none; /* Prevent interaction */
+}
+
+.completed-task .social-task-name::after {
+  content: ' (Completed)';
+  color: yellow;
+  font-weight: bold;
 }
 
 /* Overlay background */
@@ -617,6 +644,12 @@ main {
 .social-task.active .social-task-name,
 .social-task.active .social-task-reward {
   color: #ffffff;
+}
+
+.completed-task .social-task-name::after {
+  content: ' (Completed)';
+  color: yellow;
+  font-weight: bold;
 }
 
 #tasks-container {
