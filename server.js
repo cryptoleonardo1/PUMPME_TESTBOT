@@ -1,3 +1,5 @@
+// server.js
+
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -16,14 +18,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Corrected paths to route handlers (since they're in the 'api' folder)
+const leaderboardHandler = require('./api/leaderboard');
+const saveUserDataHandler = require('./api/saveUserData');
+const getUserDataHandler = require('./api/getUserData');
+
 // Leaderboard endpoint
-app.get('/api/leaderboard', require('./leaderboard'));
+app.get('/api/leaderboard', leaderboardHandler);
 
 // Save User Data endpoint
-app.post('/api/saveUserData', require('./saveUserData'));
+app.post('/api/saveUserData', saveUserDataHandler);
 
 // Get User Data endpoint
-app.get('/api/getUserData', require('./getUserData'));
+app.get('/api/getUserData', getUserDataHandler);
 
 app.use((err, req, res, next) => {
   console.error('Express error:', util.inspect(err, { depth: null }));
