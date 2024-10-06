@@ -448,6 +448,7 @@ main {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
+  border-radius: 5px;
 }
 
 #leaderboard-table th, #leaderboard-table td {
