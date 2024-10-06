@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
 
       leaderboard.push({
         rank: Math.floor(i / 2) + 1, // Calculate the rank
-        displayName: displayName,
+        username: displayName,
         gains: score,
       });
     }

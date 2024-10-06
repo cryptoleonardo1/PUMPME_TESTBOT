@@ -1,5 +1,3 @@
-// app_v2.js
-
 // Initialize variables
 let gains = 0;
 let level = 1;
@@ -312,18 +310,6 @@ function loadUserData() {
         .catch(error => console.error('Error loading user data:', error));
     }
 }
-
-/*
-function getDefaultSocialTasks() {
-    return [
-        { id: 1, name: "Complete 10 push-ups", reward: 100, completed: false, link: "https://example.com/push-ups" },
-        { id: 2, name: "Run 5km", reward: 200, completed: false, link: "https://example.com/run-5km" },
-        { id: 3, name: "Attend a yoga class", reward: 150, completed: false, link: "https://example.com/yoga-class" },
-        { id: 4, name: "Drink 2 liters of water", reward: 50, completed: false },
-        { id: 5, name: "Sleep 8 hours", reward: 75, completed: false }
-    ];
-}
-*/
 
 // Function to get default social tasks
 function getDefaultSocialTasks() {
@@ -1419,18 +1405,4 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Character element not found');
     }
-
-    /*
-    // Event listener for the "Pump Me" button on the gym page
-    const pumpMeButton = document.getElementById('pump-me-image');
-    if (pumpMeButton) {
-        pumpMeButton.addEventListener('click', (e) => {
-            // Handle "Pump Me" button click
-            console.log('"Pump Me" button clicked');
-            pump(e); // Call your existing pump function
-        });
-    } else {
-        console.error('"Pump Me" button element not found');
-    }
-*/
 });

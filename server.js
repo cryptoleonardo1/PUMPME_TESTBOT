@@ -20,14 +20,14 @@ app.use((req, res, next) => {
 app.get('/api/leaderboard', async (req, res) => {
   try {
     console.log('Fetching leaderboard data from Redis...');
-    const leaderboardData = await redis.zrevrange('leaderboard', 0, 9, 'WITHSCORES');
+    const leaderboardData = await redis.zRevRange('leaderboard', 0, 9, { WITHSCORES: true });
     console.log('Raw leaderboard data:', leaderboardData);
 
     const leaderboard = [];
     for (let i = 0; i < leaderboardData.length; i += 2) {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1], 10);
-      const userData = await redis.hgetall(`user:${userId}`);
+      const userData = await redis.hGetAll(`user:${userId}`);
       console.log(`User data for userId ${userId}:`, userData);
 
       // Determine the display name
@@ -53,22 +53,26 @@ app.post('/api/saveUserData', async (req, res) => {
     const { userId, username, gains, level, boostsData, tasksData } = req.body;
     console.log('Saving user data:', { userId, username, gains, level });
 
+    // Convert gains and level to strings
+    const gainsString = gains.toString();
+    const levelString = level.toString();
+
     // Convert boostsData and tasksData to JSON strings
     const boostsDataString = JSON.stringify(boostsData || {});
-    const tasksDataString = JSON.stringify(tasksData || []);
+    const tasksDataString = JSON.stringify(tasksData || {});
 
     // Save user data
-    await redis.hset(`user:${userId}`,
-      'userId', userId,
-      'username', username || '',
-      'gains', gainsString,
-      'level', levelString,
-      'boostsData', boostsDataString,
-      'tasksData', tasksDataString
-    );
+    await redis.hSet(`user:${userId}`, {
+      userId: userId,
+      username: username || '',
+      gains: gainsString,
+      level: levelString,
+      boostsData: boostsDataString,
+      tasksData: tasksDataString
+    });
 
     // Update leaderboard
-    await redis.zadd('leaderboard', gains, userId);
+    await redis.zAdd('leaderboard', [{ score: gains, value: userId }]);
 
     console.log('User data saved successfully');
     res.json({ success: true });
@@ -82,7 +86,7 @@ app.get('/api/getUserData', async (req, res) => {
   try {
     const { userId } = req.query;
     console.log('Getting user data for userId:', userId);
-    const userData = await redis.hgetall(`user:${userId}`);
+    const userData = await redis.hGetAll(`user:${userId}`);
     console.log('Raw user data:', userData);
 
     if (!userData || Object.keys(userData).length === 0) {
@@ -91,7 +95,7 @@ app.get('/api/getUserData', async (req, res) => {
         gains: 0,
         level: 1,
         boostsData: {},
-        tasksData: [],
+        tasksData: {},
         username: '',
         userId: userId
       });
@@ -109,7 +113,7 @@ app.get('/api/getUserData', async (req, res) => {
       }
 
       // Parse tasksData
-      let tasksData = [];
+      let tasksData = {};
       if (userData.tasksData) {
         try {
           tasksData = JSON.parse(userData.tasksData);
