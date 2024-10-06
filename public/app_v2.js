@@ -226,6 +226,47 @@ function updateUI() {
     updateActiveBoostsDisplay();
 }
 
+// Function to save user data to the server
+function saveUserData() {
+    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
+    const username = tg.initDataUnsafe?.user?.username || '';
+    console.log('Saving user data with userId:', userId, 'and username:', username);
+  
+    if (userId) {
+      fetch('/api/saveUserData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          username: username,
+          gains: gains,
+          level: level,
+          boostsData: boosts,
+          tasksData: socialTasks,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('User data saved successfully:', data);
+        })
+        .catch(error => console.error('Error saving user data:', error));
+    } else {
+      console.error('User ID not available');
+    }
+  }
+  
+// Function to show a popup when a task is completed
+function showRewardPopup(reward) {
+    const popupContent = `
+        <h2>Task Completed!</h2>
+        <p>You've earned ${reward} gains!</p>
+        <div class="button-container">
+            <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
+        </div>
+    `;
+    showTaskPopup(popupContent);
+}
+
 // Function to load user data from the server
 function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
@@ -506,6 +547,7 @@ function updateLeaderboard() {
     fetch('/api/leaderboard')
       .then(response => response.json())
       .then(data => {
+        console.log('Leaderboard data received from server:', data); // Add this line
         const leaderboardBody = document.getElementById('leaderboard-body');
         if (leaderboardBody) {
           leaderboardBody.innerHTML = '';
@@ -513,7 +555,7 @@ function updateLeaderboard() {
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${user.rank}</td>
-              <td>${user.displayName}</td>
+              <td>${user.username}</td> <!-- Changed from user.displayName to user.username -->
               <td>${user.gains.toLocaleString()}</td>
             `;
             leaderboardBody.appendChild(row);
@@ -1187,46 +1229,6 @@ function moveTaskToCompleted(task) {
         // Update the tasks display
         displayTasks(category);
     }
-}
-
-function saveUserData() {
-    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-    const username = tg.initDataUnsafe?.user?.username || '';
-    console.log('Saving user data with userId:', userId, 'and username:', username);
-  
-    if (userId) {
-      fetch('/api/saveUserData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userId,
-          username: username,
-          gains: gains,
-          level: level,
-          boostsData: boosts,
-          tasksData: socialTasks,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('User data saved successfully');
-        })
-        .catch(error => console.error('Error saving user data:', error));
-    } else {
-      console.error('User ID not available');
-    }
-  }
-  
-// Function to show a popup when a task is completed
-function showRewardPopup(reward) {
-    const popupContent = `
-        <h2>Task Completed!</h2>
-        <p>You've earned ${reward} gains!</p>
-        <div class="button-container">
-            <button onclick="closeTaskPopup()" class="popup-button ok-button">OK</button>
-        </div>
-    `;
-    showTaskPopup(popupContent);
 }
 
 // Function to show a general popup
