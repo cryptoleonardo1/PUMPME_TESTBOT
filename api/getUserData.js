@@ -7,12 +7,19 @@ module.exports = async (req, res) => {
       const { userId } = req.query;
       console.log('Getting user data for userId:', userId);
 
-      const userData = await redis.hGetAll(`user:${userId}`);
+      const userData = await redis.hgetall(`user:${userId}`);
       console.log('Raw user data:', userData);
 
       if (!userData || Object.keys(userData).length === 0) {
         console.log('No user data found, returning default values');
-        res.status(200).json({ gains: 0, level: 1, boostsData: {}, tasksData: {}, userId: userId, username: null });
+        res.status(200).json({
+          gains: 0,
+          level: 1,
+          boostsData: {},
+          tasksData: {},
+          userId: userId,
+          username: null,
+        });
       } else {
         console.log('User data found, returning:', userData);
 
@@ -37,7 +44,7 @@ module.exports = async (req, res) => {
               socials: [],
               inGame: [],
               referrals: [],
-              completed: []
+              completed: [],
             };
           }
         }
@@ -53,7 +60,11 @@ module.exports = async (req, res) => {
       }
     } catch (error) {
       console.error('Error getting user data:', error);
-      res.status(500).json({ success: false, error: 'Error getting user data', details: error.message });
+      res.status(500).json({
+        success: false,
+        error: 'Error getting user data',
+        details: error.message,
+      });
     }
   } else {
     res.setHeader('Allow', ['GET']);

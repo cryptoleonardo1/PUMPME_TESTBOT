@@ -17,129 +17,13 @@ app.use((req, res, next) => {
 });
 
 // Leaderboard endpoint
-app.get('/api/leaderboard', async (req, res) => {
-  try {
-    console.log('Fetching leaderboard data from Redis...');
-    const leaderboardData = await redis.zRevRange('leaderboard', 0, 9, { WITHSCORES: true });
-    console.log('Raw leaderboard data:', leaderboardData);
+app.get('/api/leaderboard', require('./leaderboard'));
 
-    const leaderboard = [];
-    for (let i = 0; i < leaderboardData.length; i += 2) {
-      const userId = leaderboardData[i];
-      const score = parseInt(leaderboardData[i + 1], 10);
-      const userData = await redis.hGetAll(`user:${userId}`);
-      console.log(`User data for userId ${userId}:`, userData);
+// Save User Data endpoint
+app.post('/api/saveUserData', require('./saveUserData'));
 
-      // Determine the display name
-      const displayName = userData.username && userData.username !== '' ? userData.username : userId;
-
-      leaderboard.push({
-        rank: Math.floor(i / 2) + 1,
-        username: displayName,
-        gains: score,
-      });
-    }
-
-    console.log('Processed leaderboard:', leaderboard);
-    res.json(leaderboard);
-  } catch (error) {
-    console.error('Error fetching leaderboard:', error);
-    res.status(500).json({ error: 'Error fetching leaderboard' });
-  }
-});
-
-app.post('/api/saveUserData', async (req, res) => {
-  try {
-    const { userId, username, gains, level, boostsData, tasksData } = req.body;
-    console.log('Saving user data:', { userId, username, gains, level });
-
-    // Convert gains and level to strings
-    const gainsString = gains.toString();
-    const levelString = level.toString();
-
-    // Convert boostsData and tasksData to JSON strings
-    const boostsDataString = JSON.stringify(boostsData || {});
-    const tasksDataString = JSON.stringify(tasksData || {});
-
-    // Save user data
-    await redis.hSet(`user:${userId}`, {
-      userId: userId,
-      username: username || '',
-      gains: gainsString,
-      level: levelString,
-      boostsData: boostsDataString,
-      tasksData: tasksDataString
-    });
-
-    // Update leaderboard
-    await redis.zAdd('leaderboard', [{ score: gains, value: userId }]);
-
-    console.log('User data saved successfully');
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error saving user data:', error);
-    res.status(500).json({ success: false, error: 'Error saving user data', details: error.message });
-  }
-});
-
-app.get('/api/getUserData', async (req, res) => {
-  try {
-    const { userId } = req.query;
-    console.log('Getting user data for userId:', userId);
-    const userData = await redis.hGetAll(`user:${userId}`);
-    console.log('Raw user data:', userData);
-
-    if (!userData || Object.keys(userData).length === 0) {
-      console.log('No user data found, returning default values');
-      res.json({
-        gains: 0,
-        level: 1,
-        boostsData: {},
-        tasksData: {},
-        username: '',
-        userId: userId
-      });
-    } else {
-      console.log('User data found, returning:', userData);
-
-      // Parse boostsData
-      let boostsData = {};
-      if (userData.boostsData) {
-        try {
-          boostsData = JSON.parse(userData.boostsData);
-        } catch (parseError) {
-          console.error('Error parsing boostsData:', parseError);
-        }
-      }
-
-      // Parse tasksData
-      let tasksData = {};
-      if (userData.tasksData) {
-        try {
-          tasksData = JSON.parse(userData.tasksData);
-        } catch (parseError) {
-          console.error('Error parsing tasksData:', parseError);
-        }
-      }
-
-      res.json({
-        gains: parseInt(userData.gains) || 0,
-        level: parseInt(userData.level) || 1,
-        boostsData: boostsData,
-        tasksData: tasksData,
-        username: userData.username || '',
-        userId: userData.userId || userId,
-      });
-    }
-  } catch (error) {
-    console.error('Error getting user data:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Error getting user data',
-      details: error.message
-    });
-  }
-});
+// Get User Data endpoint
+app.get('/api/getUserData', require('./getUserData'));
 
 app.use((err, req, res, next) => {
   console.error('Express error:', util.inspect(err, { depth: null }));
@@ -162,6 +46,6 @@ redis
   .then(() => {
     console.log('Redis connection successful');
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Redis connection failed:', error);
   });
