@@ -1120,8 +1120,10 @@ function displayTasks(category) {
 
     let tasksToDisplay = socialTasks[category];
 
-    // Exclude completed tasks
-    tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    // Exclude completed tasks for categories other than 'completed'
+    if (category !== 'completed') {
+        tasksToDisplay = tasksToDisplay.filter(task => !task.completed);
+    }
 
     if (tasksToDisplay.length === 0) {
         tasksContainer.innerHTML = '<p>There are no available tasks.</p>';
