@@ -1180,11 +1180,11 @@ function handleTaskClick(task) {
         case 'telegram':
             actionText = 'Join Soulooter Telegram Chat';
             break;
-        case 'instagram':
-            actionText = 'Follow Us On Instagram';
-            break;
         case 'telegram':
             actionText = 'Join Our Telegram Chat';
+            break;
+        case 'instagram':
+            actionText = 'Follow Us On Instagram';
             break;
         case 'twitter':
             actionText = 'Follow Us On X';
