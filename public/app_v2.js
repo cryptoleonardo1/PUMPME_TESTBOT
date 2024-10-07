@@ -885,7 +885,6 @@ function updateProfilePage() {
         { name: "Strength", value: 20 },
         { name: "Recovery", value: 22 },
         { name: "Charisma", value: 17 },
-        { name: "Risk of Injury", value: 25 }
     ];
 
     const attributesContainer = document.getElementById('attributes-container');
