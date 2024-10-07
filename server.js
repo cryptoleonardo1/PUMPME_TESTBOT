@@ -19,18 +19,18 @@ app.use((req, res, next) => {
 });
 
 // Corrected paths to route handlers (since they're in the 'api' folder)
-const leaderboardHandler = require('./api/leaderboard');
-const saveUserDataHandler = require('./api/saveUserData');
-const getUserDataHandler = require('./api/getUserData');
+const leaderboardHandler = require('./API/leaderboard');
+const saveUserDataHandler = require('./API/saveUserData');
+const getUserDataHandler = require('./API/getUserData');
 
 // Leaderboard endpoint
-app.get('/api/leaderboard', leaderboardHandler);
+app.get('/API/leaderboard', leaderboardHandler);
 
 // Save User Data endpoint
-app.post('/api/saveUserData', saveUserDataHandler);
+app.post('/API/saveUserData', saveUserDataHandler);
 
 // Get User Data endpoint
-app.get('/api/getUserData', getUserDataHandler);
+app.get('/API/getUserData', getUserDataHandler);
 
 app.use((err, req, res, next) => {
   console.error('Express error:', util.inspect(err, { depth: null }));
