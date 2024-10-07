@@ -52,10 +52,11 @@ header {
 
 /* Style for the Music Control Button */
 #music-control-container {
+  position: absolute;
+  top: 10px;           /* Adjust as needed */
+  right: 20px;         /* 20px margin to the right */
   display: flex;
   justify-content: flex-end; /* Align to the right */
-  margin-top: 10px; /* Add spacing above if needed */
-  padding-right: 10px; /* Adjust padding as necessary */
 }
 
 #music-control-btn {
@@ -71,6 +72,7 @@ header {
 }
 
 #gains-container {
+  position: relative;
   display: flex;
   justify-content: center; /* Center contents horizontally */
   align-items: center;     /* Center contents vertically */
