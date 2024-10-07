@@ -1,17 +1,25 @@
-// Assuming you're using Express.js
-const express = require('express');
-const router = express.Router();
+// /api/checkTelegramMembership.js
+
 const axios = require('axios');
 
-// Replace with your actual Telegram Bot Token and Chat ID
-const TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN';
-const TELEGRAM_CHAT_ID = 'YOUR_TELEGRAM_CHAT_ID';
+export default async function handler(req, res) {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method Not Allowed' });
+    }
 
-router.post('/checkTelegramMembership', async (req, res) => {
     const { userId } = req.body;
 
     if (!userId) {
         return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Replace with your actual Telegram Bot Token and Chat ID
+    const BOT_TOKEN = '7313414614:AAFXWYlBaKjWpoOpJDKidCLBIi67P7GU_8M';
+    const TELEGRAM_CHAT_ID = '-1001234567890';
+
+    if (!BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+        return res.status(500).json({ error: 'Server configuration error' });
     }
 
     try {
@@ -33,6 +41,4 @@ router.post('/checkTelegramMembership', async (req, res) => {
         console.error('Error checking Telegram membership:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to check membership status' });
     }
-});
-
-module.exports = router;
+}
