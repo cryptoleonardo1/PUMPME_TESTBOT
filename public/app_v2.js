@@ -361,7 +361,7 @@ function getDefaultSocialTasks() {
     return {
         socials: [
             {
-                id: 'telegram',
+                id: 'telegram2',
                 name: "Join Soulooter on Telegram",
                 icon: "telegram-icon.png",
                 reward: 5000,
@@ -998,7 +998,7 @@ function initializeTasksPage() {
 let socialTasks = {
     socials: [
         {
-            id: 'telegram', 
+            id: 'telegram2', 
             name: "Join Soulooter on Telegram", 
             icon: "telegram-icon.png", 
             reward: 5000, 
@@ -1177,7 +1177,7 @@ function handleTaskClick(task) {
 
     // Customize actionText based on task id if needed
     switch (task.id) {
-        case 'telegram':
+        case 'telegram2':
             actionText = 'Join Soulooter Telegram Chat';
             break;
         case 'telegram':
@@ -1211,7 +1211,7 @@ function handleTaskClick(task) {
     const pumpMeButton = document.getElementById('pump-me-button');
     if (pumpMeButton) {
         pumpMeButton.addEventListener('click', () => {
-            if (task.id === 'telegram') {
+            if (task.id === 'telegram'||'telegram2') {
                 // For Telegram tasks, check membership via API
                 checkTelegramMembership(task);
             } else {
