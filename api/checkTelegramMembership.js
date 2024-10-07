@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 
-export default async function handler(req, res) {
+module.exports = async function(req, res) {
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
@@ -14,9 +14,9 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'User ID is required' });
     }
 
-    // Replace with your actual Telegram Bot Token and Chat ID
+    // Get Bot Token and Chat ID from environment variables
     const BOT_TOKEN = '7313414614:AAFXWYlBaKjWpoOpJDKidCLBIi67P7GU_8M';
-    const TELEGRAM_CHAT_ID = '-1001234567890';
+    const TELEGRAM_CHAT_ID = '-1002137504108';
 
     if (!BOT_TOKEN || !TELEGRAM_CHAT_ID) {
         return res.status(500).json({ error: 'Server configuration error' });
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     try {
         // Use the Telegram Bot API to get chat member info
-        const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMember`, {
+        const response = await axios.get(`https://api.telegram.org/bot${'7313414614:AAFXWYlBaKjWpoOpJDKidCLBIi67P7GU_8M'}/getChatMember`, {
             params: {
                 chat_id: TELEGRAM_CHAT_ID,
                 user_id: userId
@@ -41,4 +41,4 @@ export default async function handler(req, res) {
         console.error('Error checking Telegram membership:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to check membership status' });
     }
-}
+};
