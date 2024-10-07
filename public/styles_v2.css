@@ -430,17 +430,17 @@ main {
 .attribute-item {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .attribute-name {
-  width: 120px;
-  margin-right: 10px;
+  width: 150px;
+  margin-right: 20px;
 }
 
 .attribute-bar-container {
   flex-grow: 1;
-  height: 20px;
+  height: 30px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   overflow: hidden;
@@ -455,7 +455,7 @@ main {
 .attribute-value {
   width: 40px;
   text-align: right;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 .active-boost-item {
