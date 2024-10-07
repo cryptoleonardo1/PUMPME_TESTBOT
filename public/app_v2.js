@@ -883,10 +883,7 @@ function showInsufficientGainsMessage(boostName) {
 function updateProfilePage() {
     const attributes = [
         { name: "Strength", value: 20 },
-        { name: "Endurance", value: 18 },
         { name: "Recovery", value: 22 },
-        { name: "Technique", value: 15 },
-        { name: "Motivation", value: 25 },
         { name: "Charisma", value: 17 },
         { name: "Risk of Injury", value: 25 }
     ];
