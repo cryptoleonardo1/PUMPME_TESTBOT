@@ -53,8 +53,8 @@ header {
 /* Style for the Music Control Button */
 #music-control-container {
   position: absolute;
-  top: 10px;           /* Adjust as needed */
-  right: 20px;         /* 20px margin to the right */
+  top: 0px;           /* Adjust as needed */
+  right: 30px;         /* 20px margin to the right */
   display: flex;
   justify-content: flex-end; /* Align to the right */
 }
