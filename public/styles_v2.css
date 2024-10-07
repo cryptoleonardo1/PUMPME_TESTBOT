@@ -67,6 +67,10 @@ header {
   outline: none;
 }
 
+#music-control-btn:hover {
+  opacity: 0.8; /* Optional hover effect */
+}
+
 #gains-container {
   position: relative;
   display: flex;
@@ -74,7 +78,8 @@ header {
   align-items: center;     /* Center contents vertically */
   background-color: #000000;
   width: 100%;   
-  padding: 15px;
+  padding: 20px;
+  border-radius: 0 0 10px 10px;
   margin-bottom: 10px;
 }
 
@@ -83,6 +88,7 @@ header {
   justify-content: center; /* Center icon horizontally */
   align-items: center;     /* Center icon vertically */
   margin-right: 10px;       /* 5px space between icon and gains */
+  padding: 10px;
 }
 
 #bicep-icon {
