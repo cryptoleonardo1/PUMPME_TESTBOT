@@ -999,6 +999,14 @@ let socialTasks = {
     socials: [
         {
             id: 'telegram', 
+            name: "Join Soulooter on Telegram", 
+            icon: "telegram-icon.png", 
+            reward: 5000, 
+            completed: false, 
+            link: "https://t.me/pumpme_me"
+        },
+        {
+            id: 'telegram', 
             name: "PUMPME.APP on Telegram", 
             icon: "telegram-icon.png", 
             reward: 5000, 
