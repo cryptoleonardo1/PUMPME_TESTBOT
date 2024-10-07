@@ -361,14 +361,6 @@ function getDefaultSocialTasks() {
     return {
         socials: [
             {
-                id: 'telegram2',
-                name: "Join Soulooter on Telegram",
-                icon: "telegram-icon.png",
-                reward: 5000,
-                completed: false,
-                link: "https://t.me/soulooter"
-            },
-            {
                 id: 'telegram',
                 name: "PUMPME.APP on Telegram",
                 icon: "telegram-icon.png",
@@ -998,14 +990,6 @@ function initializeTasksPage() {
 let socialTasks = {
     socials: [
         {
-            id: 'telegram2', 
-            name: "Join Soulooter on Telegram", 
-            icon: "telegram-icon.png", 
-            reward: 5000, 
-            completed: false, 
-            link: "https://t.me/pumpme_me"
-        },
-        {
             id: 'telegram', 
             name: "PUMPME.APP on Telegram", 
             icon: "telegram-icon.png", 
@@ -1177,9 +1161,6 @@ function handleTaskClick(task) {
 
     // Customize actionText based on task id if needed
     switch (task.id) {
-        case 'telegram2':
-            actionText = 'Join Soulooter Telegram Chat';
-            break;
         case 'telegram':
             actionText = 'Join Our Telegram Chat';
             break;
@@ -1211,7 +1192,7 @@ function handleTaskClick(task) {
     const pumpMeButton = document.getElementById('pump-me-button');
     if (pumpMeButton) {
         pumpMeButton.addEventListener('click', () => {
-            if (task.id === 'telegram'||'telegram2') {
+            if (task.id === 'telegram') {
                 // For Telegram tasks, check membership via API
                 checkTelegramMembership(task);
             } else {
