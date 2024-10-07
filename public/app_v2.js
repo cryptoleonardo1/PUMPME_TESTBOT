@@ -362,6 +362,14 @@ function getDefaultSocialTasks() {
         socials: [
             {
                 id: 'telegram',
+                name: "Join Soulooter on Telegram",
+                icon: "telegram-icon.png",
+                reward: 5000,
+                completed: false,
+                link: "https://t.me/soulooter"
+            },
+            {
+                id: 'telegram',
                 name: "PUMPME.APP on Telegram",
                 icon: "telegram-icon.png",
                 reward: 5000,
@@ -1161,6 +1169,9 @@ function handleTaskClick(task) {
 
     // Customize actionText based on task id if needed
     switch (task.id) {
+        case 'telegram':
+            actionText = 'Join Soulooter Telegram Chat';
+            break;
         case 'instagram':
             actionText = 'Follow Us On Instagram';
             break;
