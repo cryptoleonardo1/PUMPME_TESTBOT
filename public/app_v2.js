@@ -286,7 +286,7 @@ function saveUserData() {
     console.log('Saving user data with userId:', userId, 'and username:', username);
   
     if (userId) {
-      fetch('/API/saveUserData', {
+      fetch('/api/saveUserData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -312,7 +312,7 @@ function saveUserData() {
 function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     if (userId) {
-        fetch(`/API/getUserData?userId=${userId}`)
+        fetch(`/api/getUserData?userId=${userId}`)
             .then(response => response.json())
             .then(data => {
                 gains = data.gains || 0;
@@ -537,7 +537,7 @@ function pump(e) {
 
 // Function to update the leaderboard
 function updateLeaderboard() {
-    fetch('/API/leaderboard')
+    fetch('/api/leaderboard')
       .then(response => response.json())
       .then(data => {
         console.log('Leaderboard data received from server:', data); // Add this line
