@@ -123,35 +123,6 @@ header {
   color: #cccccc;
 }
 
-#status-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0px; /* Add this line if not already present */
-}
-
-.status-item {
-  background-color: #000000;
-  padding: 5px 10px;
-  border-radius: 8px;
-  text-align: center;
-  flex: 1;
-  margin: 0 10px;
-}
-
-.status-label {
-  font-size: 12px;
-  opacity: 0.8;
-  margin-bottom: 5px;
-}
-
-.status-value {
-  font-size: 20px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .gains-icon {
   width: 20px;
   height: 20px;
