@@ -75,7 +75,7 @@ header {
   justify-content: space-between;
   align-items: center;
   background-color: #000000;
-  width: 50%;   
+  width: 100%;   
   padding: 10px;
   border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
@@ -84,8 +84,9 @@ header {
 #bicep-icon-container {
   width: 35px;
   height: 35px;
-  /*display: flex;
-  align-items: center; */
+  align-items: center;
+  display: flex;
+  align-items: center; 
   margin-right: 5px; /* Add space between icon and gains */
 }
 
