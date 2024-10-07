@@ -69,7 +69,7 @@ header {
 #music-control-btn:hover {
   opacity: 0.8; /* Optional hover effect */
 }
-
+/*
 #gains-container {
   display: flex;
   justify-content: space-between;
@@ -79,17 +79,9 @@ header {
   padding: 10px;
   border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
-}
+}*/
 
-#bicep-icon-container {
-  width: 35px;
-  height: 35px;
-  align-items: center;
-  display: flex;
-  align-items: center; 
-  margin-right: 5px; /* Add space between icon and gains */
-}
-
+/*
 #bicep-icon {
   max-width: 100%;
   max-height: 100%;
@@ -98,16 +90,16 @@ header {
 
 #gains-display {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center;     /* Center vertically */
+  justify-content: center; 
+  align-items: center;     
 }
 
 #gains-value {
   font-size: 30px;
   font-weight: bold;
   color: #ffffff;
-  /*justify-content: center;
-  padding-left: 14px; Ensure space for the bicep icon */
+  justify-content: center;
+  padding-left: 14px; 
 }
 
 /*
@@ -157,6 +149,35 @@ header {
   justify-content: center;
 }
 */
+
+.gains-container {
+  background-color: black;
+  width: 50%;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Gains Info */
+.gains-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Bicep Icon */
+.gains-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+}
+
+/* Gains Value */
+#gains {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
 
 .gains-icon {
   width: 20px;
