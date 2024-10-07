@@ -10,7 +10,7 @@ if (!token) {
     process.exit(1);
 }
 
-console.log('redis client details:', {
+console.log('Redis client details:', {
     options: redisClient.options,
     status: redisClient.status,
     mode: redisClient.mode

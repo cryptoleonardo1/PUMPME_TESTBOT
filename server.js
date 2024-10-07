@@ -22,7 +22,6 @@ app.use((req, res, next) => {
 const leaderboardHandler = require('./api/leaderboard');
 const saveUserDataHandler = require('./api/saveUserData');
 const getUserDataHandler = require('./api/getUserData');
-const checkTelegramMembershipHandler = require('./api/checkTelegramMembership'); // Added this line
 
 // Leaderboard endpoint
 app.get('/api/leaderboard', leaderboardHandler);
@@ -33,10 +32,6 @@ app.post('/api/saveUserData', saveUserDataHandler);
 // Get User Data endpoint
 app.get('/api/getUserData', getUserDataHandler);
 
-// Check Telegram Membership endpoint
-app.post('/api/checkTelegramMembership', checkTelegramMembershipHandler); // Added this line
-
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Express error:', util.inspect(err, { depth: null }));
   res.status(500).json({

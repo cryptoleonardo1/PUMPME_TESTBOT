@@ -1,5 +1,5 @@
 // redis-client.js
-const redis = require('ioredis');
+const Redis = require('ioredis');
 
 const REDIS_URL = process.env.REDIS_URL;
 
@@ -8,7 +8,7 @@ if (!REDIS_URL) {
   process.exit(1);
 }
 
-const redis = new redis(REDIS_URL, {
+const redis = new Redis(REDIS_URL, {
   tls: { rejectUnauthorized: false },
   maxRetriesPerRequest: null,
   retryStrategy(times) {

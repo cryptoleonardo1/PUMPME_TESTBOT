@@ -1161,11 +1161,11 @@ function handleTaskClick(task) {
 
     // Customize actionText based on task id if needed
     switch (task.id) {
-        case 'telegram':
-            actionText = 'Join Our Telegram Chat';
-            break;
         case 'instagram':
             actionText = 'Follow Us On Instagram';
+            break;
+        case 'telegram':
+            actionText = 'Join Our Telegram Chat';
             break;
         case 'twitter':
             actionText = 'Follow Us On X';
@@ -1192,68 +1192,9 @@ function handleTaskClick(task) {
     const pumpMeButton = document.getElementById('pump-me-button');
     if (pumpMeButton) {
         pumpMeButton.addEventListener('click', () => {
-            if (task.id === 'telegram') {
-                // For Telegram tasks, check membership via API
-                checkTelegramMembership(task);
-            } else {
-                // For other tasks, complete as usual
-                completeTask(task);
-            }
+            completeTask(task); // Complete the task when button is clicked
         });
     }
-}
-
-function checkTelegramMembership(task) {
-    const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
-    if (!userId) {
-        console.error('User ID not available');
-        return;
-    }
-
-    // Close the task popup
-    closeTaskPopup();
-
-    // Show a loading message or spinner if desired
-    showTaskPopup('<p>Checking your membership status...</p>');
-
-    fetch('/api/checkTelegramMembership', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            userId: userId,
-            taskId: task.id
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        closeTaskPopup();
-        if (data.joined) {
-            // User has joined the group/channel
-            completeTask(task);
-        } else {
-            // User has not joined
-            showTaskPopup(`
-                <p>Please join our Telegram group to complete this task.</p>
-                <div class="button-container">
-                    <button class="popup-button primary-button" id="join-group-button">Join Group</button>
-                    <button class="popup-button secondary-button" onclick="closeTaskPopup()">Cancel</button>
-                </div>
-            `);
-
-            // Attach event listener to the "Join Group" button
-            const joinGroupButton = document.getElementById('join-group-button');
-            if (joinGroupButton) {
-                joinGroupButton.addEventListener('click', () => {
-                    window.open(task.link, '_blank');
-                });
-            }
-        }
-    })
-    .catch(error => {
-        closeTaskPopup();
-        console.error('Error checking Telegram membership:', error);
-        showTaskPopup('<p>An error occurred. Please try again later.</p>');
-    });
 }
 
 function completeTask(task) {
