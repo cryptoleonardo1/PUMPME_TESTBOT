@@ -65,7 +65,7 @@ header {
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 40px; /* Adjust icon size */
+  font-size: 50px; /* Adjust icon size */
 }
 
 /* Style for the Music Control Button */
@@ -83,7 +83,7 @@ header {
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 40px; /* Adjust icon size */
+  font-size: 50px; /* Adjust icon size */
 }
 
 #gains-container {
