@@ -54,17 +54,24 @@ header {
 #music-control-container {
   position: absolute;
   align-items: center;     /* Center icon vertically */
-  margin-right: 10px;           /* 20px margin to the right */
+  right: 20px;         /* 20px margin to the right */
   display: flex;
   justify-content: flex-end; /* Align to the right */
 }
 
 #music-control-btn {
-  background: none;
+  position: absolute;
+  top: 10px;           /* Adjust as needed */
+  right: 20px;         /* 20px margin to the right */
+  background: none;    /* Remove default button styling */
   border: none;
-  font-size: 40px; /* Adjust icon size */
   cursor: pointer;
-  outline: none;
+}
+
+/* Music Control Icon */
+#music-control-button img {
+  width: 30px;         /* Adjust size as needed */
+  height: 30px;
 }
 
 #music-control-btn:hover {
@@ -72,13 +79,14 @@ header {
 }
 
 #gains-container {
-  position: relative;
+  position: relative; /* Added for absolute positioning */
   display: flex;
   justify-content: center; /* Center contents horizontally */
   align-items: center;     /* Center contents vertically */
   background-color: #000000;
   width: 100%;   
-  border-radius: 0 0 10px 10px;
+  padding: 10px;
+  border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
 }
 
@@ -86,13 +94,13 @@ header {
   display: flex;
   justify-content: center; /* Center icon horizontally */
   align-items: center;     /* Center icon vertically */
-  margin-right: 10px;       /* 5px space between icon and gains */
-  padding: 10px;
+  margin-right: 0px;       /* 5px space between icon and gains */
+  padding: 5px;
 }
 
 #bicep-icon {
-  width: 40px;             /* Set icon width */
-  height: 40px;            /* Set icon height */
+  width: 30px;             /* Set icon width */
+  height: 30px;            /* Set icon height */
 }
 
 #gains-display {
@@ -102,7 +110,7 @@ header {
 }
 
 #gains-value {
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
   color: #ffffff;
 }
