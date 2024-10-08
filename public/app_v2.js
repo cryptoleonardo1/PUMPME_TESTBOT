@@ -482,6 +482,7 @@ function getDefaultSocialTasks() {
     };
 }
 
+//Refer Friend Page
 function navigateToPage(pageId) {
     // Hide all pages
     const pages = document.querySelectorAll('.page');
@@ -497,6 +498,13 @@ function navigateToPage(pageId) {
         console.error(`Page with ID ${pageId} not found`);
     }
 }
+
+function initializeReferPage() {
+    // Add any initialization code for the Refer page here
+    console.log('Initializing Refer page');
+    // For example, load the user's referral code or display their fitness crew
+}
+
 
 // Function to apply loaded boosts
 function applyLoadedBoosts() {
