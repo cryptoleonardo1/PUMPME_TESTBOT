@@ -54,7 +54,7 @@ header {
 #music-control-container {
   position: absolute;
   align-items: center;     /* Center icon vertically */
-  right: 20px;         /* 20px margin to the right */
+  margin-right: 10px;           /* 20px margin to the right */
   display: flex;
   justify-content: flex-end; /* Align to the right */
 }
@@ -78,7 +78,6 @@ header {
   align-items: center;     /* Center contents vertically */
   background-color: #000000;
   width: 100%;   
-  padding: 20px;
   border-radius: 0 0 10px 10px;
   margin-bottom: 10px;
 }
