@@ -61,7 +61,6 @@ header {
 
 #music-control-btn {
   position: absolute;
-  top: 20px;           /* Adjust as needed */
   right: 15px;         /* 20px margin to the right */
   background: none;    /* Remove default button styling */
   border: none;
@@ -74,10 +73,9 @@ header {
   display: flex;
   justify-content: center; /* Center contents horizontally */
   align-items: center;     /* Center contents vertically */
-  background-color: #000000;
+  background: rgba(0, 0, 0, 0.7);
   width: 100%;   
   padding: 10px;
-  border-radius: 0 0 15px 15px;
   margin-bottom: 10px;
 }
 
