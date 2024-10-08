@@ -65,7 +65,7 @@ header {
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 50px; /* Adjust icon size */
+  font-size: 30px; /* Adjust icon size */
 }
 
 /* Style for the Music Control Button */
@@ -83,7 +83,7 @@ header {
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 50px; /* Adjust icon size */
+  font-size: 30px; /* Adjust icon size */
 }
 
 #gains-container {
@@ -106,8 +106,8 @@ header {
 }
 
 #bicep-icon {
-  width: 50px;             /* Set icon width */
-  height: 50px;            /* Set icon height */
+  width: 30px;             /* Set icon width */
+  height: 30px;            /* Set icon height */
 }
 
 #gains-display {
@@ -184,8 +184,8 @@ main {
 }
 
 #character-container {
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
