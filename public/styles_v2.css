@@ -61,13 +61,12 @@ header {
 
 #music-control-btn {
   position: absolute;
-  top: 10px;           /* Adjust as needed */
-  right: 20px;         /* 20px margin to the right */
+  top: 5px;           /* Adjust as needed */
+  right: 15px;         /* 20px margin to the right */
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 40px; /* Adjust icon size */
-  outline: none;
+  font-size: 30px; /* Adjust icon size */
 }
 
 #gains-container {
