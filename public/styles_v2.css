@@ -65,14 +65,14 @@ header {
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 35px; /* Adjust icon size */
+  font-size: 40px; /* Adjust icon size */
 }
 
 /* Style for the Music Control Button */
 #fight-control-container {
   position: absolute;
   align-items: center;     /* Center icon vertically */
-  left: 20px;         /* 20px margin to the right */
+  left: 10px;         /* 20px margin to the left */
   display: flex;
   justify-content: flex-end; /* Align to the right */
 }
@@ -83,7 +83,7 @@ header {
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
-  font-size: 35px; /* Adjust icon size */
+  font-size: 40px; /* Adjust icon size */
 }
 
 #gains-container {
@@ -93,7 +93,7 @@ header {
   align-items: center;     /* Center contents vertically */
   background-color: rgba(28, 19, 131, 0.712); /* Semi-transparent background */
   width: 100%;   
-  padding: 10px;
+  /*padding: 10px;*/
   margin-bottom: 10px;
 }
 
@@ -145,7 +145,7 @@ header {
 
 #energy-container {
   background-color: transparent;
-  padding: 10px;
+  padding: 20px;
   margin-top: 5px;
 }
 
