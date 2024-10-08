@@ -455,9 +455,9 @@ function getDefaultSocialTasks() {
         referrals: [
             {
                 id: 'refer-friend',
-                name: "Refer a Friend",
+                name: "Refer 1 Friend",
                 icon: "refer-friend-icon.png",
-                reward: 10000,
+                reward: 30000,
                 completed: false,
                 link: "https://pumpme.app/refer"
             },
@@ -465,7 +465,15 @@ function getDefaultSocialTasks() {
                 id: 'refer-5-friends',
                 name: "Refer 5 Friends",
                 icon: "refer-friend-icon.png",
-                reward: 50000,
+                reward: 300000,
+                completed: false,
+                link: "https://pumpme.app/refer"
+            },
+            {
+                id: 'refer-20-friends',
+                name: "Refer 20 Friends",
+                icon: "refer-friend-icon.png",
+                reward: 3000000,
                 completed: false,
                 link: "https://pumpme.app/refer"
             }
@@ -1080,16 +1088,23 @@ let socialTasks = {
     referrals: [
         {
             id: 'refer-friend', 
-            name: "Refer a Friend", 
+            name: "Refer 1 Friend", 
             icon: "refer-friend-icon.png", 
-            reward: 10000, 
+            reward: 30000, 
             completed: false
         },
         {
             id: 'refer-5-friends', 
             name: "Refer 5 Friends", 
             icon: "refer-friend-icon.png", 
-            reward: 50000, 
+            reward: 300000, 
+            completed: false
+        },
+        {
+            id: 'refer-20-friends', 
+            name: "Refer 20 Friends", 
+            icon: "refer-friend-icon.png", 
+            reward: 3000000, 
             completed: false
         }
     ],
