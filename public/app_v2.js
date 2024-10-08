@@ -263,7 +263,14 @@ function updateUI() {
      // if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
     let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
     let roundedValue = Math.round(floatValue); // Round the float to the nearest integer
-    if (gainsDisplay) gainsDisplay.textContent = roundedValue;  // Update the display with the rounded value
+    if (gainsDisplay) {
+        console.log (`Gains Display text.context ${gainsDisplay.textContent}!`)
+        let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
+        console.log (`Gains Display text.context FLOAT ${floatValue}!`)
+        let roundedValue = Math.round(floatValue); // Round the float to the nearest integer
+        console.log (`Gains Display text.context ROUNDED ${roundedValue}!`)
+        gainsDisplay.textContent = roundedValue;  // Update the display with the rounded value
+        }
 
     const gainsPerRepDisplay = document.querySelector('.status-item:nth-child(1) .status-value');
     const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
