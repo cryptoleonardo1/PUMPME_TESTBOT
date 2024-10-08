@@ -1398,7 +1398,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     backgroundMusic.play().then(() => {
                         isMusicPlaying = true;
-                        musicControlButton.textContent = '⏸️'; // Pause Icon
+                        musicControlButton.textContent = '🔇'; // Pause Icon
                         console.log('Background music started');
                     }).catch(error => {
                         console.error('Error playing background music:', error);
