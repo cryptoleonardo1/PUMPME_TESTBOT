@@ -20,79 +20,79 @@ const fitnessLevels = [
         minGains: 0,
         maxGains: 10000,
         gainsPerRep: 1,
-        gainsPerDay: 0
+        gainsPerDay: 10
     },
     {
         level: 2,
         name: "Weekend Warrior",
         minGains: 10001,
         maxGains: 30000,
-        gainsPerRep: 3,
-        gainsPerDay: 0
+        gainsPerRep: 2,
+        gainsPerDay: 20
     },
     {
         level: 3,
         name: "Gym Rat",
         minGains: 30001,
         maxGains: 100000,
-        gainsPerRep: 7,
-        gainsPerDay: 0
+        gainsPerRep: 3,
+        gainsPerDay: 30
     },
     {
         level: 4,
         name: "Iron Pumpling",
         minGains: 100001,
         maxGains: 300000,
-        gainsPerRep: 12,
-        gainsPerDay: 1200
+        gainsPerRep: 4,
+        gainsPerDay: 40
     },
     {
         level: 5,
         name: "Shredded Sensation",
         minGains: 300001,
         maxGains: 1000000,
-        gainsPerRep: 18,
-        gainsPerDay: 1800
+        gainsPerRep: 5,
+        gainsPerDay: 50
     },
     {
         level: 6,
         name: "Flex Master",
         minGains: 1000001,
-        maxGains: 2500000,
-        gainsPerRep: 25,
-        gainsPerDay: 2500
+        maxGains: 5000000,
+        gainsPerRep: 6,
+        gainsPerDay: 60
     },
     {
         level: 7,
         name: "Strength Sage",
-        minGains: 2500001,
-        maxGains: 5000000,
-        gainsPerRep: 33,
-        gainsPerDay: 3300
+        minGains: 5000001,
+        maxGains: 20000000,
+        gainsPerRep: 7,
+        gainsPerDay: 70
     },
     {
         level: 8,
         name: "Fitness Phenom",
-        minGains: 5000001,
-        maxGains: 10000000,
-        gainsPerRep: 42,
-        gainsPerDay: 4200
+        minGains: 20000001,
+        maxGains: 50000000,
+        gainsPerRep: 8,
+        gainsPerDay: 80
     },
     {
         level: 9,
         name: "Olympian Aspirant",
-        minGains: 10000001,
-        maxGains: 20000000,
-        gainsPerRep: 52,
-        gainsPerDay: 5200
+        minGains: 50000001,
+        maxGains: 200000000,
+        gainsPerRep: 9,
+        gainsPerDay: 90
     },
     {
         level: 10,
         name: "Legendary Lifter",
-        minGains: 20000001,
+        minGains: 200000001,
         maxGains: Infinity,
-        gainsPerRep: 63,
-        gainsPerDay: 6300
+        gainsPerRep: 10,
+        gainsPerDay: 100
     }
 ];
 
