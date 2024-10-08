@@ -275,7 +275,7 @@ function updateUI() {
     const gainsPerRepDisplay = document.querySelector('.status-item:nth-child(1) .status-value');
     const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
 
-    if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
+    //if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
     if (energyBar) energyBar.style.width = `${(energy / 1000) * 100}%`;
     if (energyStatus) energyStatus.textContent = energy >= 200 ? 'Rested' : 'Tired';
     if (levelDisplay) {
