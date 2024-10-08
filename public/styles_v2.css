@@ -101,13 +101,13 @@ header {
   display: flex;
   justify-content: center; /* Center icon horizontally */
   align-items: center;     /* Center icon vertically */
-  margin-right: 0px;       /* 5px space between icon and gains */
+  margin-right: 5px;       /* 5px space between icon and gains */
   padding: 5px;
 }
 
 #bicep-icon {
-  width: 40px;             /* Set icon width */
-  height: 40px;            /* Set icon height */
+  width: 50px;             /* Set icon width */
+  height: 50px;            /* Set icon height */
 }
 
 #gains-display {
