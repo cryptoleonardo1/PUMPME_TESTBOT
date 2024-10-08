@@ -267,9 +267,11 @@ function updateUI() {
         //console.log (`Gains Display text.context ${gainsDisplay.textContent}!`)
         //let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
         console.log (`Gains original ${gains}!`)
-        let roundedGains = Math.round(gains); // Round the float to the nearest integer
-        console.log (`Gains ROUNDED ${roundedGains}!`)
-        gainsDisplay.textContent = roundedGains.toLocaleString();  // Update the display with the rounded value
+       // let roundedGains = Math.round(gains); // Round the float to the nearest integer
+        
+        let floorGains = Math.floor(gains);
+        console.log (`Gains FLOOR ${floorGains}!`)
+        gainsDisplay.textContent = floorGains.toLocaleString();  // Update the display with the rounded value
         }
 
     const gainsPerRepDisplay = document.querySelector('.status-item:nth-child(1) .status-value');
