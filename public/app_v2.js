@@ -258,7 +258,13 @@ function updateUI() {
     const energyStatus = document.getElementById('energy-status');
     const levelDisplay = document.getElementById('level-display');
     const gainsDisplay = document.getElementById('gains-value');
-    if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
+
+
+     // if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
+    let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
+    let roundedValue = Math.round(floatValue); // Round the float to the nearest integer
+    if (gainsDisplay) gainsDisplay.textContent = roundedValue;  // Update the display with the rounded value
+
     const gainsPerRepDisplay = document.querySelector('.status-item:nth-child(1) .status-value');
     const gainsPerDayDisplay = document.querySelector('.status-item:nth-child(3) .status-value');
 
