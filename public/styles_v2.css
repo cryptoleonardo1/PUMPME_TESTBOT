@@ -93,7 +93,7 @@ header {
   align-items: center;     /* Center contents vertically */
   background-color: rgba(28, 19, 131, 0.712); /* Semi-transparent background */
   width: 100%;   
-  /*padding: 10px;*/
+  padding: 15px;
   margin-bottom: 10px;
 }
 
@@ -106,8 +106,8 @@ header {
 }
 
 #bicep-icon {
-  width: 30px;             /* Set icon width */
-  height: 30px;            /* Set icon height */
+  width: 40px;             /* Set icon width */
+  height: 40px;            /* Set icon height */
 }
 
 #gains-display {
