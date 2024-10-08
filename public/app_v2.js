@@ -261,8 +261,8 @@ function updateUI() {
 
 
      // if (gainsDisplay) gainsDisplay.textContent = gains.toLocaleString();
-    let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
-    let roundedValue = Math.round(floatValue); // Round the float to the nearest integer
+   // let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
+    // let roundedValue = Math.round(floatValue); // Round the float to the nearest integer
     if (gainsDisplay) {
         console.log (`Gains Display text.context ${gainsDisplay.textContent}!`)
         let floatValue = parseFloat(gainsDisplay.textContent); // Assuming the value is a float in textContent
