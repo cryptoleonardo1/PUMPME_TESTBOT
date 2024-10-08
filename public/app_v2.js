@@ -482,6 +482,22 @@ function getDefaultSocialTasks() {
     };
 }
 
+function navigateToPage(pageId) {
+    // Hide all pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+        page.classList.add('hidden');
+    });
+
+    // Show the selected page
+    const selectedPage = document.getElementById(pageId);
+    if (selectedPage) {
+        selectedPage.classList.remove('hidden');
+    } else {
+        console.error(`Page with ID ${pageId} not found`);
+    }
+}
+
 // Function to apply loaded boosts
 function applyLoadedBoosts() {
     const now = Date.now();
@@ -1400,7 +1416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tg.ready();
     tg.expand();
 
-     // --- Background Music Functionality ---
+    // --- Background Music Functionality ---
 
     // Get the audio element and Music Control button
     const backgroundMusic = document.getElementById('background-music');
@@ -1452,5 +1468,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } else {
         console.error('Character element not found');
+    }
+
+    // --- Referral Functionality ---
+
+    // Event listener for the fight-control-btn to navigate to the Refer page
+    const fightControlBtn = document.getElementById('fight-control-btn');
+    if (fightControlBtn) {
+        fightControlBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Fight control button clicked');
+
+            // Hide all pages and deactivate all nav buttons
+            hideAllPages();
+            navButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Show the Refer page
+            const referPage = document.getElementById('refer-page');
+            if (referPage) {
+                referPage.style.display = 'flex';
+            } else {
+                console.error('Refer page not found');
+            }
+
+            // Initialize the Refer page if needed
+            initializeReferPage();
+        });
+    } else {
+        console.error('Fight control button not found');
+    }
+
+    // Event listener for the Invite Friends button on the Refer page
+    const inviteFriendsBtn = document.getElementById('invite-friends-btn');
+    if (inviteFriendsBtn) {
+        inviteFriendsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Invite Friends button clicked');
+
+            // Placeholder for referral functionality
+            // For now, display an alert or console message
+            alert('Referral functionality coming soon!');
+            // In the future, you can implement sharing the referral link or code here
+        });
+    } else {
+        console.error('Invite Friends button not found');
     }
 });

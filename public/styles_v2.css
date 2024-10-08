@@ -86,6 +86,46 @@ header {
   font-size: 30px; /* Adjust icon size */
 }
 
+/* Refer Page Styles */
+#refer-page {
+  padding: 20px;
+}
+
+#refer-page .page-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #ffffff; /* Adjust to match your app's color scheme */
+}
+
+.refer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#invite-friends-btn {
+  background-color: #ffd700; /* Gold color or match your primary button color */
+  color: #000000; /* Text color */
+  padding: 15px 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+#invite-friends-btn:hover {
+  background-color: #e5c100; /* Slightly darker on hover */
+}
+
+.sub-title {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #ffffff; /* Adjust to match your app's color scheme */
+}
+
 #gains-container {
   position: relative; /* Added for absolute positioning */
   display: flex;
