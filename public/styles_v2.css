@@ -61,7 +61,7 @@ header {
 
 #music-control-btn {
   position: absolute;
-  right: 15px;         /* 20px margin to the right */
+  right: 25px;         /* 20px margin to the right */
   background: none;    /* Remove default button styling */
   border: none;
   cursor: pointer;
