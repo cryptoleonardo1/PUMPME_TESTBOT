@@ -7,7 +7,12 @@ let energy = 1000;
 let boostMultiplier = 1;
 let activeBoosts = [];
 
+// Initialize Telegram Web Apps SDK
 const tg = window.Telegram.WebApp;
+
+// Expand the Telegram Web App interface
+tg.expand();
+tg.ready();
 
 // User ID fallback for testing
 const userIdFallback = 'test-user-id'; // Replace with a unique identifier for testing
@@ -1375,12 +1380,6 @@ function updateLevel() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
-
-    // Initialize Telegram Web Apps SDK
-    //const tg = window.Telegram.WebApp;
-    tg.expand();
- 
-
     // Get references to navigation buttons and pages
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
@@ -1435,7 +1434,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Expand the Telegram Web App interface
     tg.ready();
-    tg.expand();
 
     // --- Background Music Functionality ---
 
@@ -1520,18 +1518,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listener for the Invite Friends button on the Refer page
-    // Event listener for the Invite Friends button on the Refer page
-const inviteFriendsBtn = document.getElementById('invite-friends-btn');
-if (inviteFriendsBtn) {
-    inviteFriendsBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        console.log('Invite Friends button clicked');
-
-        // Retrieve user data
-        const user = tg.initDataUnsafe.user;
-
-        if (user && user.id) {
-            const telegramUserId = user.id;
+    const inviteFriendsBtn = document.getElementById('invite-friends-btn');
+    if (inviteFriendsBtn) {
+        inviteFriendsBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('Invite Friends button clicked');
+    
+            // Retrieve user data
+            console.log('tg:', tg);
+            console.log('tg.initData:', tg.initData);
+            console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
+            console.log('tg.initDataUnsafe.user:', tg.initDataUnsafe.user);
+    
+            const user = tg.initDataUnsafe.user;
+    
+            console.log('user:', user);
+    
+            if (user && user.id) {
+                const telegramUserId = user.id;
             const botUsername = 'pumpmetestbot'; // Replace with your bot's username
             const invitationLink = `https://t.me/${botUsername}?start=webapp_${telegramUserId}`;
             console.log('Invitation Link:', invitationLink);
