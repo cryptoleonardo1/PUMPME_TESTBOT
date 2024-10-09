@@ -1375,10 +1375,10 @@ function updateLevel() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
-    
+
     // Initialize Telegram Web Apps SDK
     //const tg = window.Telegram.WebApp;
-    //tg.expand();
+    tg.expand();
  
 
     // Get references to navigation buttons and pages
