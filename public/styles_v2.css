@@ -128,21 +128,6 @@ header {
   display: none;
 }
 
-/* Invitation Message Container */
-#invitation-message-container {
-  width: 100%;
-  max-width: 600px;
-  margin-top: 20px;
-}
-
-#invitation-message-textarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  font-size: 16px;
-  resize: none;
-}
-
 /* Gains container*/
 #gains-container {
   position: relative; /* Added for absolute positioning */

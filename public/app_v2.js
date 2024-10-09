@@ -1517,11 +1517,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Fight control button not found');
     }
 
-    // Event listener for the Invite Friends button on the Refer page
 // Event listener for the Invite Friends button on the Refer page
 const inviteFriendsBtn = document.getElementById('invite-friends-btn');
 if (inviteFriendsBtn) {
-    inviteFriendsBtn.addEventListener('click', async (e) => {
+    inviteFriendsBtn.addEventListener('click', (e) => {
         e.preventDefault();
         console.log('Invite Friends button clicked');
 
@@ -1535,34 +1534,13 @@ if (inviteFriendsBtn) {
             console.log('Invitation Link:', invitationLink);
 
             // Invitation message
-            const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App! ${invitationLink}`;
+            const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App!`;
 
-            // Use navigator.share if available
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'Pump Me App Invitation',
-                        text: invitationMessage,
-                        url: invitationLink
-                    });
-                    console.log('Invitation shared successfully');
-                } catch (err) {
-                    console.error('Error sharing invitation:', err);
-                    alert('Failed to share the invitation. Please try again.');
-                }
-            } else {
-                // Fallback to copying the invitation link to the clipboard
-                try {
-                    await navigator.clipboard.writeText(invitationMessage);
-                    alert('Invitation link copied to clipboard! Share it with your friends on Telegram.');
-                } catch (err) {
-                    console.error('Failed to copy invitation link:', err);
-                    alert('Failed to copy the invitation link. Please copy it manually.');
+            // Construct the share URL
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(invitationLink)}&text=${encodeURIComponent(invitationMessage)}`;
 
-                    // Display the invitation message for manual copying
-                    displayInvitationMessage(invitationMessage);
-                }
-            }
+            // Open Telegram's share interface
+            tg.openTelegramLink(shareUrl);
         } else {
             console.error('User data not available');
             alert('Unable to retrieve your Telegram ID.');
