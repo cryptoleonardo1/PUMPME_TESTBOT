@@ -1518,24 +1518,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listener for the Invite Friends button on the Refer page
-    const inviteFriendsBtn = document.getElementById('invite-friends-btn');
-    if (inviteFriendsBtn) {
-        inviteFriendsBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            console.log('Invite Friends button clicked');
-    
-            // Retrieve user data
-            console.log('tg:', tg);
-            console.log('tg.initData:', tg.initData);
-            console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
-            console.log('tg.initDataUnsafe.user:', tg.initDataUnsafe.user);
-    
-            const user = tg.initDataUnsafe.user;
-    
-            console.log('user:', user);
-    
-            if (user && user.id) {
-                const telegramUserId = user.id;
+// Event listener for the Invite Friends button on the Refer page
+const inviteFriendsBtn = document.getElementById('invite-friends-btn');
+if (inviteFriendsBtn) {
+    inviteFriendsBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('Invite Friends button clicked');
+
+        // Retrieve user data
+        const user = tg.initDataUnsafe.user;
+
+        if (user && user.id) {
+            const telegramUserId = user.id;
             const botUsername = 'pumpmetestbot'; // Replace with your bot's username
             const invitationLink = `https://t.me/${botUsername}?start=webapp_${telegramUserId}`;
             console.log('Invitation Link:', invitationLink);
@@ -1543,16 +1537,31 @@ document.addEventListener('DOMContentLoaded', () => {
             // Invitation message
             const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App! ${invitationLink}`;
 
-            // Copy the invitation link to the clipboard
-            try {
-                await navigator.clipboard.writeText(invitationMessage);
-                alert('Invitation link copied to clipboard! Share it with your friends on Telegram.');
-            } catch (err) {
-                console.error('Failed to copy invitation link:', err);
-                alert('Failed to copy the invitation link. Please copy it manually.');
+            // Use navigator.share if available
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Pump Me App Invitation',
+                        text: invitationMessage,
+                        url: invitationLink
+                    });
+                    console.log('Invitation shared successfully');
+                } catch (err) {
+                    console.error('Error sharing invitation:', err);
+                    alert('Failed to share the invitation. Please try again.');
+                }
+            } else {
+                // Fallback to copying the invitation link to the clipboard
+                try {
+                    await navigator.clipboard.writeText(invitationMessage);
+                    alert('Invitation link copied to clipboard! Share it with your friends on Telegram.');
+                } catch (err) {
+                    console.error('Failed to copy invitation link:', err);
+                    alert('Failed to copy the invitation link. Please copy it manually.');
 
-                // Display the invitation message for manual copying
-                displayInvitationMessage(invitationMessage);
+                    // Display the invitation message for manual copying
+                    displayInvitationMessage(invitationMessage);
+                }
             }
         } else {
             console.error('User data not available');
