@@ -16,12 +16,85 @@ console.log('Redis client details:', {
     mode: redisClient.mode
 });
 
-const bot = new TelegramBot(token, {polling: true});
+const bot = new TelegramBot(token, { polling: true });
 
 bot.on('polling_error', (error) => {
     console.error('Polling error:', util.inspect(error, { depth: null }));
 });
 
+// --- Start Command Handler ---
+bot.onText(/\/start(.*)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const startPayload = match[1].trim(); // Extract the parameter after /start
+
+    try {
+        if (startPayload && startPayload.startsWith('webapp_')) {
+            // Referral link used
+            const referrerId = startPayload.replace('webapp_', '');
+            const newUserId = msg.from.id;
+
+            console.log(`New user ${newUserId} referred by ${referrerId}`);
+
+            // Store the referral in Redis
+            await saveReferral(referrerId, newUserId);
+
+            // Send a welcome message
+            await sendWelcomeMessage(chatId);
+
+            // Notify the referrer (optional)
+            await notifyReferrer(referrerId, newUserId);
+        } else {
+            // No referral parameter, standard /start command
+            console.log(`User ${msg.from.id} started the bot without referral`);
+            await sendWelcomeMessage(chatId);
+        }
+    } catch (error) {
+        console.error('Error handling /start command:', error);
+        bot.sendMessage(chatId, "Sorry, there was an error processing your request.");
+    }
+});
+
+// --- Function to Save Referral ---
+async function saveReferral(referrerId, newUserId) {
+    try {
+        // Validate IDs
+        referrerId = parseInt(referrerId);
+        newUserId = parseInt(newUserId);
+
+        if (isNaN(referrerId) || isNaN(newUserId)) {
+            throw new Error('Invalid Telegram IDs');
+        }
+
+        // Check if the new user already exists
+        const userExists = await redisClient.exists(`user:${newUserId}`);
+
+        if (!userExists) {
+            // Save the new user's data
+            await redisClient.set(`user:${newUserId}`, JSON.stringify({ referrerId }));
+
+            // Add the new user to the referrer's friend list
+            await redisClient.sadd(`friends:${referrerId}`, newUserId);
+
+            console.log(`Referral saved: ${newUserId} referred by ${referrerId}`);
+        } else {
+            console.log(`User ${newUserId} already exists. Not updating referral data.`);
+        }
+    } catch (error) {
+        console.error('Error saving referral:', error);
+    }
+}
+
+// --- Function to Notify Referrer ---
+async function notifyReferrer(referrerId, newUserId) {
+    try {
+        // Send a message to the referrer
+        await bot.sendMessage(referrerId, `🎉 Great news! A new friend has joined your Fitness Crew! (User ID: ${newUserId})`);
+    } catch (error) {
+        console.error(`Error notifying referrer ${referrerId}:`, error);
+    }
+}
+
+// --- Function to Send Welcome Message ---
 async function sendWelcomeMessage(chatId) {
     try {
         const welcomeImage = 'https://i.imgur.com/ZDMfcal.jpg';
@@ -32,27 +105,14 @@ async function sendWelcomeMessage(chatId) {
 
         await bot.sendPhoto(chatId, welcomeImage, {
             caption: welcomeText,
-            reply_markup: JSON.stringify(keyboard)
+            reply_markup: keyboard
         });
     } catch (error) {
-        console.error('Error in sendWelcomeMessage:', util.inspect(error, { depth: null }));
+        console.error('Error in sendWelcomeMessage:', error);
     }
 }
 
-async function testRedis() {
-    try {
-        console.log('Starting Redis test');
-        await redisClient.set('test', 'working');
-        console.log('Set operation completed');
-        const result = await redisClient.get('test');
-        console.log('Get operation completed');
-        console.log('Redis test result:', result);
-    } catch (error) {
-        console.error('Redis test error:', error);
-        console.error('Error stack:', error.stack);
-    }
-}
-
+// --- Placeholder for Other Commands ---
 bot.onText(/\/somecommand/, async (msg) => {
     const chatId = msg.chat.id;
     try {
@@ -64,17 +124,26 @@ bot.onText(/\/somecommand/, async (msg) => {
     }
 });
 
+// --- Handle Other Messages ---
 bot.on('message', (msg) => {
     // Handle incoming messages
+    // For now, we can ignore other messages or provide a default response
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, "Hi there! Use /start to begin.");
 });
 
+// --- Test Redis Connection ---
 async function testRedis() {
     try {
+        console.log('Starting Redis test');
         await redisClient.set('test', 'working');
+        console.log('Set operation completed');
         const result = await redisClient.get('test');
+        console.log('Get operation completed');
         console.log('Redis test result:', result);
     } catch (error) {
         console.error('Redis test error:', error);
+        console.error('Error stack:', error.stack);
     }
 }
 

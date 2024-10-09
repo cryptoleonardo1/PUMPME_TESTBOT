@@ -20,23 +20,23 @@ const fitnessLevels = [
         minGains: 0,
         maxGains: 10000,
         gainsPerRep: 1,
-        gainsPerDay: 10
+        gainsPerDay: 100
     },
     {
         level: 2,
-        name: "Weekend Warrior",
+        name: "Chicken Legs",
         minGains: 10001,
         maxGains: 30000,
         gainsPerRep: 2,
-        gainsPerDay: 20
+        gainsPerDay: 300
     },
     {
         level: 3,
-        name: "Gym Rat",
+        name: "Weekend Pumper",
         minGains: 30001,
         maxGains: 100000,
         gainsPerRep: 3,
-        gainsPerDay: 30
+        gainsPerDay: 1000
     },
     {
         level: 4,
@@ -44,7 +44,7 @@ const fitnessLevels = [
         minGains: 100001,
         maxGains: 300000,
         gainsPerRep: 4,
-        gainsPerDay: 40
+        gainsPerDay: 3000
     },
     {
         level: 5,
@@ -52,7 +52,7 @@ const fitnessLevels = [
         minGains: 300001,
         maxGains: 1000000,
         gainsPerRep: 5,
-        gainsPerDay: 50
+        gainsPerDay: 10000
     },
     {
         level: 6,
@@ -60,15 +60,15 @@ const fitnessLevels = [
         minGains: 1000001,
         maxGains: 5000000,
         gainsPerRep: 6,
-        gainsPerDay: 60
+        gainsPerDay: -10000
     },
     {
         level: 7,
-        name: "Strength Sage",
+        name: "Gym Boss",
         minGains: 5000001,
         maxGains: 20000000,
         gainsPerRep: 7,
-        gainsPerDay: 70
+        gainsPerDay: -50000
     },
     {
         level: 8,
@@ -76,7 +76,7 @@ const fitnessLevels = [
         minGains: 20000001,
         maxGains: 50000000,
         gainsPerRep: 8,
-        gainsPerDay: 80
+        gainsPerDay: -200000
     },
     {
         level: 9,
@@ -84,7 +84,7 @@ const fitnessLevels = [
         minGains: 50000001,
         maxGains: 200000000,
         gainsPerRep: 9,
-        gainsPerDay: 90
+        gainsPerDay: -500000
     },
     {
         level: 10,
@@ -92,7 +92,7 @@ const fitnessLevels = [
         minGains: 200000001,
         maxGains: Infinity,
         gainsPerRep: 10,
-        gainsPerDay: 100
+        gainsPerDay: -2000000
     }
 ];
 
@@ -505,6 +505,17 @@ function initializeReferPage() {
     // For example, load the user's referral code or display their fitness crew
 }
 
+function displayInvitationMessage(message) {
+    const invitationMessageContainer = document.getElementById('invitation-message-container');
+    const invitationMessageTextarea = document.getElementById('invitation-message-textarea');
+
+    if (invitationMessageContainer && invitationMessageTextarea) {
+        invitationMessageTextarea.value = message;
+        invitationMessageContainer.classList.remove('hidden');
+    } else {
+        console.error('Invitation message elements not found');
+    }
+}
 
 // Function to apply loaded boosts
 function applyLoadedBoosts() {
@@ -1507,18 +1518,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listener for the Invite Friends button on the Refer page
-    const inviteFriendsBtn = document.getElementById('invite-friends-btn');
-    if (inviteFriendsBtn) {
-        inviteFriendsBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Invite Friends button clicked');
+    // Event listener for the Invite Friends button on the Refer page
+const inviteFriendsBtn = document.getElementById('invite-friends-btn');
+if (inviteFriendsBtn) {
+    inviteFriendsBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('Invite Friends button clicked');
 
-            // Placeholder for referral functionality
-            // For now, display an alert or console message
-            alert('Referral functionality coming soon!');
-            // In the future, you can implement sharing the referral link or code here
-        });
-    } else {
-        console.error('Invite Friends button not found');
-    }
+        // Retrieve user data
+        const user = tg.initDataUnsafe.user;
+
+        if (user && user.id) {
+            const telegramUserId = user.id;
+            const botUsername = 'pumpmetestbot'; // Replace with your bot's username
+            const invitationLink = `https://t.me/${botUsername}?start=webapp_${telegramUserId}`;
+            console.log('Invitation Link:', invitationLink);
+
+            // Invitation message
+            const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App! ${invitationLink}`;
+
+            // Copy the invitation link to the clipboard
+            try {
+                await navigator.clipboard.writeText(invitationMessage);
+                alert('Invitation link copied to clipboard! Share it with your friends on Telegram.');
+            } catch (err) {
+                console.error('Failed to copy invitation link:', err);
+                alert('Failed to copy the invitation link. Please copy it manually.');
+
+                // Display the invitation message for manual copying
+                displayInvitationMessage(invitationMessage);
+            }
+        } else {
+            console.error('User data not available');
+            alert('Unable to retrieve your Telegram ID.');
+        }
+    });
+} else {
+    console.error('Invite Friends button not found');
+}
 });
