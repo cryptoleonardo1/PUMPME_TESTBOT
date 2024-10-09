@@ -1380,6 +1380,13 @@ function updateLevel() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
+    // Define tg globally
+    const tg = window.Telegram.WebApp;
+
+    // Expand the Telegram Web App interface
+    tg.expand();
+    tg.ready();
+
     // Get references to navigation buttons and pages
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
@@ -1434,6 +1441,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Expand the Telegram Web App interface
     tg.ready();
+    tg.expand();
 
     // --- Background Music Functionality ---
 
@@ -1517,36 +1525,157 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Fight control button not found');
     }
 
-// Event listener for the Invite Friends button on the Refer page
-const inviteFriendsBtn = document.getElementById('invite-friends-btn');
-if (inviteFriendsBtn) {
-    inviteFriendsBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log('Invite Friends button clicked');
+    // Event listener for the Invite Friends button on the Refer page
+    const inviteFriendsBtn = document.getElementById('invite-friends-btn');
+    if (inviteFriendsBtn) {
+        inviteFriendsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Invite Friends button clicked');
 
+            // Retrieve user data
+            const user = tg.initDataUnsafe.user;
+
+            console.log('tg:', tg);
+            console.log('tg.initData:', tg.initData);
+            console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
+            console.log('user:', user);
+
+            if (user && user.id) {
+                const telegramUserId = user.id;
+                const botUsername = 'pumpmetestbot'; // Replace with your bot's username
+                const invitationLink = `https://t.me/${botUsername}?start=webapp_${telegramUserId}`;
+                console.log('Invitation Link:', invitationLink);
+
+                // Invitation message
+                const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App! ${invitationLink}`;
+
+                // Construct the share URL
+                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(invitationLink)}&text=${encodeURIComponent(invitationMessage)}`;
+
+                // Open Telegram's share interface
+                tg.openTelegramLink(shareUrl);
+            } else {
+                console.error('User data not available');
+                alert('Unable to retrieve your Telegram ID.');
+            }
+        });
+    } else {
+        console.error('Invite Friends button not found');
+    }
+
+    // --- Initialize Refer Page ---
+
+    function initializeReferPage() {
+        updateFitnessCrew(); // Fetch and display the fitness crew
+    }
+
+    // --- Function to Update Fitness Crew ---
+    async function updateFitnessCrew() {
+        console.log('Fetching Fitness Crew data...');
+        
         // Retrieve user data
         const user = tg.initDataUnsafe.user;
 
-        if (user && user.id) {
-            const telegramUserId = user.id;
-            const botUsername = 'pumpmetestbot'; // Replace with your bot's username
-            const invitationLink = `https://t.me/${botUsername}?start=webapp_${telegramUserId}`;
-            console.log('Invitation Link:', invitationLink);
-
-            // Invitation message
-            const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App!`;
-
-            // Construct the share URL
-            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(invitationLink)}&text=${encodeURIComponent(invitationMessage)}`;
-
-            // Open Telegram's share interface
-            tg.openTelegramLink(shareUrl);
-        } else {
-            console.error('User data not available');
-            alert('Unable to retrieve your Telegram ID.');
+        if (!user || !user.id) {
+            console.error('User data not available for Fitness Crew');
+            const fitnessCrewContainer = document.getElementById('fitness-crew-container');
+            if (fitnessCrewContainer) {
+                fitnessCrewContainer.innerHTML = '<p>Unable to retrieve your Fitness Crew.</p>';
+            }
+            return;
         }
-    });
-} else {
-    console.error('Invite Friends button not found');
-}
+
+        const telegramUserId = user.id;
+
+        try {
+            const response = await fetch(`/api/getFriendList?userId=${telegramUserId}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Fitness Crew data received from server:', data);
+                renderFitnessCrew(data);
+            } else {
+                console.error('Error fetching Fitness Crew:', data.error);
+                const fitnessCrewContainer = document.getElementById('fitness-crew-container');
+                if (fitnessCrewContainer) {
+                    fitnessCrewContainer.innerHTML = '<p>Unable to load Fitness Crew at this time. Please try again later.</p>';
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching Fitness Crew:', error);
+            const fitnessCrewContainer = document.getElementById('fitness-crew-container');
+            if (fitnessCrewContainer) {
+                fitnessCrewContainer.innerHTML = '<p>Unable to load Fitness Crew at this time. Please try again later.</p>';
+            }
+        }
+    }
+
+    // --- Function to Render Fitness Crew ---
+    function renderFitnessCrew(friends) {
+        const fitnessCrewContainer = document.getElementById('fitness-crew-container');
+
+        if (!fitnessCrewContainer) {
+            console.error('Fitness Crew container not found');
+            return;
+        }
+
+        // Clear existing content
+        fitnessCrewContainer.innerHTML = '';
+
+        if (friends.length === 0) {
+            fitnessCrewContainer.innerHTML = '<p>No friends in your Fitness Crew yet.</p>';
+            return;
+        }
+
+        // Create a table to display the Fitness Crew
+        const table = document.createElement('table');
+        table.className = 'fitness-crew-table';
+
+        // Create table header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+
+        const rankHeader = document.createElement('th');
+        rankHeader.textContent = 'Rank';
+        const usernameHeader = document.createElement('th');
+        usernameHeader.textContent = 'Username';
+        const gainsHeader = document.createElement('th');
+        gainsHeader.textContent = 'Gains';
+
+        headerRow.appendChild(rankHeader);
+        headerRow.appendChild(usernameHeader);
+        headerRow.appendChild(gainsHeader);
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create table body
+        const tbody = document.createElement('tbody');
+
+        // Sort friends by gains descending
+        friends.sort((a, b) => b.gains - a.gains);
+
+        friends.forEach((friend, index) => {
+            const row = document.createElement('tr');
+
+            const rankCell = document.createElement('td');
+            rankCell.textContent = index + 1;
+            rankCell.className = 'fitness-crew-rank';
+
+            const usernameCell = document.createElement('td');
+            usernameCell.textContent = friend.username;
+            usernameCell.className = 'fitness-crew-username';
+
+            const gainsCell = document.createElement('td');
+            gainsCell.textContent = friend.gains;
+            gainsCell.className = 'fitness-crew-gains';
+
+            row.appendChild(rankCell);
+            row.appendChild(usernameCell);
+            row.appendChild(gainsCell);
+            tbody.appendChild(row);
+        });
+
+        table.appendChild(tbody);
+        fitnessCrewContainer.appendChild(table);
+    }
 });

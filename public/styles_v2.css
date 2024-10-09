@@ -94,34 +94,93 @@ header {
 #refer-page .page-title {
   text-align: center;
   font-size: 24px;
-  margin-bottom: 30px;
-  color: #ffffff; /* Adjust to match your app's color scheme */
+  margin-bottom: 20px;
+  color: #ffffff;
 }
 
 .refer-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;         /* Ensure it spans the full width */
+  width: 100%; /* Ensure full width */
 }
 
 #invite-friends-btn {
-  background-color: #ffd700; /* Gold color or match your primary button color */
-  color: #000000; /* Text color */
+  background-color: #ffd700;
+  color: #000000;
   padding: 15px 30px;
   font-size: 18px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   margin-bottom: 30px;
-  align-self: center; /* Add this line */
+  align-self: center; /* Center the button */
+}
+
+#invite-friends-btn:hover {
+  background-color: #e5c100;
 }
 
 .sub-title {
   text-align: center;
-  font-size: 22px;
-  margin-bottom: 22px;
-  color: #ffffff; /* Adjust to match your app's color scheme */
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+/* Fitness Crew Container Styles */
+#fitness-crew-container {
+  width: 100%;
+  max-width: 600px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.fitness-crew-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.fitness-crew-item:last-child {
+  border-bottom: none;
+}
+
+.fitness-crew-rank {
+  font-weight: bold;
+  color: #ffffff;
+  width: 50px;
+}
+
+.fitness-crew-username {
+  flex-grow: 1;
+  text-align: left;
+  color: #ffffff;
+}
+
+.fitness-crew-gains {
+  font-weight: bold;
+  color: #ffd700;
+  width: 100px;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .fitness-crew-item {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+
+  .fitness-crew-rank,
+  .fitness-crew-gains {
+      width: 100%;
+      text-align: left;
+  }
 }
 
 .hidden {

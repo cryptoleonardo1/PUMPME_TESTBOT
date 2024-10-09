@@ -22,6 +22,7 @@ app.use((req, res, next) => {
 const leaderboardHandler = require('./api/leaderboard');
 const saveUserDataHandler = require('./api/saveUserData');
 const getUserDataHandler = require('./api/getUserData');
+const getFriendListHandler = require('./api/getFriendList'); // Add this line
 
 // Leaderboard endpoint
 app.get('/api/leaderboard', leaderboardHandler);
@@ -31,6 +32,9 @@ app.post('/api/saveUserData', saveUserDataHandler);
 
 // Get User Data endpoint
 app.get('/api/getUserData', getUserDataHandler);
+
+// Get Friend List endpoint
+app.get('/api/getFriendList', getFriendListHandler); // Add this line
 
 app.use((err, req, res, next) => {
   console.error('Express error:', util.inspect(err, { depth: null }));

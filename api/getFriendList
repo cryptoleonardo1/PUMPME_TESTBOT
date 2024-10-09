@@ -1,0 +1,46 @@
+// api/getFriendList.js
+const redis = require('../redis-client');
+
+module.exports = async (req, res) => {
+    try {
+        // Assume that the user's Telegram ID is sent as a query parameter 'userId'
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'Missing userId parameter' });
+        }
+
+        // Fetch the list of friends from Redis
+        const friendIds = await redis.smembers(`friends:${userId}`);
+
+        if (!friendIds || friendIds.length === 0) {
+            return res.json([]); // No friends found
+        }
+
+        const friends = [];
+
+        for (const friendId of friendIds) {
+            // Fetch user data for each friend
+            const userData = await redis.hgetall(`user:${friendId}`);
+
+            // Determine the display name
+            const displayName =
+                userData.username && userData.username.trim() !== ''
+                    ? userData.username
+                    : `User ${friendId}`;
+
+            const gains = parseInt(userData.gains, 10) || 0;
+
+            friends.push({
+                telegramId: friendId,
+                username: displayName,
+                gains: gains
+            });
+        }
+
+        res.json(friends);
+    } catch (error) {
+        console.error('Error fetching FriendList:', error);
+        res.status(500).json({ error: 'Error fetching FriendList' });
+    }
+};

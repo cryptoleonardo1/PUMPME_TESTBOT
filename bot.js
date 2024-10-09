@@ -69,8 +69,12 @@ async function saveReferral(referrerId, newUserId) {
         const userExists = await redisClient.exists(`user:${newUserId}`);
 
         if (!userExists) {
-            // Save the new user's data
-            await redisClient.set(`user:${newUserId}`, JSON.stringify({ referrerId }));
+            // Save the new user's data with default gains
+            await redisClient.hmset(`user:${newUserId}`, {
+                referrerId: referrerId,
+                username: '', // Initialize as empty; can be updated later
+                gains: 0
+            });
 
             // Add the new user to the referrer's friend list
             await redisClient.sadd(`friends:${referrerId}`, newUserId);
