@@ -21,7 +21,7 @@ const userIdFallback = 'test-user-id'; // Replace with a unique identifier for t
 const fitnessLevels = [
     {
         level: 1,
-        name: "Couch Potato",
+        name: "Crouch Potato",
         minGains: 0,
         maxGains: 10000,
         gainsPerRep: 1,
