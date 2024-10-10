@@ -55,23 +55,27 @@ bot.onText(/\/start(.*)/, async (msg, match) => {
     }
 });
 
-/// --- Function to Save Referral ---
+// --- Function to Save Referral ---
 async function saveReferral(referrerId, newUserId, newUserName) {
     try {
         // Validate IDs
-        referrerId = parseInt(referrerId);
-        newUserId = parseInt(newUserId);
-
-        if (isNaN(referrerId) || isNaN(newUserId)) {
-            throw new Error('Invalid Telegram IDs');
-        }
+        referrerId = referrerId.toString();
+        newUserId = newUserId.toString();
 
         // Check if the new user already exists
         const userExists = await redisClient.exists(`user:${newUserId}`);
 
         if (!userExists) {
             // Save the new user's data
-            await redisClient.hset(`user:${newUserId}`, 'referrerId', referrerId, 'username', newUserName);
+            await redisClient.hset(`user:${newUserId}`, {
+                userId: newUserId,
+                username: newUserName,
+                referrerId: referrerId,
+                gains: '0', // Initialize gains to 0
+                level: '1', // Initialize level to 1 or appropriate value
+                boostsData: '{}',
+                tasksData: '{}',
+            });
 
             // Add the new user to the referrer's friend list
             await redisClient.sadd(`friendList:${referrerId}`, newUserId);

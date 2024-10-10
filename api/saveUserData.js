@@ -13,25 +13,19 @@ module.exports = async (req, res) => {
     const gainsString = gains.toString();
     const levelString = level.toString();
 
-    // Get existing user data to preserve referrerId
+    // Get existing user data to preserve referrerId and other fields
     const existingUserData = await redis.hgetall(`user:${userId}`);
-
-    // Preserve referrerId if it exists
-    const referrerId = existingUserData.referrerId || null;
 
     // Prepare user data to save
     const userDataToSave = {
-      userId,
-      username: username || '',
-      gains: gainsString,
-      level: levelString,
-      boostsData: boostsDataString,
-      tasksData: tasksDataString,
+      userId: existingUserData.userId || userId,
+      username: username || existingUserData.username || '',
+      gains: gainsString || existingUserData.gains || '0',
+      level: levelString || existingUserData.level || '1',
+      boostsData: boostsDataString || existingUserData.boostsData || '{}',
+      tasksData: tasksDataString || existingUserData.tasksData || '{}',
+      referrerId: existingUserData.referrerId || '', // Preserve referrerId
     };
-
-    if (referrerId) {
-      userDataToSave.referrerId = referrerId;
-    }
 
     // Save user data to Redis
     await redis.hset(`user:${userId}`, userDataToSave);

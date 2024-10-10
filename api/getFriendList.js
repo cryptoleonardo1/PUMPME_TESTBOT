@@ -5,14 +5,20 @@ module.exports = async (req, res) => {
         const referrerId = req.query.userId;
 
         if (!referrerId) {
+            console.log('No userId provided in request');
             return res.status(400).json({ error: 'Missing userId parameter' });
         }
+
+        console.log(`Fetching friend list for referrerId: ${referrerId}`);
 
         // Get the list of friend IDs
         const friendIds = await redis.smembers(`friendList:${referrerId}`);
 
+        console.log(`Friend IDs:`, friendIds);
+
         if (!friendIds || friendIds.length === 0) {
             // No friends found
+            console.log('No friends found for this referrer');
             return res.json([]);
         }
 
@@ -20,6 +26,8 @@ module.exports = async (req, res) => {
         for (const friendId of friendIds) {
             // Get user data for each friend
             const userData = await redis.hgetall(`user:${friendId}`);
+            console.log(`User data for friendId ${friendId}:`, userData);
+
             // Get gains (assuming gains are stored in user data)
             const gains = userData.gains ? parseInt(userData.gains, 10) : 0;
 
@@ -40,6 +48,8 @@ module.exports = async (req, res) => {
         friendsData.forEach((friend, index) => {
             friend.rank = index + 1;
         });
+
+        console.log('Final friends data:', friendsData);
 
         res.json(friendsData);
     } catch (error) {

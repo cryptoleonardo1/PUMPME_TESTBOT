@@ -16,20 +16,14 @@ module.exports = async (req, res) => {
       const userId = leaderboardData[i];
       const score = parseInt(leaderboardData[i + 1], 10);
 
-      let userData = {};
-      try {
-        userData = await redis.hgetall(`user:${userId}`);
-        console.log(`User data for userId ${userId}:`, userData);
-      } catch (userError) {
-        console.error(`Error fetching user data for userId ${userId}:`, userError);
-        userData = {}; // Proceed with empty userData
-      }
+      const userData = await redis.hgetall(`user:${userId}`);
+      console.log(`User data for userId ${userId}:`, userData);
 
       // Determine the display name
       const displayName =
         userData.username && userData.username !== ''
           ? userData.username
-          : userData.userId || userId;
+          : `User ID: ${userId}`;
 
       leaderboard.push({
         rank: Math.floor(i / 2) + 1, // Calculate the rank
