@@ -1,5 +1,3 @@
-// server.js
-
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -22,7 +20,7 @@ app.use((req, res, next) => {
 const leaderboardHandler = require('./api/leaderboard');
 const saveUserDataHandler = require('./api/saveUserData');
 const getUserDataHandler = require('./api/getUserData');
-const myFitnessCrewHandler = require('./api/myFitnessCrew');
+const getFriendListHandler = require('./api/getFriendList');
 
 // Leaderboard endpoint
 app.get('/api/leaderboard', leaderboardHandler);
@@ -34,7 +32,7 @@ app.post('/api/saveUserData', saveUserDataHandler);
 app.get('/api/getUserData', getUserDataHandler);
 
 // Get Friend List endpoint
-app.get('/api/myFitnessCrew', myFitnessCrewHandler);
+app.get('/api/getFriendList', getFriendListHandler);
 
 app.use((err, req, res, next) => {
   console.error('Express error:', util.inspect(err, { depth: null }));

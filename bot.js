@@ -32,17 +32,18 @@ bot.onText(/\/start(.*)/, async (msg, match) => {
             // Referral link used
             const referrerId = startPayload.replace('webapp_', '');
             const newUserId = msg.from.id;
+            const newUserName = msg.from.username || ''; // Get the username if available
 
             console.log(`New user ${newUserId} referred by ${referrerId}`);
 
-            // Store the referral in Redis
-            await saveReferral(referrerId, newUserId);
+            // Save the referral in Redis
+            await saveReferral(referrerId, newUserId, newUserName);
 
             // Send a welcome message
             await sendWelcomeMessage(chatId);
 
             // Notify the referrer (optional)
-            await notifyReferrer(referrerId, newUserId);
+            await notifyReferrer(referrerId, newUserId, newUserName);
         } else {
             // No referral parameter, standard /start command
             console.log(`User ${msg.from.id} started the bot without referral`);
@@ -54,8 +55,8 @@ bot.onText(/\/start(.*)/, async (msg, match) => {
     }
 });
 
-// --- Function to Save Referral ---
-async function saveReferral(referrerId, newUserId) {
+/// --- Function to Save Referral ---
+async function saveReferral(referrerId, newUserId, newUserName) {
     try {
         // Validate IDs
         referrerId = parseInt(referrerId);
@@ -70,14 +71,10 @@ async function saveReferral(referrerId, newUserId) {
 
         if (!userExists) {
             // Save the new user's data
-            await redisClient.hmset(`user:${newUserId}`, {
-                referrerId,
-                username: '', // Placeholder, update when username is known
-                gains: 0,
-            });
+            await redisClient.hset(`user:${newUserId}`, 'referrerId', referrerId, 'username', newUserName);
 
             // Add the new user to the referrer's friend list
-            await redisClient.sadd(`friends:${referrerId}`, newUserId);
+            await redisClient.sadd(`friendList:${referrerId}`, newUserId);
 
             console.log(`Referral saved: ${newUserId} referred by ${referrerId}`);
         } else {
@@ -89,10 +86,14 @@ async function saveReferral(referrerId, newUserId) {
 }
 
 // --- Function to Notify Referrer ---
-async function notifyReferrer(referrerId, newUserId) {
+async function notifyReferrer(referrerId, newUserId, newUserName) {
     try {
+        // Compose the notification message
+        const newUserDisplayName = newUserName ? `@${newUserName}` : `User ID: ${newUserId}`;
+        const message = `🎉 Great news! ${newUserDisplayName} has joined your Fitness Crew!`;
+
         // Send a message to the referrer
-        await bot.sendMessage(referrerId, `🎉 Great news! A new friend has joined your Fitness Crew! (User ID: ${newUserId})`);
+        await bot.sendMessage(referrerId, message);
     } catch (error) {
         console.error(`Error notifying referrer ${referrerId}:`, error);
     }

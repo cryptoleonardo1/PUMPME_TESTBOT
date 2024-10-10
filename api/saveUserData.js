@@ -13,22 +13,28 @@ module.exports = async (req, res) => {
     const gainsString = gains.toString();
     const levelString = level.toString();
 
-    // Save user data to Redis, including userId
-    await redis.hset(
-      `user:${userId}`,
-      'userId',
+    // Get existing user data to preserve referrerId
+    const existingUserData = await redis.hgetall(`user:${userId}`);
+
+    // Preserve referrerId if it exists
+    const referrerId = existingUserData.referrerId || null;
+
+    // Prepare user data to save
+    const userDataToSave = {
       userId,
-      'username',
-      username || '',
-      'gains',
-      gainsString,
-      'level',
-      levelString,
-      'boostsData',
-      boostsDataString,
-      'tasksData',
-      tasksDataString
-    );
+      username: username || '',
+      gains: gainsString,
+      level: levelString,
+      boostsData: boostsDataString,
+      tasksData: tasksDataString,
+    };
+
+    if (referrerId) {
+      userDataToSave.referrerId = referrerId;
+    }
+
+    // Save user data to Redis
+    await redis.hset(`user:${userId}`, userDataToSave);
 
     // Update leaderboard
     await redis.zadd('leaderboard', gainsString, userId);

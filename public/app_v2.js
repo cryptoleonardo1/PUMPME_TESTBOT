@@ -1461,13 +1461,6 @@ function updateLevel() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
-    // Define tg globally
-    const tg = window.Telegram.WebApp;
-
-    // Expand the Telegram Web App interface
-    tg.expand();
-    tg.ready();
-
     // Get references to navigation buttons and pages
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page');
@@ -1519,10 +1512,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (navButtons[defaultPageIndex].id === 'boosts-btn') {
         initializeBoostsPage();
     }
-
-    // Expand the Telegram Web App interface
-    tg.ready();
-    tg.expand();
 
     // --- Background Music Functionality ---
 
@@ -1586,11 +1575,11 @@ document.addEventListener('DOMContentLoaded', () => {
         fightControlBtn.addEventListener('click', (e) => {
             e.preventDefault();
             console.log('Fight control button clicked');
-        
+
             // Hide all pages and deactivate all nav buttons
             hideAllPages();
             navButtons.forEach(btn => btn.classList.remove('active'));
-        
+
             // Show the Refer page
             const referPage = document.getElementById('refer-page');
             if (referPage) {
@@ -1598,8 +1587,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.error('Refer page not found');
             }
-        
-            // Initialize the Refer page
+
+            // Initialize the Refer page if needed
             initializeReferPage();
         });
     } else {
@@ -1616,11 +1605,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Retrieve user data
             const user = tg.initDataUnsafe.user;
 
-            console.log('tg:', tg);
-            console.log('tg.initData:', tg.initData);
-            console.log('tg.initDataUnsafe:', tg.initDataUnsafe);
-            console.log('user:', user);
-
             if (user && user.id) {
                 const telegramUserId = user.id;
                 const botUsername = 'pumpmetestbot'; // Replace with your bot's username
@@ -1628,7 +1612,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Invitation Link:', invitationLink);
 
                 // Invitation message
-                const invitationMessage = `Hello My Friend! Join My Fitness Crew in Pump Me App! ${invitationLink}`;
+                const invitationMessage = `Hello, my friend! Join my Fitness Crew in Pump Me App!`;
 
                 // Construct the share URL
                 const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(invitationLink)}&text=${encodeURIComponent(invitationMessage)}`;
@@ -1644,119 +1628,80 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Invite Friends button not found');
     }
 
-    // --- Initialize Refer Page ---
-
+    // Function to initialize the Refer page
     function initializeReferPage() {
-        updateFitnessCrew(); // Fetch and display the fitness crew
-    }
+        console.log('Initializing Refer page');
 
-    // --- Function to Update Fitness Crew ---
-    async function updateFitnessCrew() {
-        console.log('Fetching Fitness Crew data...');
-        
-        // Retrieve user data
+        // Retrieve the user's Telegram ID
         const user = tg.initDataUnsafe.user;
 
-        if (!user || !user.id) {
-            console.error('User data not available for Fitness Crew');
-            const fitnessCrewContainer = document.getElementById('fitness-crew-container');
-            if (fitnessCrewContainer) {
-                fitnessCrewContainer.innerHTML = '<p>Unable to retrieve your Fitness Crew.</p>';
-            }
-            return;
-        }
+        if (user && user.id) {
+            const telegramUserId = user.id;
 
-        const telegramUserId = user.id;
-
-        try {
-            const response = await fetch(`/api/getFriendList?userId=${telegramUserId}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                console.log('Fitness Crew data received from server:', data);
-                renderFitnessCrew(data);
-            } else {
-                console.error('Error fetching Fitness Crew:', data.error);
-                const fitnessCrewContainer = document.getElementById('fitness-crew-container');
-                if (fitnessCrewContainer) {
-                    fitnessCrewContainer.innerHTML = '<p>Unable to load Fitness Crew at this time. Please try again later.</p>';
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching Fitness Crew:', error);
-            const fitnessCrewContainer = document.getElementById('fitness-crew-container');
-            if (fitnessCrewContainer) {
-                fitnessCrewContainer.innerHTML = '<p>Unable to load Fitness Crew at this time. Please try again later.</p>';
-            }
+            // Fetch the friend list
+            fetch(`/api/getFriendList?userId=${telegramUserId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Friend list data:', data);
+                    displayFriendList(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching friend list:', error);
+                });
+        } else {
+            console.error('User data not available');
         }
     }
 
-    // --- Function to Render Fitness Crew ---
-    function renderFitnessCrew(friends) {
-        const fitnessCrewContainer = document.getElementById('fitness-crew-container');
+    // Function to display the friend list
+    function displayFriendList(friends) {
+        const friendListContainer = document.getElementById('friend-list-container');
 
-        if (!fitnessCrewContainer) {
-            console.error('Fitness Crew container not found');
+        if (!friendListContainer) {
+            console.error('Friend list container not found');
             return;
         }
 
         // Clear existing content
-        fitnessCrewContainer.innerHTML = '';
+        friendListContainer.innerHTML = '';
 
-        if (friends.length === 0) {
-            fitnessCrewContainer.innerHTML = '<p>No friends in your Fitness Crew yet.</p>';
+        if (!friends || friends.length === 0) {
+            friendListContainer.innerHTML = '<p>You have no friends in your Fitness Crew yet. Invite friends to join!</p>';
             return;
         }
 
-        // Create a table to display the Fitness Crew
+        // Create the table
         const table = document.createElement('table');
-        table.className = 'fitness-crew-table';
+        table.classList.add('leaderboard-table');
 
         // Create table header
-        const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
+        ['Rank', 'Username', 'Gains'].forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
 
-        const rankHeader = document.createElement('th');
-        rankHeader.textContent = 'Rank';
-        const usernameHeader = document.createElement('th');
-        usernameHeader.textContent = 'Username';
-        const gainsHeader = document.createElement('th');
-        gainsHeader.textContent = 'Gains';
-
-        headerRow.appendChild(rankHeader);
-        headerRow.appendChild(usernameHeader);
-        headerRow.appendChild(gainsHeader);
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        // Create table body
-        const tbody = document.createElement('tbody');
-
-        // Sort friends by gains descending
-        friends.sort((a, b) => b.gains - a.gains);
-
-        friends.forEach((friend, index) => {
+        // Create table rows
+        friends.forEach(friend => {
             const row = document.createElement('tr');
 
             const rankCell = document.createElement('td');
-            rankCell.textContent = index + 1;
-            rankCell.className = 'fitness-crew-rank';
+            rankCell.textContent = friend.rank;
+            row.appendChild(rankCell);
 
             const usernameCell = document.createElement('td');
             usernameCell.textContent = friend.username;
-            usernameCell.className = 'fitness-crew-username';
+            row.appendChild(usernameCell);
 
             const gainsCell = document.createElement('td');
             gainsCell.textContent = friend.gains;
-            gainsCell.className = 'fitness-crew-gains';
-
-            row.appendChild(rankCell);
-            row.appendChild(usernameCell);
             row.appendChild(gainsCell);
-            tbody.appendChild(row);
+
+            table.appendChild(row);
         });
 
-        table.appendChild(tbody);
-        fitnessCrewContainer.appendChild(table);
+        friendListContainer.appendChild(table);
     }
 });

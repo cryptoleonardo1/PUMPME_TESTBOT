@@ -1,0 +1,49 @@
+const redis = require('../redis-client');
+
+module.exports = async (req, res) => {
+    try {
+        const referrerId = req.query.userId;
+
+        if (!referrerId) {
+            return res.status(400).json({ error: 'Missing userId parameter' });
+        }
+
+        // Get the list of friend IDs
+        const friendIds = await redis.smembers(`friendList:${referrerId}`);
+
+        if (!friendIds || friendIds.length === 0) {
+            // No friends found
+            return res.json([]);
+        }
+
+        const friendsData = [];
+        for (const friendId of friendIds) {
+            // Get user data for each friend
+            const userData = await redis.hgetall(`user:${friendId}`);
+            // Get gains (assuming gains are stored in user data)
+            const gains = userData.gains ? parseInt(userData.gains, 10) : 0;
+
+            // Determine the display name
+            const displayName = userData.username && userData.username !== '' ? userData.username : `User ID: ${friendId}`;
+
+            friendsData.push({
+                userId: friendId,
+                username: displayName,
+                gains: gains,
+            });
+        }
+
+        // Sort friends by gains in descending order
+        friendsData.sort((a, b) => b.gains - a.gains);
+
+        // Add rank to each friend
+        friendsData.forEach((friend, index) => {
+            friend.rank = index + 1;
+        });
+
+        res.json(friendsData);
+    } catch (error) {
+        console.error('Error fetching friend list:', error);
+        res.status(500).json({ error: 'Error fetching friend list', details: error.message });
+    }
+};
