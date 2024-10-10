@@ -10,11 +10,11 @@ let activeBoosts = [];
 
 // Initialize Telegram Web Apps SDK
 const tg = window.Telegram.WebApp;
-/*
+
 // Expand the Telegram Web App interface
 tg.expand();
 tg.ready();
-*/
+
 
 // User ID fallback for testing
 const userIdFallback = 'test-user-id'; // Replace with a unique identifier for testing
