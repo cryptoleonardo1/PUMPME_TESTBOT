@@ -7,14 +7,12 @@ let energy = 1000;
 let boostMultiplier = 1;
 let activeBoosts = [];
 
-
 // Initialize Telegram Web Apps SDK
 const tg = window.Telegram.WebApp;
 
 // Expand the Telegram Web App interface
 tg.expand();
 tg.ready();
-
 
 // User ID fallback for testing
 const userIdFallback = 'test-user-id'; // Replace with a unique identifier for testing
@@ -507,9 +505,90 @@ function navigateToPage(pageId) {
 }
 
 function initializeReferPage() {
-    // Add any initialization code for the Refer page here
     console.log('Initializing Refer page');
-    // For example, load the user's referral code or display their fitness crew
+
+    // Retrieve user data
+    const user = tg.initDataUnsafe.user;
+    let telegramUserId;
+
+    if (user && user.id) {
+        telegramUserId = user.id.toString();
+    } else {
+        console.error('User data not available');
+        telegramUserId = userIdFallback; // Use fallback ID
+    }
+
+    // Fetch My Fitness Crew data from the server
+    fetch(`/api/myFitnessCrew?userId=${telegramUserId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (Array.isArray(data)) {
+                displayMyFitnessCrew(data);
+            } else {
+                console.error('Invalid data received for My Fitness Crew:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching My Fitness Crew data:', error);
+        });
+}
+
+function displayMyFitnessCrew(crewData) {
+    const fitnessCrewContainer = document.getElementById('fitness-crew-container');
+
+    if (!fitnessCrewContainer) {
+        console.error('Fitness Crew container not found');
+        return;
+    }
+
+    // Clear existing content
+    fitnessCrewContainer.innerHTML = '';
+
+    if (crewData.length === 0) {
+        fitnessCrewContainer.innerHTML = '<p>You have not invited any friends yet.</p>';
+        return;
+    }
+
+    // Create the leaderboard table
+    const table = document.createElement('table');
+    table.classList.add('leaderboard-table');
+
+    // Create the table header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+
+    ['Rank', 'Username', 'Gains'].forEach(headerText => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create the table body
+    const tbody = document.createElement('tbody');
+
+    crewData.forEach(member => {
+        const row = document.createElement('tr');
+
+        const rankCell = document.createElement('td');
+        rankCell.textContent = member.rank;
+        row.appendChild(rankCell);
+
+        const usernameCell = document.createElement('td');
+        usernameCell.textContent = member.username;
+        row.appendChild(usernameCell);
+
+        const gainsCell = document.createElement('td');
+        gainsCell.textContent = member.gains;
+        row.appendChild(gainsCell);
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    fitnessCrewContainer.appendChild(table);
 }
 
 function displayInvitationMessage(message) {
@@ -1507,11 +1586,11 @@ document.addEventListener('DOMContentLoaded', () => {
         fightControlBtn.addEventListener('click', (e) => {
             e.preventDefault();
             console.log('Fight control button clicked');
-
+        
             // Hide all pages and deactivate all nav buttons
             hideAllPages();
             navButtons.forEach(btn => btn.classList.remove('active'));
-
+        
             // Show the Refer page
             const referPage = document.getElementById('refer-page');
             if (referPage) {
@@ -1519,8 +1598,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.error('Refer page not found');
             }
-
-            // Initialize the Refer page if needed
+        
+            // Initialize the Refer page
             initializeReferPage();
         });
     } else {
