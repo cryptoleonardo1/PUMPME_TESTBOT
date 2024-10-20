@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PUMPME.APP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/styles_v2.css">
+    <link rel="icon" href="/public/images/x-icon.png" type="image/png">
+</head>
+<body>
+    <div id="app">
+        <!-- Gym Page -->
+        <div id="gym-page" class="page">
+            <header>
+                <div id="gains-container">
+                    <!-- Music Control Button -->
+                    <div id="music-control-container">
+                        <button id="music-control-btn" class="icon-button">
+                            📀 <!-- Initial icon -->
+                        </button>
+                    </div>
+                    <!-- Fight Control Button -->
+                    <div id="fight-control-container">
+                        <button id="fight-control-btn" class="icon-button">
+                            🎡 <!-- Initial icon -->
+                        </button>
+                    </div>
+                    <div id="bicep-icon-container">
+                        <img src="/public/images/bicep-icon-blue.png" alt="Bicep Icon" id="bicep-icon">
+                    </div>
+                    <div id="gains-display">
+                        <span id="gains-value">0</span>
+                    </div>
+                </div>
+                <div id="energy-container">
+                    <div id="energy-bar-container">
+                        <div id="energy-bar"></div>
+                    </div>
+                </div> 
+            </header>
+
+            <main>
+                <div id="character-container">
+                    <img src="/public/images/bull_with_weights.png" alt="Bull Character" id="character">
+                </div>
+            </main>
+        </div>
+       
+        <!-- Add audio element for background music -->
+       <audio id="background-music" src="/public/music/background-music.mp3" loop></audio>
+
+        <!-- Boosts Page -->
+        <div id="boosts-page" class="page">
+            <h2>Let's Get Pumped</h2>
+            <div class="boost-categories">
+                <button class="category-btn active" data-category="nutrition">Nutrition</button>
+                <button class="category-btn" data-category="workout">Workout</button>
+                <button class="category-btn" data-category="activities">Activities</button>
+                <button class="category-btn" data-category="resting">Resting</button>
+            </div>
+            <div id="boost-items">
+                <!-- Boost items will be dynamically populated here -->
+            </div>
+        </div>
+
+        <!-- Task Page -->
+        <div id="tasks-page" class="page">
+            <h2>Complete the Tasks</h2>
+            <div class="task-categories">
+                <button class="category-btn" data-category="socials">Socials</button>
+                <button class="category-btn" data-category="inGame">In-Game</button>
+                <button class="category-btn" data-category="referrals">Referrals</button>
+                <button class="category-btn" data-category="completed">Completed</button>
+            </div>
+            <div id="tasks-container">
+                <!-- Task items will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Top Pumpers Page -->
+        <div id="top-pumpers-page" class="page" style="display: none;">
+            <h2>Top Pumpers</h2>
+            <table id="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Gains</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Leaderboard data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="page" style="display: none;">
+            <h2>My Stats</h2>
+            <div class="profile-section" id="statistics-container">
+                <!-- Statistics will be dynamically added here -->
+            </div>
+        
+            <h2>My Attributes</h2>
+            <div class="profile-section">
+                <div id="attributes-container">
+                    <!-- Attributes will be dynamically added here -->
+                </div>
+            </div>
+        
+            <!-- Active Boosts Section -->
+            <div class="profile-section">
+                <h2>Active Boosts</h2>
+                <div id="active-boosts-container">
+                    <h3>No Active Boosts</h3>
+                </div>
+            </div>
+         </div>
+
+        <!-- Refer Page -->
+        <div id="refer-page" class="page hidden">
+            <h2 class="page-title">Play With Your Friends</h2>
+            <div class="refer-content">
+                <button id="invite-friends-btn" class="primary-button">Invite Friends</button>
+                <h3 class="sub-title">My Fitness Crew</h3>
+                <!-- Friend List Container -->
+                <div id="friend-list-container">
+                    <!-- Friend list will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+
+          <!-- Navigation -->
+          <nav>
+            <button class="nav-btn active" id="gym-btn">
+                <div class="nav-icon"></div>
+                <span>Gym</span>
+            </button>
+            <button class="nav-btn" id="boosts-btn">
+                <div class="nav-icon"></div>
+                <span>Boosts</span>
+            </button>
+            <button class="nav-btn" id="tasks-btn">
+                <div class="nav-icon"></div>
+                <span>Tasks</span>
+            </button>
+            <button class="nav-btn" id="top-pumpers-btn">
+                <div class="nav-icon"></div>
+                <span>Ranks</span>
+            </button>
+            <button class="nav-btn" id="profile-btn">
+                <div class="nav-icon"></div>
+                <span>Stats</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Boost Confirmation Popup -->
+    <div id="boost-popup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <p id="boost-popup-message"></p>
+            <div class="button-container">
+                <button id="confirm-boost" class="popup-button primary-button">Pump Me</button>
+                <button id="close-boost-popup" class="popup-button secondary-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Popup (Added) -->
+    <div id="task-popup" class="popup-overlay" style="display: none;">
+        <div class="popup-content" id="task-popup-content">
+            <!-- Task popup content will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Reward Popup (Optional, if you have one) -->
+    <div id="reward-popup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <p id="reward-popup-message"></p>
+            <div class="button-container">
+                <button id="close-reward-popup" class="popup-button primary-button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app_v2.js"></script>
+</body>
+</html>
