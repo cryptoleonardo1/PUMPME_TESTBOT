@@ -19,39 +19,18 @@ bot.on('polling_error', (error) => {
 });
 
 // --- Start Command Handler ---
-bot.onText(/\/start\s?(.*)/, async (msg, match) => {
+bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
-    const startPayload = match[1]; // Extract the parameter after /start
 
     console.log('Received /start command');
     console.log('Message text:', msg.text);
-    console.log('Extracted startPayload:', startPayload);
 
     try {
-        if (startPayload && startPayload.startsWith('webapp_')) {
-            // Referral link used
-            const referrerId = startPayload.replace('webapp_', '');
-            const newUserId = msg.from.id.toString();
-            const newUserName = msg.from.username || msg.from.first_name || ''; // Get the username or first name
-
-            console.log(`New user ${newUserId} referred by ${referrerId}`);
-
-            // Save the referral in Redis
-            await saveReferral(referrerId, newUserId, newUserName);
-
-            // Send a welcome message
-            await sendWelcomeMessage(chatId);
-
-            // Notify the referrer (optional)
-            await notifyReferrer(referrerId, newUserId, newUserName);
-        } else {
-            // No referral parameter, standard /start command
-            console.log(`User ${msg.from.id} started the bot without referral`);
-            await sendWelcomeMessage(chatId);
-        }
+        // Send a welcome message
+        await sendWelcomeMessage(chatId);
     } catch (error) {
         console.error('Error handling /start command:', error);
-        bot.sendMessage(chatId, "Sorry, there was an error processing your request.");
+        bot.sendMessage(chatId, 'Sorry, there was an error processing your request.');
     }
 });
 
@@ -60,33 +39,26 @@ async function saveReferral(referrerId, newUserId, newUserName) {
     try {
         console.log(`Saving referral data: referrerId=${referrerId}, newUserId=${newUserId}, newUserName=${newUserName}`);
 
-        // Validate IDs
+        // Convert IDs to strings
         referrerId = referrerId.toString();
         newUserId = newUserId.toString();
 
-        // Check if the new user already exists
-        const userExists = await redisClient.exists(`user:${newUserId}`);
-        console.log(`User exists: ${userExists}`);
+        // Save the new user's data
+        await redisClient.hset(`user:${newUserId}`, {
+            userId: newUserId,
+            username: newUserName || '',
+            referrerId: referrerId,
+            gains: '0',
+            level: '1',
+            boostsData: '{}',
+            tasksData: '{}',
+        });
 
-        if (!userExists) {
-            // Save the new user's data
-            await redisClient.hset(`user:${newUserId}`, {
-                userId: newUserId,
-                username: newUserName || '',
-                referrerId: referrerId,
-                gains: '0', // Initialize gains to 0
-                level: '1', // Initialize level to 1 or appropriate value
-                boostsData: '{}',
-                tasksData: '{}',
-            });
+        // Add the new user to the referrer's invitedUsers list
+        const invitedUsersKey = `user:${referrerId}:invitedUsers`;
+        await redisClient.sadd(invitedUsersKey, newUserId);
 
-            // Add the new user to the referrer's friend list
-            await redisClient.sadd(`friendList:${referrerId}`, newUserId);
-
-            console.log(`Referral saved: ${newUserId} referred by ${referrerId}`);
-        } else {
-            console.log(`User ${newUserId} already exists. Not updating referral data.`);
-        }
+        console.log(`Referral saved: ${newUserId} referred by ${referrerId}`);
     } catch (error) {
         console.error('Error saving referral:', error);
     }
@@ -122,6 +94,40 @@ async function sendWelcomeMessage(chatId) {
         console.error('Error in sendWelcomeMessage:', error);
     }
 }
+
+// --- Referral Command Handler ---
+bot.onText(/\/ref(\s+)?(\d+)?/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const referrerId = match[2];
+
+    console.log('Received /ref command');
+    console.log('Message text:', msg.text);
+    console.log('Extracted referrerId:', referrerId);
+
+    try {
+        if (referrerId) {
+            const newUserId = msg.from.id.toString();
+            const newUserName = msg.from.username || msg.from.first_name || '';
+
+            console.log(`New user ${newUserId} referred by ${referrerId}`);
+
+            // Save the referral in Redis
+            await saveReferral(referrerId, newUserId, newUserName);
+
+            // Send a welcome message
+            await sendWelcomeMessage(chatId);
+
+            // Notify the referrer (optional)
+            await notifyReferrer(referrerId, newUserId, newUserName);
+        } else {
+            console.log('No referrerId provided in /ref command');
+            await bot.sendMessage(chatId, 'Invalid referral link.');
+        }
+    } catch (error) {
+        console.error('Error handling /ref command:', error);
+        bot.sendMessage(chatId, 'Sorry, there was an error processing your referral.');
+    }
+});
 
 // --- Handle All Messages (For Debugging) ---
 bot.on('message', (msg) => {

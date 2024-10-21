@@ -1595,7 +1595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Fight control button not found');
     }
 
-    // Event listener for the Invite Friends button on the Refer page
+        // Event listener for the Invite Friends button on the Refer page
     const inviteFriendsBtn = document.getElementById('invite-friends-btn');
     if (inviteFriendsBtn) {
         inviteFriendsBtn.addEventListener('click', (e) => {
@@ -1608,7 +1608,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (user && user.id) {
                 const telegramUserId = user.id;
                 const botUsername = 'pumpmetestbot'; // Replace with your bot's username
-                const invitationLink = `https://t.me/${botUsername}?start=webapp_${telegramUserId}`;
+                const invitationLink = `https://t.me/${botUsername}?ref=${telegramUserId}`;
                 console.log('Invitation Link:', invitationLink);
 
                 // Invitation message
