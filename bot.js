@@ -1,3 +1,5 @@
+// bot.js
+
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const redisClient = require('./redis-client');
@@ -10,12 +12,6 @@ if (!token) {
     process.exit(1);
 }
 
-console.log('Redis client details:', {
-    options: redisClient.options,
-    status: redisClient.status,
-    mode: redisClient.mode
-});
-
 const bot = new TelegramBot(token, { polling: true });
 
 bot.on('polling_error', (error) => {
@@ -23,9 +19,9 @@ bot.on('polling_error', (error) => {
 });
 
 // --- Start Command Handler ---
-bot.onText(/\/start\s*(.*)/, async (msg, match) => {
+bot.onText(/\/start\s?(.*)/, async (msg, match) => {
     const chatId = msg.chat.id;
-    const startPayload = match[1] || ''; // Extract the parameter after /start
+    const startPayload = match[1]; // Extract the parameter after /start
 
     console.log('Received /start command');
     console.log('Message text:', msg.text);
@@ -35,7 +31,7 @@ bot.onText(/\/start\s*(.*)/, async (msg, match) => {
         if (startPayload && startPayload.startsWith('webapp_')) {
             // Referral link used
             const referrerId = startPayload.replace('webapp_', '');
-            const newUserId = msg.from.id;
+            const newUserId = msg.from.id.toString();
             const newUserName = msg.from.username || msg.from.first_name || ''; // Get the username or first name
 
             console.log(`New user ${newUserId} referred by ${referrerId}`);
@@ -99,7 +95,6 @@ async function saveReferral(referrerId, newUserId, newUserName) {
 // --- Function to Notify Referrer ---
 async function notifyReferrer(referrerId, newUserId, newUserName) {
     try {
-        // Compose the notification message
         const newUserDisplayName = newUserName ? `@${newUserName}` : `User ID: ${newUserId}`;
         const message = `🎉 Great news! ${newUserDisplayName} has joined your Fitness Crew!`;
 
@@ -128,6 +123,22 @@ async function sendWelcomeMessage(chatId) {
     }
 }
 
+// --- Handle All Messages (For Debugging) ---
+bot.on('message', (msg) => {
+    // Ignore messages that are commands (start with '/')
+    if (msg.text && msg.text.startsWith('/')) {
+        // Commands are handled separately
+        return;
+    }
+
+    console.log('Received message:', msg);
+
+    const chatId = msg.chat.id;
+
+    // Optionally, you can send a default response
+    // bot.sendMessage(chatId, "Hi there! Use /start to begin.");
+});
+
 // --- Placeholder for Other Commands ---
 bot.onText(/\/somecommand/, async (msg) => {
     const chatId = msg.chat.id;
@@ -138,15 +149,6 @@ bot.onText(/\/somecommand/, async (msg) => {
         console.error('Redis operation error:', error);
         bot.sendMessage(chatId, "Sorry, there was an error processing your request.");
     }
-});
-
-// --- Handle Other Messages ---
-bot.on('message', (msg) => {
-    console.log('Received message:', msg);
-    // Handle incoming messages
-    // For now, we can ignore other messages or provide a default response
-    const chatId = msg.chat.id;
-    //bot.sendMessage(chatId, "Hi there! Use /start to begin.");
 });
 
 // --- Test Redis Connection ---
