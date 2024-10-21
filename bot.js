@@ -19,15 +19,65 @@ bot.on('polling_error', (error) => {
 });
 
 // --- Start Command Handler ---
-bot.onText(/\/start/, async (msg) => {
+bot.onText(/\/start\s?(.*)/, async (msg, match) => {
     const chatId = msg.chat.id;
+    const startPayload = match[1]; // Extract the parameter after /start
 
     console.log('Received /start command');
     console.log('Message text:', msg.text);
+    console.log('Extracted startPayload:', startPayload);
 
     try {
-        // Send a welcome message
-        await sendWelcomeMessage(chatId);
+        const newUserId = msg.from.id.toString();
+        const newUserName = msg.from.username || msg.from.first_name || '';
+
+        if (startPayload && startPayload.startsWith('ref_')) {
+            // Referral link used
+            const referrerId = startPayload.replace('ref_', '');
+            console.log(`New user ${newUserId} referred by ${referrerId}`);
+
+            // Check if the user already exists
+            const userExists = await redisClient.exists(`user:${newUserId}`);
+
+            if (!userExists) {
+                // Save the referral in Redis
+                await saveReferral(referrerId, newUserId, newUserName);
+
+                // Send a welcome message
+                await sendWelcomeMessage(chatId);
+
+                // Notify the referrer
+                await notifyReferrer(referrerId, newUserId, newUserName);
+            } else {
+                console.log(`User ${newUserId} already exists. Not processing referral.`);
+                // Send a welcome message without processing referral
+                await sendWelcomeMessage(chatId);
+            }
+        } else {
+            // Standard /start command
+            console.log(`User ${newUserId} started the bot without referral`);
+
+            // Check if the user already exists
+            const userExists = await redisClient.exists(`user:${newUserId}`);
+
+            if (!userExists) {
+                // Save the new user's data
+                await redisClient.hset(`user:${newUserId}`, {
+                    userId: newUserId,
+                    username: newUserName || '',
+                    gains: '0',
+                    level: '1',
+                    boostsData: '{}',
+                    tasksData: '{}',
+                });
+                console.log(`New user ${newUserId} data saved.`);
+            } else {
+                console.log(`User ${newUserId} already exists.`);
+            }
+
+            // Send a welcome message
+            await sendWelcomeMessage(chatId);
+        }
     } catch (error) {
         console.error('Error handling /start command:', error);
         bot.sendMessage(chatId, 'Sorry, there was an error processing your request.');
@@ -39,9 +89,12 @@ async function saveReferral(referrerId, newUserId, newUserName) {
     try {
         console.log(`Saving referral data: referrerId=${referrerId}, newUserId=${newUserId}, newUserName=${newUserName}`);
 
+/*
         // Convert IDs to strings
         referrerId = referrerId.toString();
         newUserId = newUserId.toString();
+*/
+
 
         // Save the new user's data
         await redisClient.hset(`user:${newUserId}`, {
@@ -54,9 +107,8 @@ async function saveReferral(referrerId, newUserId, newUserName) {
             tasksData: '{}',
         });
 
-        // Add the new user to the referrer's invitedUsers list
-        const invitedUsersKey = `user:${referrerId}:invitedUsers`;
-        await redisClient.sadd(invitedUsersKey, newUserId);
+        // Add the new user to the referrer's friend list
+        await redisClient.sadd(`friendList:${referrerId}`, newUserId);
 
         console.log(`Referral saved: ${newUserId} referred by ${referrerId}`);
     } catch (error) {
@@ -80,7 +132,7 @@ async function notifyReferrer(referrerId, newUserId, newUserName) {
 // --- Function to Send Welcome Message ---
 async function sendWelcomeMessage(chatId) {
     try {
-        const welcomeImage = 'https://i.imgur.com/ZDMfcal.jpg';
+        const welcomeImage = 'https://i.imgur.com/ZDMfcal.jpg'; // Replace with your welcome image URL
         const welcomeText = 'Welcome to PUMP ME! Tap the button below to start the game.';
         const keyboard = {
             inline_keyboard: [[{ text: 'Start Game', web_app: { url: 'https://pumpme-testbot.vercel.app' } }]]
@@ -95,6 +147,7 @@ async function sendWelcomeMessage(chatId) {
     }
 }
 
+/*
 // --- Referral Command Handler ---
 bot.onText(/\/ref(\s+)?(\d+)?/, async (msg, match) => {
     const chatId = msg.chat.id;
@@ -128,6 +181,9 @@ bot.onText(/\/ref(\s+)?(\d+)?/, async (msg, match) => {
         bot.sendMessage(chatId, 'Sorry, there was an error processing your referral.');
     }
 });
+*/
+
+
 
 // --- Handle All Messages (For Debugging) ---
 bot.on('message', (msg) => {

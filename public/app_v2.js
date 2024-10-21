@@ -1607,38 +1607,40 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Fight control button not found');
     }
 
-        // Event listener for the Invite Friends button on the Refer page
-    const inviteFriendsBtn = document.getElementById('invite-friends-btn');
-    if (inviteFriendsBtn) {
-        inviteFriendsBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Invite Friends button clicked');
+    // Event listener for the Invite Friends button on the Refer page
+const inviteFriendsBtn = document.getElementById('invite-friends-btn');
+if (inviteFriendsBtn) {
+    inviteFriendsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Invite Friends button clicked');
 
-            // Retrieve user data
-            const user = tg.initDataUnsafe.user;
+        // Retrieve user data
+        const user = tg.initDataUnsafe.user;
 
-            if (user && user.id) {
-                const telegramUserId = user.id;
-                const botUsername = 'pumpmetestbot'; // Replace with your bot's username
-                const invitationLink = `https://t.me/${botUsername}?ref=${telegramUserId}`;
-                console.log('Invitation Link:', invitationLink);
+        if (user && user.id) {
+            const telegramUserId = user.id;
+            const botUsername = 'pumpmetestbot'; // Replace with your bot's username
 
-                // Invitation message
-                const invitationMessage = `Hello, my friend! Join my Fitness Crew in Pump Me App!`;
+            // Update the invitation link to use 'start' parameter
+            const invitationLink = `https://t.me/${botUsername}?start=ref_${telegramUserId}`;
+            console.log('Invitation Link:', invitationLink);
 
-                // Construct the share URL
-                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(invitationLink)}&text=${encodeURIComponent(invitationMessage)}`;
+            // Invitation message
+            const invitationMessage = `Hello, my friend! Join my Fitness Crew in Pump Me App!`;
 
-                // Open Telegram's share interface
-                tg.openTelegramLink(shareUrl);
-            } else {
-                console.error('User data not available');
-                alert('Unable to retrieve your Telegram ID.');
-            }
-        });
-    } else {
-        console.error('Invite Friends button not found');
-    }
+            // Construct the share URL
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(invitationLink)}&text=${encodeURIComponent(invitationMessage)}`;
+
+            // Open Telegram's share interface
+            tg.openTelegramLink(shareUrl);
+        } else {
+            console.error('User data not available');
+            alert('Unable to retrieve your Telegram ID.');
+        }
+    });
+} else {
+    console.error('Invite Friends button not found');
+}
 
     // Function to initialize the Refer page
     function initializeReferPage() {
