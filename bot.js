@@ -23,16 +23,20 @@ bot.on('polling_error', (error) => {
 });
 
 // --- Start Command Handler ---
-bot.onText(/\/start(.*)/, async (msg, match) => {
+bot.onText(/\/start\s*(.*)/, async (msg, match) => {
     const chatId = msg.chat.id;
-    const startPayload = match[1].trim(); // Extract the parameter after /start
+    const startPayload = match[1] || ''; // Extract the parameter after /start
+
+    console.log('Received /start command');
+    console.log('Message text:', msg.text);
+    console.log('Extracted startPayload:', startPayload);
 
     try {
         if (startPayload && startPayload.startsWith('webapp_')) {
             // Referral link used
             const referrerId = startPayload.replace('webapp_', '');
             const newUserId = msg.from.id;
-            const newUserName = msg.from.username || ''; // Get the username if available
+            const newUserName = msg.from.username || msg.from.first_name || ''; // Get the username or first name
 
             console.log(`New user ${newUserId} referred by ${referrerId}`);
 
@@ -58,18 +62,21 @@ bot.onText(/\/start(.*)/, async (msg, match) => {
 // --- Function to Save Referral ---
 async function saveReferral(referrerId, newUserId, newUserName) {
     try {
+        console.log(`Saving referral data: referrerId=${referrerId}, newUserId=${newUserId}, newUserName=${newUserName}`);
+
         // Validate IDs
         referrerId = referrerId.toString();
         newUserId = newUserId.toString();
 
         // Check if the new user already exists
         const userExists = await redisClient.exists(`user:${newUserId}`);
+        console.log(`User exists: ${userExists}`);
 
         if (!userExists) {
             // Save the new user's data
             await redisClient.hset(`user:${newUserId}`, {
                 userId: newUserId,
-                username: newUserName,
+                username: newUserName || '',
                 referrerId: referrerId,
                 gains: '0', // Initialize gains to 0
                 level: '1', // Initialize level to 1 or appropriate value
@@ -135,10 +142,11 @@ bot.onText(/\/somecommand/, async (msg) => {
 
 // --- Handle Other Messages ---
 bot.on('message', (msg) => {
+    console.log('Received message:', msg);
     // Handle incoming messages
     // For now, we can ignore other messages or provide a default response
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Hi there! Use /start to begin.");
+    //bot.sendMessage(chatId, "Hi there! Use /start to begin.");
 });
 
 // --- Test Redis Connection ---
