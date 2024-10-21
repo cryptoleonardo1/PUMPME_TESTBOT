@@ -23,7 +23,7 @@ bot.on('polling_error', (error) => {
 });
 
 // --- Start Command Handler ---
-bot.onText(/\/start ?(.*)/, async (msg, match) => {
+bot.onText(/\/start\s*(.*)/, async (msg, match) => {
     const chatId = msg.chat.id;
     const startPayload = match[1] || ''; // Extract the parameter after /start
 
