@@ -301,8 +301,16 @@ function updateUI() {
 
 // Function to save user data to the server
 function saveUserData() {
+    // Retrieve user ID and username from Telegram Web Apps SDK
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     const username = tg.initDataUnsafe?.user?.username || '';
+  
+    // Ensure gains, level, boosts, and socialTasks are defined
+    if (typeof gains === 'undefined' || typeof level === 'undefined' || typeof boosts === 'undefined' || typeof socialTasks === 'undefined') {
+      console.error('One or more required user data variables are undefined');
+      return;
+    }
+  
     console.log('Saving user data with userId:', userId, 'and username:', username);
   
     if (userId) {
@@ -310,7 +318,7 @@ function saveUserData() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: userId,
+          userId: userId.toString(),
           username: username,
           gains: gains,
           level: level,
@@ -320,7 +328,11 @@ function saveUserData() {
       })
         .then(response => response.json())
         .then(data => {
-          console.log('User data saved successfully:', data);
+          if (data.success) {
+            console.log('User data saved successfully:', data);
+          } else {
+            console.error('Error saving user data:', data.error);
+          }
         })
         .catch(error => console.error('Error saving user data:', error));
     } else {
