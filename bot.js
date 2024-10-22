@@ -19,9 +19,9 @@ bot.on('polling_error', (error) => {
 });
 
 // --- Start Command Handler ---
-bot.onText(/\/start\s?(.*)/, async (msg, match) => {
+bot.onText(/\/start(?:\s+)?(.*)?/, async (msg, match) => {
     const chatId = msg.chat.id;
-    const startPayload = match[1]; // Extract the parameter after /start
+    const startPayload = match[1] || ''; // Extract the parameter after /start
 
     console.log('Received /start command');
     console.log('Message text:', msg.text);
@@ -34,29 +34,21 @@ bot.onText(/\/start\s?(.*)/, async (msg, match) => {
         // Check if the user already exists
         const userExists = await redisClient.exists(`user:${newUserId}`);
 
-        if (startPayload && startPayload.startsWith('ref_')) {
-            // Referral link used
-            const referrerId = startPayload.replace('ref_', '');
-            console.log(`New user ${newUserId} referred by ${referrerId}`);
+        if (!userExists) {
+            if (startPayload && startPayload.startsWith('ref_')) {
+                // Referral link used
+                const referrerId = startPayload.replace('ref_', '');
+                console.log(`New user ${newUserId} referred by ${referrerId}`);
 
-            if (!userExists) {
-                // Save the referral in Redis
+                // Save the referral
                 await saveReferral(referrerId, newUserId, newUserName);
-
-                // Send a welcome message
-                await sendWelcomeMessage(chatId);
 
                 // Notify the referrer
                 await notifyReferrer(referrerId, newUserId, newUserName);
             } else {
-                console.log(`User ${newUserId} already exists. Not processing referral.`);
-                // Do not send the welcome message again
-            }
-        } else {
-            // Standard /start command
-            console.log(`User ${newUserId} started the bot without referral`);
-
-            if (!userExists) {
+                // Standard /start without referral
+                console.log(`New user ${newUserId} started the bot without referral`);
+                
                 // Save the new user's data
                 await redisClient.hset(`user:${newUserId}`, {
                     userId: newUserId,
@@ -67,13 +59,13 @@ bot.onText(/\/start\s?(.*)/, async (msg, match) => {
                     tasksData: '{}',
                 });
                 console.log(`New user ${newUserId} data saved.`);
-
-                // Send a welcome message
-                await sendWelcomeMessage(chatId);
-            } else {
-                console.log(`User ${newUserId} already exists.`);
-                // Do not send the welcome message again
             }
+
+            // Send welcome message once for new users
+            await sendWelcomeMessage(chatId);
+        } else {
+            console.log(`User ${newUserId} already exists. Not sending welcome message again.`);
+            // Optionally, you can send a different message or take no action
         }
     } catch (error) {
         console.error('Error handling /start command:', error);
@@ -142,20 +134,21 @@ async function sendWelcomeMessage(chatId) {
 }
 
 // --- Handle All Messages (For Debugging) ---
-bot.on('message', (msg) => {
-    console.log('Received message:', msg);
+// bot.on('message', (msg) => {
+//     console.log('Received message:', msg);
 
-    // Ignore messages that are commands (start with '/')
-    if (msg.text && msg.text.startsWith('/')) {
-        // Commands are handled separately
-        return;
-    }
+//     // Ignore messages that are commands (start with '/')
+//     if (msg.text && msg.text.startsWith('/')) {
+//         // Commands are handled separately
+//         return;
+//     }
 
-    const chatId = msg.chat.id;
+//     const chatId = msg.chat.id;
 
-    // Optionally, you can send a default response
-    // bot.sendMessage(chatId, "Hi there! Use /start to begin.");
-});
+//     // Optionally, you can send a default response
+//     // bot.sendMessage(chatId, "Hi there! Use /start to begin.");
+// });
+
 
 // --- Placeholder for Other Commands ---
 bot.onText(/\/somecommand/, async (msg) => {
