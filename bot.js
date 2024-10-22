@@ -21,7 +21,7 @@ bot.on('polling_error', (error) => {
 // --- Start Command Handler ---
 bot.onText(/\/start(?:\s+)?(.*)?/, async (msg, match) => {
     const chatId = msg.chat.id;
-    const startPayload = match[1] || ''; // Extract the parameter after /start
+    const startPayload = match[1] ? match[1].trim() : ''; // Extract the parameter after /start
 
     console.log('Received /start command');
     console.log('Message text:', msg.text);
@@ -31,10 +31,10 @@ bot.onText(/\/start(?:\s+)?(.*)?/, async (msg, match) => {
         const newUserId = msg.from.id.toString();
         const newUserName = msg.from.username || msg.from.first_name || '';
 
-        // Check if the user already exists
-        const userExists = await redisClient.exists(`user:${newUserId}`);
+        // Use a flag to check if the welcome message has already been sent
+        const welcomeSent = await redisClient.get(`welcomeSent:${newUserId}`);
 
-        if (!userExists) {
+        if (!welcomeSent) {
             if (startPayload && startPayload.startsWith('ref_')) {
                 // Referral link used
                 const referrerId = startPayload.replace('ref_', '');
@@ -48,7 +48,7 @@ bot.onText(/\/start(?:\s+)?(.*)?/, async (msg, match) => {
             } else {
                 // Standard /start without referral
                 console.log(`New user ${newUserId} started the bot without referral`);
-                
+
                 // Save the new user's data
                 await redisClient.hset(`user:${newUserId}`, {
                     userId: newUserId,
@@ -63,15 +63,19 @@ bot.onText(/\/start(?:\s+)?(.*)?/, async (msg, match) => {
 
             // Send welcome message once for new users
             await sendWelcomeMessage(chatId);
+
+            // Set the flag to indicate the welcome message has been sent
+            await redisClient.set(`welcomeSent:${newUserId}`, 'true');
         } else {
-            console.log(`User ${newUserId} already exists. Not sending welcome message again.`);
-            // Optionally, you can send a different message or take no action
+            console.log(`Welcome message already sent to user ${newUserId}.`);
+            // Do not send the welcome message again
         }
     } catch (error) {
         console.error('Error handling /start command:', error);
         bot.sendMessage(chatId, 'Sorry, there was an error processing your request.');
     }
 });
+
 
 // --- Function to Save Referral ---
 async function saveReferral(referrerId, newUserId, newUserName) {
@@ -117,6 +121,7 @@ async function notifyReferrer(referrerId, newUserId, newUserName) {
 
 // --- Function to Send Welcome Message ---
 async function sendWelcomeMessage(chatId) {
+    console.log(`Sending welcome message to chatId: ${chatId}`);
     try {
         const welcomeImage = 'https://i.imgur.com/ZDMfcal.jpg'; // Replace with your welcome image URL
         const welcomeText = 'Welcome to PUMP ME! Tap the button below to start the game.';
@@ -133,21 +138,25 @@ async function sendWelcomeMessage(chatId) {
     }
 }
 
+/*
 // --- Handle All Messages (For Debugging) ---
-// bot.on('message', (msg) => {
-//     console.log('Received message:', msg);
+bot.on('message', (msg) => {
+    console.log('Received message:', msg);
 
-//     // Ignore messages that are commands (start with '/')
-//     if (msg.text && msg.text.startsWith('/')) {
-//         // Commands are handled separately
-//         return;
-//     }
+    // Ignore messages that are commands (start with '/')
+    if (msg.text && msg.text.startsWith('/')) {
+        // Commands are handled separately
+        return;
+    }
 
-//     const chatId = msg.chat.id;
+    const chatId = msg.chat.id;
 
-//     // Optionally, you can send a default response
-//     // bot.sendMessage(chatId, "Hi there! Use /start to begin.");
-// });
+    // Ensure no messages are sent from here during testing
+    // Comment out or remove any sendMessage calls
+    // bot.sendMessage(chatId, "Hi there! Use /start to begin.");
+});
+*/
+
 
 
 // --- Placeholder for Other Commands ---
