@@ -86,11 +86,9 @@ async function saveReferral(referrerId, newUserId, newUserName) {
     try {
         console.log(`Saving referral data: referrerId=${referrerId}, newUserId=${newUserId}, newUserName=${newUserName}`);
 
-
         // Convert IDs to strings
         referrerId = referrerId.toString();
         newUserId = newUserId.toString();
-
 
         // Save the new user's data
         await redisClient.hset(`user:${newUserId}`, {
@@ -143,53 +141,15 @@ async function sendWelcomeMessage(chatId) {
     }
 }
 
-/*
-// --- Referral Command Handler ---
-bot.onText(/\/ref(\s+)?(\d+)?/, async (msg, match) => {
-    const chatId = msg.chat.id;
-    const referrerId = match[2];
-
-    console.log('Received /ref command');
-    console.log('Message text:', msg.text);
-    console.log('Extracted referrerId:', referrerId);
-
-    try {
-        if (referrerId) {
-            const newUserId = msg.from.id.toString();
-            const newUserName = msg.from.username || msg.from.first_name || '';
-
-            console.log(`New user ${newUserId} referred by ${referrerId}`);
-
-            // Save the referral in Redis
-            await saveReferral(referrerId, newUserId, newUserName);
-
-            // Send a welcome message
-            await sendWelcomeMessage(chatId);
-
-            // Notify the referrer (optional)
-            await notifyReferrer(referrerId, newUserId, newUserName);
-        } else {
-            console.log('No referrerId provided in /ref command');
-            await bot.sendMessage(chatId, 'Invalid referral link.');
-        }
-    } catch (error) {
-        console.error('Error handling /ref command:', error);
-        bot.sendMessage(chatId, 'Sorry, there was an error processing your referral.');
-    }
-});
-*/
-
-
-
 // --- Handle All Messages (For Debugging) ---
 bot.on('message', (msg) => {
+    console.log('Received message:', msg);
+
     // Ignore messages that are commands (start with '/')
     if (msg.text && msg.text.startsWith('/')) {
         // Commands are handled separately
         return;
     }
-
-    console.log('Received message:', msg);
 
     const chatId = msg.chat.id;
 
