@@ -31,13 +31,13 @@ bot.onText(/\/start\s?(.*)/, async (msg, match) => {
         const newUserId = msg.from.id.toString();
         const newUserName = msg.from.username || msg.from.first_name || '';
 
+        // Check if the user already exists
+        const userExists = await redisClient.exists(`user:${newUserId}`);
+
         if (startPayload && startPayload.startsWith('ref_')) {
             // Referral link used
             const referrerId = startPayload.replace('ref_', '');
             console.log(`New user ${newUserId} referred by ${referrerId}`);
-
-            // Check if the user already exists
-            const userExists = await redisClient.exists(`user:${newUserId}`);
 
             if (!userExists) {
                 // Save the referral in Redis
@@ -50,15 +50,11 @@ bot.onText(/\/start\s?(.*)/, async (msg, match) => {
                 await notifyReferrer(referrerId, newUserId, newUserName);
             } else {
                 console.log(`User ${newUserId} already exists. Not processing referral.`);
-                // Send a welcome message without processing referral
-                await sendWelcomeMessage(chatId);
+                // Do not send the welcome message again
             }
         } else {
             // Standard /start command
             console.log(`User ${newUserId} started the bot without referral`);
-
-            // Check if the user already exists
-            const userExists = await redisClient.exists(`user:${newUserId}`);
 
             if (!userExists) {
                 // Save the new user's data
@@ -71,12 +67,13 @@ bot.onText(/\/start\s?(.*)/, async (msg, match) => {
                     tasksData: '{}',
                 });
                 console.log(`New user ${newUserId} data saved.`);
+
+                // Send a welcome message
+                await sendWelcomeMessage(chatId);
             } else {
                 console.log(`User ${newUserId} already exists.`);
+                // Do not send the welcome message again
             }
-
-            // Send a welcome message
-            await sendWelcomeMessage(chatId);
         }
     } catch (error) {
         console.error('Error handling /start command:', error);
@@ -89,11 +86,10 @@ async function saveReferral(referrerId, newUserId, newUserName) {
     try {
         console.log(`Saving referral data: referrerId=${referrerId}, newUserId=${newUserId}, newUserName=${newUserName}`);
 
-/*
+
         // Convert IDs to strings
         referrerId = referrerId.toString();
         newUserId = newUserId.toString();
-*/
 
 
         // Save the new user's data
