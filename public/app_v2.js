@@ -330,6 +330,7 @@ function loadUserData() {
                     window.boosts = getDefaultBoosts();
                 }
 
+
                 // Only update socialTasks if tasksData from server is non-empty
                 if (data.tasksData && Object.keys(data.tasksData).length > 0) {
                     socialTasks = data.tasksData;

@@ -5,7 +5,7 @@ const redis = require('../redis-client');
 module.exports = async (req, res) => {
   try {
     const { userId, username, gains, level, boostsData, tasksData } = req.body;
-    console.log('Received data:', { userId, username, gains, level });
+    console.log('Received data:', { userId, username, gains, level, boostsData });
 
     // Convert data to strings for Redis
     const boostsDataString = JSON.stringify(boostsData || {});
