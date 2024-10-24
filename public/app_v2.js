@@ -727,7 +727,7 @@ function applyLoadedBoosts() {
 
                 if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
                     const remainingDuration = boost.expirationTime - now;
-                    const boostEffect = boostEffects[boost.name];
+                    const boostEffect = boost.effect;
 
                     if (boostEffect && boostEffect.type === "multiplier") {
                         boostMultiplier *= boostEffect.value;
@@ -761,14 +761,27 @@ function applyLoadedBoosts() {
 function handleBoostActivation(event) {
     const boostElement = event.currentTarget;
     const boostName = boostElement.querySelector('.boost-name').textContent;
-    const boostPrice = parseInt(boostElement.querySelector('.boost-price').textContent);
+    const boostPriceText = boostElement.querySelector('.boost-price').textContent;
+    const boostPrice = parseInt(boostPriceText.replace(/[^\d]/g, ''), 10); // Remove non-digit characters
 
-    const boostEffect = boostEffects[boostName];
+    // Find the boost object from window.boosts
+    let boostObject = null;
+    outerLoop:
+    for (const category in window.boosts) {
+        for (const boost of window.boosts[category]) {
+            if (boost.name === boostName) {
+                boostObject = boost;
+                break outerLoop;
+            }
+        }
+    }
 
-    if (!boostEffect) {
-        console.error(`No effect data found for boost: ${boostName}`);
+    if (!boostObject) {
+        console.error(`Boost object not found for boost: ${boostName}`);
         return;
     }
+
+    const boostEffect = boostObject.effect;
 
     showBoostPopUp(boostName, boostPrice, boostEffect);
 }
@@ -879,13 +892,14 @@ function applyBoostEffect(boostName, boostEffect) {
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
             console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
+            boostMultiplier /= boostEffect.value;
             markBoostAsInactive(boostName);
-            recalculateBoostMultiplier(); // Recalculate boostMultiplier
+
             updateUI();
-            initializeBoostsPage();
-            updateProfilePage();
-            saveUserData();
-        }, remainingDuration);
+            initializeBoostsPage(); // Refresh the Boosts page
+            updateProfilePage();    // Refresh the Profile page
+            saveUserData(); // Save data after boost expires
+        }, boostEffect.duration * 1000);
 
         // Update the UI to reflect the boost
         updateUI();
