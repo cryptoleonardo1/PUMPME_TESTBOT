@@ -103,43 +103,47 @@ const fitnessLevels = [
 
 // Boost effects data
 const boostEffects = {
-    "Protein Shake": { type: "multiplier", value: 1.5, duration: 3600 }, // Duration in seconds (1 hour)
-    "Pre-workout": { type: "multiplier", value: 1.5, duration: 3600 }, 
-    "Creatine": { type: "multiplier", value: 1.5, duration: 3600 },
-    "BCAA": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Coffee": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Energy drink": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Steak": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Eggs": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Chicken": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Hot-dog": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Chest Day": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Back Day": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Leg Day": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Abs Workout": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Shoulder Day": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Biceps Workout": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Triceps Workout": { type: "multiplier", value: 1.5, duration: 3600 },
-    "HIIT": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Endurance Cardio": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Calisthenics": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Street Workout": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Yoga": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Dance Class": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Muay Thai": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Karate": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Swimming": { type: "multiplier", value: 1.5, duration: 3600 },
+    "Protein Shake": { type: "multiplier", value: 1.15, duration: 3600 }, // Duration in seconds (1 hour)
+    "Pre-workout": { type: "multiplier", value: 1.3, duration: 1800 }, 
+    "Creatine": { type: "multiplier", value: 1.05, duration: 10800 },
+    "BCAA": { type: "multiplier", value: 1.03, duration: 21600 },
+    "Coffee": { type: "multiplier", value: 1.5, duration: 2400 },
+
+    "Energy drink": { type: "multiplier", value: 1.9, duration: 1800 },
+    "Steak": { type: "multiplier", value: 1.2, duration: 7200 },
+    "Eggs": { type: "multiplier", value: 1.1, duration: 6400 },
+    "Chicken": { type: "multiplier", value: 1.15, duration: 7200 },
+    "Hot-dog": { type: "multiplier", value: 1.2, duration: 3600 },
+
+    "Chest Day": { type: "multiplier", value: 2.5, duration: 3600 },
+    "Back Day": { type: "multiplier", value: 2.7, duration: 3600 },
+    "Leg Day": { type: "multiplier", value: 2.9, duration: 3600 },
+    "Abs Workout": { type: "multiplier", value: 1.8, duration: 3600 },
+    "Shoulder Day": { type: "multiplier", value: 1.9, duration: 3600 },
+    "Biceps Workout": { type: "multiplier", value: 2.0, duration: 3600 },
+    "Triceps Workout": { type: "multiplier", value: 2.1, duration: 3600 },
+    "HIIT": { type: "multiplier", value: 2.7, duration: 3600 },
+    "Endurance Cardio": { type: "multiplier", value: 1.9, duration: 3600 },
+    "Calisthenics": { type: "multiplier", value: 2.4, duration: 3600 },
+    "Street Workout": { type: "multiplier", value: 2.1, duration: 3600 },
+
+    "Yoga": { type: "multiplier", value: 1.6, duration: 3600 },
+    "Dance Class": { type: "multiplier", value: 1.8, duration: 3600 },
+    "Muay Thai": { type: "multiplier", value: 3.5, duration: 3600 },
+    "Karate": { type: "multiplier", value: 1.4, duration: 3600 },
+    "Swimming": { type: "multiplier", value: 1.3, duration: 3600 },
     "Jogging": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Cycling": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Sauna": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Massage": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Ice Bath": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Cold Shower": { type: "multiplier", value: 1.5, duration: 3600 },
-    "20 Min Nap": { type: "multiplier", value: 1.5, duration: 3600 },
-    "7 Hour Sleep": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Walk a Dog": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Breathing Exercise": { type: "multiplier", value: 1.5, duration: 3600 },
-    "Meditation": { type: "multiplier", value: 5, duration: 20 },
+    "Cycling": { type: "multiplier", value: 1.8, duration: 3600 },
+
+    "Sauna": { type: "multiplier", value: 1.1, duration: 3600 },
+    "Massage": { type: "multiplier", value: 1.2, duration: 3600 },
+    "Ice Bath": { type: "multiplier", value: 7.5, duration: 300 },
+    "Cold Shower": { type: "multiplier", value: 4.5, duration: 600 },
+    "20 Min Nap": { type: "multiplier", value: 1.1, duration: 1200 },
+    "7 Hour Sleep": { type: "multiplier", value: 1.3, duration: 10800 },
+    "Walk a Dog": { type: "multiplier", value: 1.5, duration: 1200 },
+    "Breathing Exercise": { type: "multiplier", value: 3.5, duration: 600 },
+    "Meditation": { type: "multiplier", value: 2, duration: 1200 },
 };
 
 // Boosts data (integrated from boosts.js)
@@ -149,101 +153,56 @@ window.boosts = getDefaultBoosts();
 function getDefaultBoosts() {
     return {
     nutrition: [
-        { name: "Protein Shake", icon: "🥤", description: "Boost muscle recovery", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Pre-workout", icon: "⚡", description: "Increase energy for workouts", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Creatine", icon: "💊", description: "Enhance strength and muscle mass", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "BCAA", icon: "🧪", description: "Support muscle growth and recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Coffee", icon: "☕", description: "Quick energy boost", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Energy drink", icon: "🥫", description: "Sustained energy boost", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Steak", icon: "🥩", description: "High protein meal", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Chicken", icon: "🍗", description: "Lean protein source", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Hot-dog", icon: "🌭", description: "Quick protein fix", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
+        { name: "Protein Shake", icon: "🥤", description: "Boost muscle recovery", price: 250, active: false, effect: { type: "multiplier", value: 1.15, duration: 3600 } },
+        { name: "Pre-workout", icon: "⚡", description: "Increase energy for workouts", price: 300, active: false, effect: { type: "multiplier", value: 1.3, duration: 1800 } },
+        { name: "Creatine", icon: "💊", description: "Enhance strength and muscle mass", price: 400, active: false, effect: { type: "multiplier", value: 1.05, duration: 10800 } },
+        { name: "BCAA", icon: "🧪", description: "Support muscle growth and recovery", price: 350, active: false, effect: { type: "multiplier",  value: 1.03, duration: 21600 } },
+        { name: "Coffee", icon: "☕", description: "Quick energy boost", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 2400 } },
+        { name: "Energy drink", icon: "🥫", description: "Sustained energy boost", price: 250, active: false, effect: { type: "multiplier", value: 1.9, duration: 1800 } },
+        { name: "Steak", icon: "🥩", description: "High protein meal", price: 500, active: false, effect: { type: "multiplier", value: 1.2, duration: 7200 } },
+        { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 200, active: false, effect: { type: "multiplier", value: 1.1, duration: 6400 } },
+        { name: "Chicken", icon: "🍗", description: "Lean protein source", price: 350, active: false, effect: { type: "multiplier", value: 1.15, duration: 7200 } },
+        { name: "Hot-dog", icon: "🌭", description: "Quick protein fix", price: 250, active: false, effect: { type: "multiplier", value: 1.2, duration: 3600 } }
     ],
     workout: [
-        { name: "Chest Day", icon: "🏋️", description: "Focus on chest muscles", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Back Day", icon: "🏋️", description: "Strengthen your back", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Leg Day", icon: "🦵", description: "Build lower body strength", price: 650, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Abs Workout", icon: "🦹‍♂️", description: "Core strength training", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Shoulder Day", icon: "🦾", description: "Develop shoulder muscles", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Biceps Workout", icon: "💪", description: "Focus on biceps", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Triceps Workout", icon: "🦾", description: "Strengthen triceps", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "HIIT", icon: "🏃‍♂️", description: "High-intensity interval training", price: 700, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Endurance Cardio", icon: "🏃", description: "Boost cardiovascular endurance", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Calisthenics", icon: "🤸", description: "Bodyweight exercises", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Street Workout", icon: "🤸", description: "Outdoor fitness training", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
+        { name: "Chest Day", icon: "🏋️", description: "Focus on chest muscles", price: 600, active: false, effect: { type: "multiplier", value: 2.5, duration: 3600 } },
+        { name: "Back Day", icon: "🏋️", description: "Strengthen your back", price: 600, active: false, effect: { type: "multiplier", value: 2.7, duration: 3600 } },
+        { name: "Leg Day", icon: "🦵", description: "Build lower body strength", price: 650, active: false, effect: { type: "multiplier", value: 2.9, duration: 3600 } },
+        { name: "Abs Workout", icon: "🦹‍♂️", description: "Core strength training", price: 500, active: false, effect: { type: "multiplier", value: 1.8, duration: 3600 } },
+        { name: "Shoulder Day", icon: "🏋️", description: "Develop shoulder muscles", price: 550, active: false, effect: { type: "multiplier", value: 1.9, duration: 3600 } },
+        { name: "Biceps Workout", icon: "💪", description: "Focus on biceps", price: 500, active: false, effect: { type: "multiplier", value: 2.0, duration: 3600 } },
+        { name: "Triceps Workout", icon: "🦾", description: "Strengthen triceps", price: 500, active: false, effect: { type: "multiplier", value: 2.1, duration: 3600 } },
+        { name: "HIIT", icon: "🏃‍♂️", description: "High-intensity interval training", price: 700, active: false, effect: { type: "multiplier", value: 2.7, duration: 3600 } },
+        { name: "Endurance Cardio", icon: "🏃", description: "Boost cardiovascular endurance", price: 600, active: false, effect: { type: "multiplier", value: 1.9, duration: 3600 } },
+        { name: "Calisthenics", icon: "🤸", description: "Bodyweight exercises", price: 550, active: false, effect: { type: "multiplier", value: 2.4, duration: 3600 } },
+        { name: "Street Workout", icon: "🤸", description: "Outdoor fitness training", price: 500, active: false, effect: { type: "multiplier", value: 2.1, duration: 3600 } }
     ],
     activities: [
-        { name: "Yoga", icon: "🧘", description: "Improve flexibility and mindfulness", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Dance Class", icon: "🕺", description: "Fun cardio workout", price: 450, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Muay Thai", icon: "🥊", description: "Thai boxing training", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Karate", icon: "🥋", description: "Martial arts practice", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
+        { name: "Yoga", icon: "🧘", description: "Improve flexibility and mindfulness", price: 400, active: false, effect: { type: "multiplier", value: 1.6, duration: 3600 } },
+        { name: "Dance Class", icon: "🕺", description: "Fun cardio workout", price: 450, active: false, effect: { type: "multiplier", value: 1.8, duration: 3600 } },
+        { name: "Muay Thai", icon: "🥊", description: "Thai boxing training", price: 600, active: false, effect: { type: "multiplier", value: 3.5, duration: 3600 } },
+        { name: "Karate", icon: "🥋", description: "Martial arts practice", price: 550, active: false, effect: { type: "multiplier", value: 1.4, duration: 3600 } },
+        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 500, active: false, effect: { type: "multiplier", value: 1.3, duration: 3600 } },
         { name: "Jogging", icon: "🏃‍♀️", description: "Outdoor cardio session", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Cycling", icon: "🚴", description: "Low-impact cardio workout", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
+        { name: "Cycling", icon: "🚴", description: "Low-impact cardio workout", price: 400, active: false, effect: { type: "multiplier", value: 1.8, duration: 3600 } }
     ],
     resting: [
-        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Massage", icon: "🧖", description: "Muscle relaxation therapy", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350, active: false, effect: { type: "multiplier", value: 5, duration: 20 } }
+        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.1, duration: 3600 } },
+        { name: "Massage", icon: "🧖", description: "Muscle relaxation therapy", price: 600, active: false, effect: { type: "multiplier", value: 1.2, duration: 3600 } },
+        { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400, active: false, effect: { type: "multiplier", value: 7.5, duration: 300 } },
+        { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200, active: false, effect: { type: "multiplier", value: 4.5, duration: 600 } },
+        { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250, active: false, effect: { type: "multiplier", value: 1.1, duration: 1200 } },
+        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.3, duration: 10800 } },
+        { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 1200 } },
+        { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250, active: false, effect: { type: "multiplier", value: 3.5, duration: 600 } },
+        { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350, active: false, effect: { type: "multiplier", value: 2, duration: 1200 } }
     ]
 };
 }
 
 /*
-window.boosts = {
-    nutrition: [
-        { name: "Protein Shake", icon: "🥤", description: "Boost muscle recovery", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Pre-workout", icon: "⚡", description: "Increase energy for workouts", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Creatine", icon: "💊", description: "Enhance strength and muscle mass", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "BCAA", icon: "🧪", description: "Support muscle growth and recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Coffee", icon: "☕", description: "Quick energy boost", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Energy drink", icon: "🥫", description: "Sustained energy boost", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Steak", icon: "🥩", description: "High protein meal", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Eggs", icon: "🥚", description: "Protein-rich snack", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Chicken", icon: "🍗", description: "Lean protein source", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Hot-dog", icon: "🌭", description: "Quick protein fix", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
-    ],
-    workout: [
-        { name: "Chest Day", icon: "🏋️", description: "Focus on chest muscles", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Back Day", icon: "🏋️", description: "Strengthen your back", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Leg Day", icon: "🦵", description: "Build lower body strength", price: 650, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Abs Workout", icon: "🦹‍♂️", description: "Core strength training", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Shoulder Day", icon: "🦾", description: "Develop shoulder muscles", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Biceps Workout", icon: "💪", description: "Focus on biceps", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Triceps Workout", icon: "🦾", description: "Strengthen triceps", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "HIIT", icon: "🏃‍♂️", description: "High-intensity interval training", price: 700, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Endurance Cardio", icon: "🏃", description: "Boost cardiovascular endurance", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Calisthenics", icon: "🤸", description: "Bodyweight exercises", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Street Workout", icon: "🤸", description: "Outdoor fitness training", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
-    ],
-    activities: [
-        { name: "Yoga", icon: "🧘", description: "Improve flexibility and mindfulness", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Dance Class", icon: "🕺", description: "Fun cardio workout", price: 450, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Muay Thai", icon: "🥊", description: "Thai boxing training", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Karate", icon: "🥋", description: "Martial arts practice", price: 550, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Swimming", icon: "🏊", description: "Full body workout", price: 500, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Jogging", icon: "🏃‍♀️", description: "Outdoor cardio session", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Cycling", icon: "🚴", description: "Low-impact cardio workout", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } }
-    ],
-    resting: [
-        { name: "Sauna", icon: "🧖", description: "Relaxation & recovery", price: 350, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Massage", icon: "🧖", description: "Muscle relaxation therapy", price: 600, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Ice Bath", icon: "🧊", description: "Reduce inflammation", price: 400, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Cold Shower", icon: "🚿", description: "Boost recovery and alertness", price: 200, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "20 Min Nap", icon: "😴", description: "Quick energy recharge", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "7 Hour Sleep", icon: "🛌", description: "Full night's rest", price: 800, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Walk a Dog", icon: "🐕", description: "Light activity and stress relief", price: 300, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Breathing Exercise", icon: "🧘‍♂️", description: "Improve focus and relaxation", price: 250, active: false, effect: { type: "multiplier", value: 1.5, duration: 3600 } },
-        { name: "Meditation", icon: "🧠", description: "Mental relaxation and clarity", price: 350, active: false, effect: { type: "multiplier", value: 5, duration: 20 } }
-    ]
-};
+icons 
+🧪🥤💊☕💪🦾
 */
 
 // Function to update fitness level based on gains
@@ -615,51 +574,6 @@ function displayInvitationMessage(message) {
     }
 }
 
-// Function to apply loaded boosts
-function applyLoadedBoosts() {
-    const now = Date.now();
-    Object.keys(window.boosts).forEach(category => {
-        const categoryBoosts = window.boosts[category];
-        if (!Array.isArray(categoryBoosts)) {
-            console.error(`Boosts in category ${category} are not an array:`, categoryBoosts);
-            return;
-        }
-        categoryBoosts.forEach(boost => {
-            if (boost.active && boost.expirationTime) {
-                boost.expirationTime = Number(boost.expirationTime);
-
-                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
-                    const remainingDuration = boost.expirationTime - now;
-                    const boostEffect = boostEffects[boost.name];
-
-                    if (boostEffect && boostEffect.type === "multiplier") {
-                        boostMultiplier *= boostEffect.value;
-
-                        // Set a timeout to remove the boost effect after the remaining duration
-                        setTimeout(() => {
-                            console.log(`Boost ${boost.name} has expired.`);
-                            boostMultiplier /= boostEffect.value;
-                            boost.active = false;
-                            boost.expirationTime = null;
-
-                            updateUI();
-                            initializeBoostsPage();
-                            updateProfilePage();
-                            saveUserData();
-                        }, remainingDuration);
-                    } else {
-                        console.error(`No boost effect found for ${boost.name}`);
-                    }
-                } else {
-                    // Boost has expired or invalid expirationTime
-                    boost.active = false;
-                    boost.expirationTime = null;
-                }
-            }
-        });
-    });
-}
-
 // Function to show a popup when a task is completed
 function showRewardPopup(reward) {
     const popupContent = `
@@ -732,6 +646,7 @@ function initializeBoostsPage() {
     setupBoostsCategoryButtons();
 }
 
+
 // Function to display boosts for a category
 function displayBoosts(category) {
     const boostItems = document.getElementById('boost-items');
@@ -787,6 +702,52 @@ function setupBoostsCategoryButtons() {
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             displayBoosts(button.dataset.category);
+        });
+    });
+}
+
+
+// Function to apply loaded boosts
+function applyLoadedBoosts() {
+    const now = Date.now();
+    Object.keys(window.boosts).forEach(category => {
+        const categoryBoosts = window.boosts[category];
+        if (!Array.isArray(categoryBoosts)) {
+            console.error(`Boosts in category ${category} are not an array:`, categoryBoosts);
+            return;
+        }
+        categoryBoosts.forEach(boost => {
+            if (boost.active && boost.expirationTime) {
+                boost.expirationTime = Number(boost.expirationTime);
+
+                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
+                    const remainingDuration = boost.expirationTime - now;
+                    const boostEffect = boostEffects[boost.name];
+
+                    if (boostEffect && boostEffect.type === "multiplier") {
+                        boostMultiplier *= boostEffect.value;
+
+                        // Set a timeout to remove the boost effect after the remaining duration
+                        setTimeout(() => {
+                            console.log(`Boost ${boost.name} has expired.`);
+                            boostMultiplier /= boostEffect.value;
+                            boost.active = false;
+                            boost.expirationTime = null;
+
+                            updateUI();
+                            initializeBoostsPage();
+                            updateProfilePage();
+                            saveUserData();
+                        }, remainingDuration);
+                    } else {
+                        console.error(`No boost effect found for ${boost.name}`);
+                    }
+                } else {
+                    // Boost has expired or invalid expirationTime
+                    boost.active = false;
+                    boost.expirationTime = null;
+                }
+            }
         });
     });
 }
@@ -1523,6 +1484,36 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeTasksPage();
     } else if (navButtons[defaultPageIndex].id === 'boosts-btn') {
         initializeBoostsPage();
+    }
+
+    // the visibilitychange event listener 
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            recalculateBoostMultiplier();
+            updateUI();
+        }
+    });
+
+    // Define the function to recalculate boostMultiplier
+    function recalculateBoostMultiplier() {
+        boostMultiplier = 1;
+        const now = Date.now();
+        Object.keys(window.boosts).forEach(category => {
+            window.boosts[category].forEach(boost => {
+                if (boost.active && boost.expirationTime > now) {
+                    const boostEffect = boostEffects[boost.name];
+                    if (boostEffect && boostEffect.type === "multiplier") {
+                        boostMultiplier *= boostEffect.value;
+                    }
+                } else {
+                    // If the boost has expired, mark it as inactive
+                    boost.active = false;
+                    boost.expirationTime = null;
+                }
+            });
+        });
+        // Optionally save user data if boosts have expired
+        saveUserData();
     }
 
     // --- Background Music Functionality ---
