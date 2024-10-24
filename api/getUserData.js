@@ -57,6 +57,7 @@ module.exports = async (req, res) => {
           boostsData: boostsData,
           tasksData: tasksData,
           username: userData.username || null,
+          serverTime // Include server time in the response
         });
       }
     } catch (error) {

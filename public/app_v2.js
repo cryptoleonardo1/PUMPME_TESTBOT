@@ -338,6 +338,11 @@ function loadUserData() {
                     console.log('No tasksData loaded from server, using local socialTasks');
                 }
 
+                // Calculate time offset between server and client
+                const serverTime = data.serverTime;
+                const clientTime = Date.now();
+                window.timeOffset = serverTime - clientTime; // Positive if server is ahead
+                
                 // Apply active boosts
                 applyLoadedBoosts();
 
@@ -709,7 +714,7 @@ function setupBoostsCategoryButtons() {
 
 // Function to apply loaded boosts
 function applyLoadedBoosts() {
-    const now = Date.now();
+    const now = Date.now() + (window.timeOffset || 0);
     Object.keys(window.boosts).forEach(category => {
         const categoryBoosts = window.boosts[category];
         if (!Array.isArray(categoryBoosts)) {
@@ -833,6 +838,12 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         closeBoostPopup();
         showInsufficientGainsMessage(boostName);
     }
+        // Apply boost effect
+        markBoostAsActive(boostName, expirationTime);
+        recalculateBoostMultiplier(); // Recalculate boostMultiplier
+        updateUI();
+        closeBoostPopup();
+        saveUserData();
 }
 
 // Function to close the boost popup
@@ -868,14 +879,13 @@ function applyBoostEffect(boostName, boostEffect) {
         // Set a timeout to remove the boost effect after its duration
         setTimeout(() => {
             console.log(`Boost ${boostName} expired at ${new Date().toISOString()}`);
-            boostMultiplier /= boostEffect.value;
             markBoostAsInactive(boostName);
-
+            recalculateBoostMultiplier(); // Recalculate boostMultiplier
             updateUI();
-            initializeBoostsPage(); // Refresh the Boosts page
-            updateProfilePage();    // Refresh the Profile page
-            saveUserData(); // Save data after boost expires
-        }, boostEffect.duration * 1000);
+            initializeBoostsPage();
+            updateProfilePage();
+            saveUserData();
+        }, remainingDuration);
 
         // Update the UI to reflect the boost
         updateUI();
@@ -1026,7 +1036,7 @@ function updateProfilePage() {
     if (activeBoostsContainer) {
         activeBoostsContainer.innerHTML = ''; // Clear the container
 
-        const now = Date.now(); // Get current time in milliseconds
+        const now = Date.now() + (window.timeOffset || 0); // Get current time in milliseconds
 
         // Collect all active boosts from window.boosts
         const activeBoostsList = [];
@@ -1497,7 +1507,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Define the function to recalculate boostMultiplier
     function recalculateBoostMultiplier() {
         boostMultiplier = 1;
-        const now = Date.now();
+        const now = Date.now() + (window.timeOffset || 0);
         Object.keys(window.boosts).forEach(category => {
             window.boosts[category].forEach(boost => {
                 if (boost.active && boost.expirationTime > now) {
@@ -1515,6 +1525,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Optionally save user data if boosts have expired
         saveUserData();
     }
+
+    // Update active boosts display every second
+    setInterval(() => {
+        updateActiveBoostsDisplay();
+    }, 1000); // Update every 1000 milliseconds (1 second)
 
     // --- Background Music Functionality ---
 
