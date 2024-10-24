@@ -309,25 +309,16 @@ function loadUserData() {
                 gains = data.gains || 0;
                 level = data.level || 1;
 
+                // Get default boosts data
+                const defaultBoosts = getDefaultBoosts();
+
                 // Update window.boosts with the loaded boosts data
                 if (data.boostsData && typeof data.boostsData === 'object' && Object.keys(data.boostsData).length > 0) {
-                    window.boosts = data.boostsData;
-
-                    // Ensure each category is an array
-                    Object.keys(window.boosts).forEach(category => {
-                        if (!Array.isArray(window.boosts[category])) {
-                            window.boosts[category] = [];
-                        } else {
-                            window.boosts[category].forEach(boost => {
-                                if (boost.expirationTime) {
-                                    boost.expirationTime = Number(boost.expirationTime);
-                                }
-                            });
-                        }
-                    });
+                    // Deep merge the loaded boosts data with the default boosts data
+                    window.boosts = mergeBoostsData(defaultBoosts, data.boostsData);
                 } else {
                     // If boostsData is empty, initialize window.boosts
-                    window.boosts = getDefaultBoosts();
+                    window.boosts = defaultBoosts;
                 }
 
 
@@ -351,6 +342,29 @@ function loadUserData() {
             })
             .catch(error => console.error('Error loading user data:', error));
     }
+}
+
+function mergeBoostsData(defaultBoosts, loadedBoosts) {
+    const mergedBoosts = {};
+
+    Object.keys(defaultBoosts).forEach(category => {
+        mergedBoosts[category] = defaultBoosts[category].map(defaultBoost => {
+            const loadedCategory = loadedBoosts[category] || [];
+            const loadedBoost = loadedCategory.find(b => b.name === defaultBoost.name);
+            if (loadedBoost) {
+                // Merge properties
+                return {
+                    ...defaultBoost,
+                    ...loadedBoost,
+                    effect: defaultBoost.effect, // Ensure effect comes from defaultBoost
+                };
+            } else {
+                return defaultBoost;
+            }
+        });
+    });
+
+    return mergedBoosts;
 }
 
 // Function to get default social tasks
