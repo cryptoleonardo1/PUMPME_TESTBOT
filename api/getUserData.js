@@ -1,5 +1,3 @@
-// api/getUserData.js
-
 const redis = require('../redis-client');
 
 module.exports = async (req, res) => {
@@ -11,6 +9,8 @@ module.exports = async (req, res) => {
       const userData = await redis.hgetall(`user:${userId}`);
       console.log('Raw user data:', userData);
 
+      const serverTime = Date.now();
+
       if (!userData || Object.keys(userData).length === 0) {
         console.log('No user data found, returning default values');
         res.status(200).json({
@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
           tasksData: {},
           userId: userId,
           username: null,
+          serverTime
         });
       } else {
         console.log('User data found, returning:', userData);
@@ -29,6 +30,7 @@ module.exports = async (req, res) => {
         if (userData.boostsData) {
           try {
             boostsData = JSON.parse(userData.boostsData);
+            console.log('Parsed boosts data:', boostsData);
           } catch (parseError) {
             console.error('Error parsing boostsData:', parseError);
           }
@@ -57,7 +59,7 @@ module.exports = async (req, res) => {
           boostsData: boostsData,
           tasksData: tasksData,
           username: userData.username || null,
-          serverTime // Include server time in the response
+          serverTime
         });
       }
     } catch (error) {
