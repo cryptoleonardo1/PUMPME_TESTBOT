@@ -320,6 +320,7 @@ function saveUserData() {
                     window.boosts = defaultBoosts;
                 }
                 
+                console.log("Boosts data after loading and merging:", window.boosts);
                 console.log('Data received from server:', data);
                 console.log('Boosts data received:', data.boostsData);
                 
@@ -857,7 +858,7 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
 // Function to confirm boost activation
 function confirmBoost(boostName, boostPrice, boostEffect) {
-    const expirationTime = boost.expirationTime || Date.now() + boost.duration * 1000; // Default to boost duration if missing
+    const expirationTime = Date.now() + (boostEffect.duration * 1000); // Default expiration time using boostEffect duration
     console.log('Confirming boost:', { boostName, boostPrice, boostEffect });
 
     if (gains >= boostPrice) {
@@ -867,18 +868,15 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         console.log('Boost effect value:', boostEffect.value);
 
         applyBoostEffect(boostName, boostEffect);  // Apply boost effect
+        markBoostAsActive(boostName, expirationTime);  // Mark the boost as active
+        recalculateBoostMultiplier();  // Recalculate the boost multiplier
         updateUI();
-        closeBoostPopup(); // Close the popup after confirmation
+        closeBoostPopup();  // Close the popup after confirmation
+        saveUserData();  // Save user data
     } else {
         closeBoostPopup();
         showInsufficientGainsMessage(boostName);
     }
-        // Apply boost effect
-        markBoostAsActive(boostName, expirationTime);
-        recalculateBoostMultiplier(); // Recalculate boostMultiplier
-        updateUI();
-        closeBoostPopup();
-        saveUserData();
 }
 
 // Function to close the boost popup
