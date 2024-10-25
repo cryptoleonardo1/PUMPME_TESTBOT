@@ -334,8 +334,10 @@ function saveUserData() {
                 // Calculate time offset between server and client
                 const serverTime = data.serverTime;
                 const clientTime = Date.now();
-                window.timeOffset = serverTime - clientTime; // Positive if server is ahead
-                
+                // Adjust time offset based on Telegram platform nuances
+                const platformTimeAdjustment = tg.platform === "mobile" ? /* specific adjustment if needed */ 0 : 0; 
+                window.timeOffset = serverTime - clientTime + platformTimeAdjustment;
+                                
                 // Apply active boosts
                 applyLoadedBoosts();
 
@@ -855,6 +857,7 @@ function showBoostPopUp(boostName, boostPrice, boostEffect) {
 
 // Function to confirm boost activation
 function confirmBoost(boostName, boostPrice, boostEffect) {
+    const expirationTime = boost.expirationTime || Date.now() + boost.duration * 1000; // Default to boost duration if missing
     console.log('Confirming boost:', { boostName, boostPrice, boostEffect });
 
     if (gains >= boostPrice) {
