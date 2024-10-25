@@ -299,8 +299,7 @@ function saveUserData() {
     }
   }
 
-// Function to load user data from the server
-function loadUserData() {
+  function loadUserData() {
     const userId = tg.initDataUnsafe?.user?.id || userIdFallback;
     if (userId) {
         fetch(`/api/getUserData?userId=${userId}`)
@@ -320,8 +319,10 @@ function loadUserData() {
                     // If boostsData is empty, initialize window.boosts
                     window.boosts = defaultBoosts;
                 }
-
-
+                
+                console.log('Data received from server:', data);
+                console.log('Boosts data received:', data.boostsData);
+                
                 // Only update socialTasks if tasksData from server is non-empty
                 if (data.tasksData && Object.keys(data.tasksData).length > 0) {
                     socialTasks = data.tasksData;
@@ -346,6 +347,7 @@ function loadUserData() {
 
 function mergeBoostsData(defaultBoosts, loadedBoosts) {
     const mergedBoosts = {};
+    console.log('Merged boosts data:', mergedBoosts);
 
     Object.keys(defaultBoosts).forEach(category => {
         mergedBoosts[category] = defaultBoosts[category].map(defaultBoost => {
@@ -727,7 +729,6 @@ function setupBoostsCategoryButtons() {
 }
 
 
-// Function to apply loaded boosts
 function applyLoadedBoosts() {
     const now = Date.now() + (window.timeOffset || 0);
     Object.keys(window.boosts).forEach(category => {
@@ -740,11 +741,12 @@ function applyLoadedBoosts() {
             if (boost.active && boost.expirationTime) {
                 boost.expirationTime = Number(boost.expirationTime);
 
-                if (boost.active && boost.expirationTime && !isNaN(boost.expirationTime) && boost.expirationTime > now) {
+                if (!isNaN(boost.expirationTime) && boost.expirationTime > now) {
                     const remainingDuration = boost.expirationTime - now;
                     const boostEffect = boost.effect;
 
                     if (boostEffect && boostEffect.type === "multiplier") {
+                        // Recalculate boostMultiplier
                         boostMultiplier *= boostEffect.value;
 
                         // Set a timeout to remove the boost effect after the remaining duration
@@ -858,7 +860,9 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
     if (gains >= boostPrice) {
         gains -= boostPrice;
 
-        console.log('Applying boost with effect:', boostEffect);
+        console.log('Boost effect duration:', boostEffect.duration);
+        console.log('Boost effect value:', boostEffect.value);
+
         applyBoostEffect(boostName, boostEffect);  // Apply boost effect
         updateUI();
         closeBoostPopup(); // Close the popup after confirmation
@@ -894,7 +898,7 @@ function applyBoostEffect(boostName, boostEffect) {
     if (boostEffect.type === "multiplier") {
         boostMultiplier *= boostEffect.value;
 
-        const expirationTime = Date.now() + boostEffect.duration * 1000;
+        const expirationTime = Date.now() + (window.timeOffset || 0) + boostEffect.duration * 1000;
 
         console.log(`Boost ${boostName} activated. Expires at: ${new Date(expirationTime).toISOString()}`);
 
