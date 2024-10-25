@@ -319,7 +319,7 @@ function saveUserData() {
                     // If boostsData is empty, initialize window.boosts
                     window.boosts = defaultBoosts;
                 }
-                
+
                 console.log("Boosts data after loading and merging:", window.boosts);
                 console.log('Data received from server:', data);
                 console.log('Boosts data received:', data.boostsData);
@@ -877,6 +877,28 @@ function confirmBoost(boostName, boostPrice, boostEffect) {
         closeBoostPopup();
         showInsufficientGainsMessage(boostName);
     }
+}
+
+// Define the function to recalculate boostMultiplier at the top level
+function recalculateBoostMultiplier() {
+    boostMultiplier = 1;
+    const now = Date.now() + (window.timeOffset || 0);
+    Object.keys(window.boosts).forEach(category => {
+        window.boosts[category].forEach(boost => {
+            if (boost.active && boost.expirationTime > now) {
+                const boostEffect = boostEffects[boost.name];
+                if (boostEffect && boostEffect.type === "multiplier") {
+                    boostMultiplier *= boostEffect.value;
+                }
+            } else {
+                // If the boost has expired, mark it as inactive
+                boost.active = false;
+                boost.expirationTime = null;
+            }
+        });
+    });
+    // Optionally save user data if boosts have expired
+    saveUserData();
 }
 
 // Function to close the boost popup
@@ -1537,28 +1559,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUI();
         }
     });
-
-    // Define the function to recalculate boostMultiplier
-    function recalculateBoostMultiplier() {
-        boostMultiplier = 1;
-        const now = Date.now() + (window.timeOffset || 0);
-        Object.keys(window.boosts).forEach(category => {
-            window.boosts[category].forEach(boost => {
-                if (boost.active && boost.expirationTime > now) {
-                    const boostEffect = boostEffects[boost.name];
-                    if (boostEffect && boostEffect.type === "multiplier") {
-                        boostMultiplier *= boostEffect.value;
-                    }
-                } else {
-                    // If the boost has expired, mark it as inactive
-                    boost.active = false;
-                    boost.expirationTime = null;
-                }
-            });
-        });
-        // Optionally save user data if boosts have expired
-        saveUserData();
-    }
 
     // Update active boosts display every second
     setInterval(() => {
