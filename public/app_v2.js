@@ -1070,28 +1070,18 @@ function showInsufficientGainsMessage(boostName) {
 
 // Function to update the Profile page
 function updateProfilePage() {
-    const attributes = [
-        { name: "Strength", value: 20 },
-        { name: "Recovery", value: 22 },
-        { name: "Charisma", value: 17 },
-    ];
 
-    const attributesContainer = document.getElementById('attributes-container');
-    if (attributesContainer) {
-        attributesContainer.innerHTML = '';
-        attributes.forEach(attr => {
-            const attrElement = document.createElement('div');
-            attrElement.className = 'attribute-item';
-            attrElement.innerHTML = `
-                <div class="attribute-name">${attr.name}</div>
-                <div class="attribute-bar-container">
-                    <div class="attribute-bar" style="width: ${attr.value}%"></div>
-                </div>
-                <div class="attribute-value">${attr.value}</div>
-            `;
-            attributesContainer.appendChild(attrElement);
-        });
-    }
+// Get current values from game state
+const currentLevel = fitnessLevels.find(l => level === l.level);
+const levelName = currentLevel ? currentLevel.name : "Beginner";
+
+// Update stat values
+document.getElementById('fitness-level').textContent = `${levelName} (${level})`;
+document.getElementById('total-gains').textContent = gains.toLocaleString();
+document.getElementById('gains-per-tap').textContent = (gainsPerRep * boostMultiplier).toFixed(1);
+document.getElementById('remaining-energy').textContent = `${energy}/1000`;
+document.getElementById('energy-regen').textContent = '5/min'; // Add actual value if you have energy regen mechanic
+document.getElementById('daily-gains').textContent = gainsPerDay.toLocaleString();
 
     const activeBoostsContainer = document.getElementById('active-boosts-container');
 
